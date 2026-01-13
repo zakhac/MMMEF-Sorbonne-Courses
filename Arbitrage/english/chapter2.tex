@@ -1,0 +1,371 @@
+% ========================================
+% Chapter 2: Fundamental Theorem of Asset Pricing (FTAP)
+% ========================================
+\chapter{Fundamental Theorem of Asset Pricing (FTAP)}
+
+Fundamental Theorem of Asset Pricing
+
+\section{Reference}
+\textbf{Harrison--Pliska (1981)}
+
+\begin{theorem}[Fundamental Theorem of Asset Pricing (FTAP)]
+The no-arbitrage assumption is equivalent to the existence of an equivalent martingale measure:
+\begin{equation}
+NA \Longleftrightarrow \mathcal{M}^e(S) \neq \varnothing,
+\end{equation}
+where $\mathcal{M}^e(S)$ denotes the set of \textbf{equivalent martingale measures}:
+\begin{equation}
+\mathcal{M}^e(S) = \left\{\, Q \sim P \ \Big|\ (S_t)_{t=0,\dots,T} \text{ is a } Q\text{-martingale} \right\}.
+\end{equation}
+In other words, $Q \in \mathcal{M}^e(S)$ if and only if:
+\begin{enumerate}
+    \item $Q$ is a probability measure equivalent to $P$ (i.e., $Q(\omega) > 0$ for all $\omega \in \Omega$);
+    \item The discounted price process $(S_t)$ (with $S^0 \equiv 1$) is a martingale under $Q$.
+\end{enumerate}
+\end{theorem}
+
+\section{Definition and Properties of the Set $\Delta$}
+
+\begin{definition}
+We define:
+\begin{equation}
+\Delta = \Bigl\{\, Y \in L_+^0(\Omega, \mathcal{J}, P) \ \big|\ \mathbb{E}_P[Y] = 1 \Bigr\}.
+\end{equation}
+\end{definition}
+
+\begin{lemma}
+The set $\Delta$ is convex and compact.
+\end{lemma}
+
+\begin{proof}
+\begin{enumerate}
+    \item \textbf{Convexity:} Let $Y_1, Y_2 \in \Delta$ and $\lambda \in [0,1]$. We have $Y_1 \ge 0$ and $Y_2 \ge 0$, so $\lambda Y_1 + (1-\lambda)Y_2 \ge 0$. Moreover, by linearity of expectation, $\E_P[\lambda Y_1 + (1-\lambda)Y_2] = \lambda \E_P[Y_1] + (1-\lambda)\E_P[Y_2] = \lambda(1) + (1-\lambda)(1) = 1$. Therefore $\lambda Y_1 + (1-\lambda)Y_2 \in \Delta$. The set is indeed convex.
+    \item \textbf{Closedness:} The set $\Delta$ can be seen as the intersection of two sets:
+    \begin{itemize}
+        \item The cone of positive random variables $L^0_+$, which is a closed set.
+        \item The affine hyperplane $\{Y \in L^0 \mid \E_P[Y] = 1\}$. This set is the preimage of the closed singleton $\{1\}$ under the linear (and hence continuous in finite dimension) mapping $\varphi(Y) = \E_P[Y]$. It is therefore closed.
+    \end{itemize}
+    The intersection of two closed sets is a closed set.
+    \item \textbf{Boundedness:} For all $Y \in \Delta$, we have by definition $Y \ge 0$ and $\E_P[Y] = 1$. The expectation reads $\sum_{\omega \in \Omega} Y(\omega)P(\omega) = 1$. Since each term in the sum is positive, we have for any $\omega$:
+    \[
+    Y(\omega)P(\omega) \le \sum_{\omega' \in \Omega} Y(\omega')P(\omega') = 1
+    \]
+    Since $P(\omega) > 0$ for all $\omega$ (model assumption), we can divide to obtain:
+    \[
+    0 \le Y(\omega) \le \frac{1}{P(\omega)}
+    \]
+    Since the universe $\Omega$ is finite, there exists a finite upper bound for all $Y(\omega)$: $\max_{\omega \in \Omega} (1 / P(\omega))$. The set $\Delta$ is therefore bounded.
+    \item \textbf{Conclusion:} In the space $\mathbb{R}^{|\Omega|}$ (to which $L^0$ is isomorphic), the set $\Delta$ is closed and bounded. By the Heine-Borel theorem, it is therefore compact.
+\end{enumerate}
+\end{proof}
+
+\begin{tcolorbox}[title=Proof Strategy for FTAP (Direction $\Rightarrow$), colback=orange!5!white, colframe=orange!50!black]
+The proof of the implication $NA \Rightarrow \mathcal{M}^e(S) \neq \varnothing$ is the heart of the Fundamental Theorem. It is structured in five successive logical steps:
+
+\begin{enumerate}
+    \item \textbf{Geometric reformulation (Lemma 2.4):} We translate the economic condition of no arbitrage into a geometric condition: the sets $K$ (attainable gains at zero cost) and $\Delta$ (probability densities) must be disjoint.
+    \item \textbf{Separation (Lemma 2.6):} We apply the Hahn-Banach separation theorem (geometric form) to these two disjoint convex sets, one closed ($K$) and the other compact ($\Delta$). This guarantees the existence of a separating hyperplane.
+    \item \textbf{Construction of the density $Z$ (Lemma 2.7):} We exploit the properties of the separating hyperplane to construct a strictly positive random variable $Z$ such that $\E_P[Zk] = 0$ for all $k \in K$.
+    \item \textbf{Construction of measure $Q$ (Corollary 2.8):} We use this density $Z$ to define a new probability measure $Q$, equivalent to $P$, under which all gains from $K$ have zero expectation.
+    \item \textbf{Martingale Property (Lemma 2.9):} We finally show that if all attainable gains have zero expectation under $Q$, then the price process $S$ is a $Q$-martingale.
+\end{enumerate}
+\end{tcolorbox}
+
+The following sections detail each of these steps.
+
+\section{Link Between Absence of Arbitrage and the Set $\Delta$}
+
+\begin{lemma}
+\begin{equation}
+NA \Longleftrightarrow K \cap \Delta = \varnothing.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+We know that:
+\[
+NA \Longleftrightarrow K \cap L_+^0 = \{0\}.
+\]
+We must therefore show that $K \cap L_+^0 = \{0\}$ is equivalent to $K \cap \Delta = \varnothing$.
+
+\medskip
+\noindent
+($\Rightarrow$)  
+If $K \cap L_+^0 = \{0\}$, then necessarily $K \cap \Delta = \varnothing$.
+
+\medskip
+\noindent
+($\Leftarrow$)  
+By contraposition, suppose there exists $g \in K \cap L_+^0$ with $g \neq 0$.  
+We then define:
+\[
+Y = \frac{g}{\mathbb{E}_P[g]}.
+\]
+We indeed have $\mathbb{E}_P[Y] = 1$ and $Y \ge 0$, so $Y \in \Delta$.  
+Since $Y \in K$ as well (because $K$ is a vector space and $Y$ is an element of $K$ multiplied by a scalar), this contradicts $K \cap \Delta = \varnothing$.  
+Thus, the two conditions are equivalent.
+\end{proof}
+
+\section{Vector Spaces and Continuous Linear Functionals}
+
+\paragraph{Notations.}
+If $E$ and $F$ are vector spaces, we denote:
+\[
+\mathcal{L}_c(E,F)
+\]
+the set of continuous linear maps from $E$ to $F$.
+
+\medskip
+\noindent
+Recall that for any vector space $E$, 
+\[
+\dim(E) = \dim(\ker(\Phi)) + \operatorname{rank}(\Phi).
+\]
+Thus, if $\Phi \in \mathcal{L}_c(E,F)$ is non-zero, then $\operatorname{rank}(\Phi)=1$, and consequently:
+\[
+\dim(\ker(\Phi)) = \dim(E) - 1.
+\]
+The kernel of $\Phi$ is therefore a \textbf{hyperplane} of $E$.
+
+\medskip
+\noindent
+In our setting, if $E = L^0(\Omega, \mathcal{J}, P)$ and $F = \mathbb{R}$, then $E \simeq \mathbb{R}^{|\Omega|}$ (since $\Omega$ is finite).  
+Any element $\Phi \in \mathcal{L}_c(E,F)$ can be expressed using the values taken on indicator functions.
+
+For any $X \in L^0(\Omega, \mathcal{J}, P)$, we have:
+\[
+X(\omega) = \sum_{\omega' \in \Omega} X(\omega') \mathbf{1}_{\{\omega'\}}(\omega),
+\qquad \text{hence} \qquad
+X = \sum_{\omega' \in \Omega} X(\omega') \mathbf{1}_{\{\omega'\}}.
+\]
+Thus, for any continuous linear functional $\Phi$, we can write:
+\[
+\Phi(X) = \sum_{\omega' \in \Omega} X(\omega') \, \Phi(\mathbf{1}_{\{\omega'\}}).
+\]
+
+In particular, if we write:
+\[
+Z(\omega) = \frac{\Phi(\mathbf{1}_{\{\omega\}})}{P(\omega)},
+\]
+then
+\[
+\Phi(X) = \sum_{\omega' \in \Omega} X(\omega') \frac{\Phi(\mathbf{1}_{\{\omega'\}})}{P(\omega')} P(\omega')
+= \mathbb{E}_P[X Z].
+\]
+Thus, any continuous linear functional on $L^0$ can be represented as a \textbf{weighted expectation}.
+
+
+\section{Separation Lemma}
+
+\begin{theorem}[Separation Theorem]
+In a Banach space, if $A$ and $B$ are two convex, closed, and disjoint sets, one of which is compact,  
+then there exists $\Phi \in \mathcal{L}_c(\text{Banach}, \mathbb{R})$ and $\alpha \in \mathbb{R}$ such that:
+\[
+\Phi(a) < \alpha,\ \forall a \in A, \qquad \Phi(b) > \alpha,\ \forall b \in B.
+\]
+In our case, we apply this theorem with $A = K$ and $B = \Delta$.
+\end{theorem}
+
+\begin{lemma}[Separation Lemma] \label{lem:6}
+If $NA$ is satisfied, then there exists $\Phi \in \mathcal{L}_c(L^0(\Omega, \mathcal{J}, P), \mathbb{R})$ and $\alpha \in \mathbb{R}$ such that:
+\begin{equation}
+\forall k \in K,\ \Phi(k) < \alpha, \qquad \forall y \in \Delta,\ \Phi(y) > \alpha.
+\end{equation}
+\end{lemma}
+
+\begin{remark}[Key Remarks]
+\item This is called the separation theorem because we can separate A and B with an affine hyperplane.
+\item Since $K$ is a vector subspace, if $\mathbb{E}_P[Zk] \neq 0$ for some $k \in K$,  
+then for $t \to \pm\infty$, we would have $tk \in K$ and:
+\[
+\mathbb{E}_P[Z(tk)] = t \, \mathbb{E}_P[Zk],
+\]
+which would violate the strict bound $\Phi(k) < \alpha$.  
+Thus, necessarily:
+\[
+\mathbb{E}_P[Zk] = 0,\quad \forall k \in K.
+\]
+\end{remark}
+
+
+\begin{lemma}\label{lem:7}
+Under the No-Arbitrage assumption (NA), there exists
+\[
+ Z\in L^0(\Omega,\mathcal{J},P)\simeq \RR^{|\Omega|}
+\]
+such that
+\begin{equation}
+\forall k\in K,\quad \E_P[Zk]=0
+\qquad\text{and}\qquad
+\forall \omega\in\Omega,\ Z(\omega)>0 .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Using the Lemma and the previous remark, there exists
+\[
+ Z\in L^0(\Omega,\mathcal{J},P)\ \ (\text{isomorphic to } \RR^{|\Omega|})
+ \qquad\text{and}\qquad
+ \alpha\in\RR
+\]
+such that
+\[
+\forall k\in K,\quad \E_P[Zk]<\alpha
+\qquad\text{and}\qquad
+\forall Y\in\Delta,\ \E_P[YZ]>\alpha .
+\]
+Taking $k=0$ we deduce $\alpha>0$.
+
+Then define the linear functional
+\[
+\varphi:K\longrightarrow\RR,\qquad
+k\longmapsto \E_P[Zk] .
+\]
+This is a linear map defined on the vector space $K$ and it is bounded.
+By separation, we must have $\varphi\equiv 0$, i.e.,
+\[
+\forall k\in K,\qquad \E_P[Zk]=0.
+\]
+
+Finally, for $\omega_0\in\Omega$, set
+\[
+Y=\frac{\mathbbm{1}_{\{\omega_0\}}}{P(\omega_0)}\in\Delta.
+\]
+Then
+\[
+\E_P[YZ]>\alpha>0
+\qquad\Longrightarrow\qquad
+Z(\omega_0)=\E_P[YZ]>0 .
+\]
+Since $\omega_0$ is arbitrary, we obtain $Z(\omega)>0$ for all $\omega\in\Omega$.
+\end{proof}
+
+\begin{corollary}\label{cor:Q}
+NA $\Rightarrow$ There exists a probability $Q\sim P$ such that
+\[
+\forall k\in K,\qquad \E_Q[k]=0 .
+\]
+\end{corollary}
+
+\begin{proof}[Proof of Corollary \ref{cor:Q}]
+Let $Z$ be given by Lemma 7 and set
+\[
+\widetilde Z=\frac{Z}{\E_P[Z]},
+\qquad
+Q(\omega)=\widetilde Z(\omega)\,P(\omega).
+\]
+Since $Z\ge0$ and $\E_P[\widetilde Z]=1$, $Q$ is a probability and $Q\sim P$.
+Moreover, for all $k\in K$,
+\[
+\E_Q[k]=\E_P[\widetilde Z\,k]
+=\frac{1}{\E_P[Z]}\,\E_P[Zk]=0 .
+\]
+\end{proof}
+
+\begin{lemma}\label{lem:8}
+NA $\Rightarrow\ \mathcal{M}^e(S)\neq\varnothing$. 
+\end{lemma}
+
+\begin{proof}[Detailed proof of Lemma \ref{lem:8}]
+Let $Q$ be the probability measure whose existence is guaranteed by Corollary \ref{cor:Q}. This measure satisfies $\E_Q[k]=0$ for all $k \in K$. We will show that under this measure, the current price process $(S_t)$ is a martingale.
+
+\begin{enumerate}
+    \item \textbf{Objective:} We must show that for all assets $j \in \{1,\dots,d\}$ and all times $t \in \{0,\dots,T-1\}$, the conditional expectation of price increments is zero:
+    \[
+    \E_Q[S_{t+1}^j - S_t^j \mid \mathcal{J}_t] = 0.
+    \]
+    
+    \item \textbf{Reformulation:} By definition of conditional expectation, this amounts to showing that for all events $A \in \mathcal{J}_t$ (the information available at $t$), the following expectation is zero:
+    \[
+    \E_Q[\mathbbm{1}_A (S_{t+1}^j - S_t^j)] = 0.
+    \]
+    
+    \item \textbf{Construction of the Test Strategy:} To prove this point, we construct an ad-hoc financial strategy $H$ that "bets" on this asset over this time interval if event $A$ occurs. Define the predictable process $H = (H_u)$ by:
+    \[
+    H_u^k = 
+    \begin{cases} 
+    \mathbbm{1}_A & \text{if } k=j \text{ and } u=t, \\
+    0 & \text{otherwise.}
+    \end{cases}
+    \]
+    This strategy consists of holding one unit of asset $j$ between $t$ and $t+1$ if and only if $A$ is realized. It is indeed $\mathcal{J}_u$-measurable for all $u$ (since $A \in \mathcal{J}_t$ so $H_t$ is $\mathcal{J}_t$-measurable).
+    
+    \item \textbf{Link with Space $K$:} The final gain generated by this strategy (starting from zero capital) is:
+    \[
+    (H \cdot S)_T = \sum_{u=0}^{T-1} \langle H_u, S_{u+1} - S_u \rangle = \langle H_t, S_{t+1} - S_t \rangle = \mathbbm{1}_A (S_{t+1}^j - S_t^j).
+    \]
+    By definition, this gain belongs to the space $K$ of attainable gains at zero cost. Therefore, $\mathbbm{1}_A (S_{t+1}^j - S_t^j) \in K$.
+    
+    \item \textbf{Conclusion:} According to Corollary \ref{cor:Q}, we know that $\E_Q[k] = 0$ for all $k \in K$. Applying this to our specific gain, we obtain:
+    \[
+    \E_Q[\mathbbm{1}_A (S_{t+1}^j - S_t^j)] = 0.
+    \]
+    This being true for all $A \in \mathcal{J}_t$, all $t$ and all $j$, we have demonstrated that $(S_t)$ is a $Q$-martingale. Consequently, $Q \in \mathcal{M}^e(S)$, and the set of equivalent martingale measures is non-empty.
+\end{enumerate}
+\end{proof}
+
+\begin{lemma}\label{lem:9}
+If $Q\in\mathcal{M}^e(S)$, then for any strategy $H\in\mathcal{H}^d$,
+the process $\big((H\cdot S)_t\big)_{t=0,\dots,T}$ is a martingale under $Q$.
+\end{lemma}
+
+\begin{proof}[Proof of Lemma \ref{lem:9}]
+We know that
+\[
+(H\cdot S)_{t+1}=(H\cdot S)_t+\big\langle H_t,\,S_{t+1}-S_t\big\rangle .
+\]
+Taking the conditional expectation with respect to $\mathcal{J}_t$,
+\[
+\E_Q\!\big[(H\cdot S)_{t+1}\mid\mathcal{J}_t\big]
+=(H\cdot S)_t+\Big\langle H_t,\ \E_Q\!\big[S_{t+1}-S_t\mid\mathcal{J}_t\big]\Big\rangle .
+\]
+Under $Q$, $(S_t)$ is a martingale, so $\E_Q[S_{t+1}-S_t\mid\mathcal{J}_t]=0$ and thus
+\[
+\E_Q\!\big[(H\cdot S)_{t+1}\mid\mathcal{J}_t\big]=(H\cdot S)_t .
+\]
+\end{proof}
+
+\begin{theorem}[Fundamental Theorem of Asset Pricing — "Thm 1"]
+\begin{equation}
+NA\ \Longleftrightarrow\ \mathcal{M}^e(S)\neq\varnothing .
+\end{equation}
+\end{theorem}
+
+\begin{tcolorbox}[title=Intuition: The Economic Meaning of FTAP, colback=blue!5!white, colframe=blue!50!black]
+The Fundamental Theorem of Asset Pricing establishes a bridge between an economic condition (absence of arbitrage) and a mathematical concept (existence of a risk-neutral probability). But what is the deep intuition?
+
+\begin{itemize}
+    \item \textbf{A World Without Expected Return:} Under a risk-neutral measure $Q$, the expected return of all risky assets, once discounted, is exactly equal to the return of the risk-free asset (here 0 since discounted). In other words, their expected "excess return" is zero.
+    \item \textbf{No Strategy Can Win on Average:} An investment strategy is a dynamic combination of these assets. If each base component has zero expected return (relative to the risk-free asset), then no combination of these components can have a strictly positive expected return if it starts from zero initial capital.
+    \item \textbf{The Impossibility of the "Money Machine":} An arbitrage opportunity is precisely a strategy that starts from zero, cannot lose, and has a chance of winning. The existence of a measure $Q$ eliminates this possibility by guaranteeing that any strategy starting from zero has zero expected gain. It transforms a viable market into a "fair game" from the perspective of expected returns.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{proof}
+\emph{$\Rightarrow$}: given by Lemmas \ref{lem:8} and \ref{lem:7} (via Corollary \ref{cor:Q}).
+
+\smallskip
+\noindent
+(\emph{$\Leftarrow$}): $\mathcal{M}^e(S) \neq \varnothing \implies NA$.
+
+\smallskip
+Suppose that $\mathcal{M}^e(S) \neq \varnothing$ and let $Q \in \mathcal{M}^e(S)$ be an equivalent martingale measure.
+We will show that the condition $K \cap L_+^0 = \{0\}$ is satisfied, which is equivalent to $NA$.
+
+Let $g \in K \cap L_+^0$.
+\begin{enumerate}
+    \item By definition of $K$, there exists a self-financing strategy $H$ such that $V_0 = 0$ and $V_T = (H \cdot S)_T = g$.
+    \item Since $Q \in \mathcal{M}^e(S)$, the price process $S$ is a $Q$-martingale. According to Lemma \ref{lem:9}, the value process $(H \cdot S)_t$ is also a $Q$-martingale (since $H$ is predictable and bounded in a finite space).
+    \item The martingale property implies that the expectation of the final gain equals the initial value:
+    \[
+    \E_Q[g] = \E_Q[V_T] = V_0 = 0.
+    \]
+    \item By hypothesis, $g \in L_+^0$, that is, $g \ge 0$ $P$-a.s.
+    Since $Q$ is equivalent to $P$ ($Q \sim P$), the set of null measure events is identical for both measures. Therefore, $g \ge 0$ $Q$-a.s.
+    \item We have a random variable $g$ such that $g \ge 0$ $Q$-a.s. and $\E_Q[g] = 0$.
+    Now, the integral of a positive function is zero only if the function is zero almost everywhere.
+    We thus deduce that $g = 0$ $Q$-a.s.
+    \item By equivalence of measures, $g = 0$ $P$-a.s.
+\end{enumerate}
+Thus, the only element of $K \cap L_+^0$ is the zero element. The intersection is reduced to $\{0\}$, which proves absence of arbitrage ($NA$).
+\end{proof}

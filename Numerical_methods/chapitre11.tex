@@ -1,0 +1,79 @@
+\chapter{Programmation quadratique}
+\label{chap:quadratic-programming}
+
+\section{QP avec contraintes d'égalité}
+
+\subsection{Propriétés}
+
+% TODO: Contenu à développer
+
+\subsection{Résolution directe du système KKT}
+
+\subsubsection{Factorisation du système KKT complet}
+
+% TODO: Contenu à développer
+
+\subsubsection{Méthode du complément de Schur}
+
+% TODO: Contenu à développer
+
+\subsubsection{Méthode de l'espace nul}
+
+% TODO: Contenu à développer
+
+\subsection{Résolution itérative du système KKT}
+
+\begin{algorithm}[H]
+    \caption{Preconditioned Conjugate Gradient for reduced systems}
+    \SetAlgoLined
+    Choose an initial point $x_Z$\;
+    Compute $r_Z=Z^\top GZx_Z + c_Z$, $g_Z=W_{ZZ}^{-1}r_Z$, and $d_Z=-g_Z$\;
+    \Repeat{a termination test is satisfied}{
+        $\alpha\leftarrow \frac{r_Z^\top g_Z}{d_Z^\top Z^\top GZd_Z}$\;
+        $x_Z\leftarrow x_Z+\alpha d_Z$\;
+        $r_Z^+\leftarrow r_Z + \alpha Z^\top GZd_Z$\;
+        $g_Z^+\leftarrow W_{ZZ}^{-1}r_Z^+$\;
+        $\beta \leftarrow \frac{(r_Z^+)^\top g_Z^+}{r_Z^\top g_Z}$\;
+        $d_Z\leftarrow -g_Z^++\beta d_Z$\;
+        $g_Z\leftarrow g_Z^+$\;
+        $r_Z\leftarrow r_Z^+$\;
+    }
+\end{algorithm}
+
+\section{Problèmes avec contraintes d'inégalité}
+
+\subsection{Propriétés}
+
+% TODO: Contenu à développer
+
+\subsection{La méthode du gradient projeté}
+
+\subsubsection{Calcul du point de Cauchy}
+
+% TODO: Contenu à développer
+
+\subsubsection{Minimisation dans le sous-espace}
+
+% TODO: Contenu à développer
+
+\subsubsection{Résumé}
+
+\begin{algorithm}[H]
+    \caption{Gradient projection method for Quadratic Programming}
+    \SetAlgoLined
+    Compute a feasible starting point $x^0$\;
+    \For{$k=0, 1, \ldots$}{
+        \If{$x^k$ satisfies the KKT conditions for the bound-constrained problem}{
+            \Stop with solution $x^*=x^k$\;
+        }
+        Set $x=x^k$ and find the Cauchy point $x^c$\;
+        Find an approximate solution $x^+$ of
+        \begin{align*}
+            \min_{x} q(x)=\frac{1}{2}x^\top Gx &+ x^\top c\\
+            \text{subject to } x_i&=x_i^c, \quad i\in\mathcal{A}(x^c)\\
+            l_i \leq x_i & \leq u_i, \quad i\notin\mathcal{A}(x^c)
+        \end{align*}
+        such that $q(x^+)\leq q(x^c)$ and $x^+$ is feasible\;
+        $x^{k+1}\leftarrow x^+$\;
+    }
+\end{algorithm}

@@ -1,0 +1,235 @@
+%===========================
+% Fichier : main.tex
+%===========================
+\documentclass[11pt,a4paper,oneside]{book}
+
+%---------------------------
+% Encodage & langue
+%---------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{algorithmicx}
+
+%---------------------------
+% Mathématiques
+%---------------------------
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+
+% Algorithm2e with professor's style (replaces algorithm/algpseudocode)
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\SetAlgorithmName{Algorithm}{Algorithm}{List of Algorithms}
+\SetKwComment{Comment}{$\triangleright$\ }{}
+\SetKwInput{KwInput}{Input}
+\SetKwInput{KwOutput}{Output}
+
+% Blue keywords - exactly like professor's slides
+\SetKwIF{If}{ElseIf}{Else}{\textcolor{blue}{\textbf{if}}}{\textcolor{blue}{\textbf{then}}}{\textcolor{blue}{\textbf{else if}}}{\textcolor{blue}{\textbf{else}}}{}
+\SetKwFor{For}{\textcolor{blue}{\textbf{for}}}{\textcolor{blue}{\textbf{do}}}{}
+\SetKwFor{While}{\textcolor{blue}{\textbf{while}}}{\textcolor{blue}{\textbf{do}}}{}
+\SetKwRepeat{Repeat}{\textcolor{blue}{\textbf{repeat}}}{\textcolor{blue}{\textbf{until}}}
+\SetKw{Stop}{\textcolor{blue}{\textbf{stop}}}
+\SetKw{And}{\textcolor{blue}{\textbf{and}}}
+\SetKw{Or}{\textcolor{blue}{\textbf{or}}}
+\SetKw{Return}{\textbf{return}}
+
+\usepackage{float}
+\numberwithin{equation}{chapter}
+
+%---------------------------
+% Figures & illustrations
+%---------------------------
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,patterns}
+\graphicspath{{images/}}
+
+%---------------------------
+% Boites colorées (tcolorbox)
+%---------------------------
+% C'est le package magique pour les blocs de couleur
+\usepackage[most]{tcolorbox} 
+
+%---------------------------
+% Mise en page & style
+%---------------------------
+\usepackage{geometry}
+\geometry{margin=2.5cm, headheight=14pt, footskip=50pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\thepage}
+\fancyfoot[L]{\footnotesize 2025-2026 \textperiodcentered{} Numerical Methods - MMMEF}
+\fancyfoot[R]{\footnotesize Rédigé par Zakari Hachemi}
+
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet,leftmargin=1.5em}
+
+%---------------------------
+% Liens hypertexte
+%---------------------------
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=teal,
+    urlcolor=magenta,
+    pdfauthor={Zakari Hachemi},
+    pdftitle={Méthodes numériques en optimisation},
+    pdfsubject={Cours complet},
+    pdfcreator={LaTeX},
+    plainpages=false
+}
+
+% Correction des noms pour autoref
+\def\theoremeautorefname{Théorème}
+\def\propositionautorefname{Proposition}
+\def\lemmeautorefname{Lemme}
+\def\corollaireautorefname{Corollaire}
+\def\definitionautorefname{Définition}
+\def\exempleautorefname{Exemple}
+\def\exerciceautorefname{Exercice}
+\def\remarqueautorefname{Remarque}
+
+%---------------------------
+% Environnements théorèmes & Couleurs
+%---------------------------
+
+% 1. Définition standard des environnements (comme avant)
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[chapter]
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Définition}
+\newtheorem{exemple}[theoreme]{Exemple}
+\newtheorem{exercice}[theoreme]{Exercice}
+
+\theoremstyle{remark}
+\newtheorem{remarque}[theoreme]{Remarque}
+
+% 2. Application des couleurs (tcolorbox)
+
+% --- Style pour les THÉORÈMES (Rouge) ---
+\tcolorboxenvironment{theoreme}{
+    enhanced,
+    colback=red!5!white,      % Fond rouge très pâle
+    colframe=red!75!black,    % Cadre rouge foncé
+    boxrule=0.5mm,            % Epaisseur du cadre
+    arc=2mm,                  % Coins arrondis
+    left=2mm, right=2mm, top=2mm, bottom=2mm, % Marges internes
+    drop fuzzy shadow         % Petite ombre portée
+}
+
+% --- Style pour les PROPOSITIONS (Orange) ---
+\tcolorboxenvironment{proposition}{
+    enhanced,
+    colback=orange!5!white,
+    colframe=orange!80!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- Style pour les DÉFINITIONS (Bleu) ---
+\tcolorboxenvironment{definition}{
+    enhanced,
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- Style pour les EXEMPLES (Vert/Gris) ---
+\tcolorboxenvironment{exemple}{
+    blanker,                  % Pas de boîte fermée, juste une barre latérale
+    breakable,                % Peut se couper sur plusieurs pages
+    left=5mm,
+    before skip=10pt,
+    after skip=10pt,
+    borderline west={3pt}{0pt}{green!60!black} % Barre verticale verte à gauche
+}
+
+% --- Style pour les LEMMES (Violet) ---
+\tcolorboxenvironment{lemme}{
+    enhanced,
+    colback=violet!5!white,
+    colframe=violet!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    drop fuzzy shadow
+}
+
+% --- Style pour les EXPLICATIONS DE FIGURES (Gris / Anguleux) ---
+\newtcolorbox{figureexplanation}{
+    enhanced,
+    colback=gray!10!white,    % Fond gris clair
+    colframe=gray!50!black,   % Cadre gris foncé
+    boxrule=0.5mm,            % Epaisseur du cadre
+    sharp corners,            % Coins anguleux
+    left=2mm, right=2mm, top=2mm, bottom=2mm, % Marges internes
+    drop fuzzy shadow         % Petite ombre
+}
+
+%---------------------------
+% Macros utiles
+%---------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\grad}{\nabla}
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+
+%---------------------------
+% Informations
+%---------------------------
+\title{\textbf{Méthodes numériques en optimisation}\\[0.5em]
+       \large Cours complet en français}
+\author{Zakari HACHEMI}
+\date{Basé sur le cours Pierre Gruet - Numerical Methods - MMMEF \\ 2025-2026}
+
+%===========================
+\begin{document}
+%===========================
+
+\maketitle
+\tableofcontents
+\mainmatter
+
+%---------------------------
+% Corps du cours
+%---------------------------
+\include{chapitre1}
+\include{chapitre2}
+\include{chapitre3}
+\include{chapitre4}
+\include{chapitre5}
+\include{chapitre6}
+\include{chapitre7}
+\include{chapitre8}
+\include{chapitre9}
+\include{chapitre10}
+\include{chapitre11}
+\include{chapitre12}
+
+\appendix
+
+%---------------------------
+% Bibliographie
+%---------------------------
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+%===========================

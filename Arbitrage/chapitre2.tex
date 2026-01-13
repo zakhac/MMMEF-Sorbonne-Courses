@@ -1,0 +1,371 @@
+% ========================================
+% Chapitre 2 : Théorème fondamental de l'arbitrage (FTAP)
+% ========================================
+\chapter{Théorème fondamental de l'arbitrage (FTAP)}
+
+Fundamental Theorem of Asset Pricing
+
+\section{Référence}
+\textbf{Harrison--Pliska (1981)}
+
+\begin{theoreme}[Théorème fondamental de la tarification des actifs (FTAP)]
+L'hypothèse de non-arbitrage est équivalente à l'existence d'une mesure de martingale équivalente :
+\begin{equation}
+NA \Longleftrightarrow \mathcal{M}^e(S) \neq \varnothing,
+\end{equation}
+où $\mathcal{M}^e(S)$ désigne l'ensemble des \textbf{mesures de martingale équivalentes} :
+\begin{equation}
+\mathcal{M}^e(S) = \left\{\, Q \sim P \ \Big|\ (S_t)_{t=0,\dots,T} \text{ est une } Q\text{-martingale} \right\}.
+\end{equation}
+Autrement dit, $Q \in \mathcal{M}^e(S)$ si et seulement si :
+\begin{enumerate}
+    \item $Q$ est une probabilité équivalente à $P$ (i.e. $Q(\omega) > 0$ pour tout $\omega \in \Omega$) ;
+    \item Le processus de prix actualisé $(S_t)$ (avec $S^0 \equiv 1$) est une martingale sous $Q$.
+\end{enumerate}
+\end{theoreme}
+
+\section{Définition et propriétés de l'ensemble $\Delta$}
+
+\begin{definition}
+On définit :
+\begin{equation}
+\Delta = \Bigl\{\, Y \in L_+^0(\Omega, \mathcal{J}, P) \ \big|\ \mathbb{E}_P[Y] = 1 \Bigr\}.
+\end{equation}
+\end{definition}
+
+\begin{lemme}
+L'ensemble $\Delta$ est convexe et compact.
+\end{lemme}
+
+\begin{proof}
+\begin{enumerate}
+    \item \textbf{Convexité :} Soient $Y_1, Y_2 \in \Delta$ et $\lambda \in [0,1]$. On a $Y_1 \ge 0$ et $Y_2 \ge 0$, donc $\lambda Y_1 + (1-\lambda)Y_2 \ge 0$. De plus, par linéarité de l'espérance, $\E_P[\lambda Y_1 + (1-\lambda)Y_2] = \lambda \E_P[Y_1] + (1-\lambda)\E_P[Y_2] = \lambda(1) + (1-\lambda)(1) = 1$. Donc $\lambda Y_1 + (1-\lambda)Y_2 \in \Delta$. L'ensemble est bien convexe.
+    \item \textbf{Fermeture :} L'ensemble $\Delta$ peut être vu comme l'intersection de deux ensembles :
+    \begin{itemize}
+        \item Le cône des variables aléatoires positives $L^0_+$, qui est un ensemble fermé.
+        \item L'hyperplan affine $\{Y \in L^0 \mid \E_P[Y] = 1\}$. Cet ensemble est l'image réciproque du singleton fermé $\{1\}$ par l'application linéaire (et donc continue en dimension finie) $\varphi(Y) = \E_P[Y]$. Il est donc fermé.
+    \end{itemize}
+    L'intersection de deux ensembles fermés est un ensemble fermé.
+    \item \textbf{Bornitude :} Pour tout $Y \in \Delta$, on a par définition $Y \ge 0$ et $\E_P[Y] = 1$. L'espérance s'écrit $\sum_{\omega \in \Omega} Y(\omega)P(\omega) = 1$. Puisque chaque terme de la somme est positif, on a pour un $\omega$ quelconque :
+    \[
+    Y(\omega)P(\omega) \le \sum_{\omega' \in \Omega} Y(\omega')P(\omega') = 1
+    \]
+    Comme $P(\omega) > 0$ pour tout $\omega$ (hypothèse du modèle), on peut diviser pour obtenir :
+    \[
+    0 \le Y(\omega) \le \frac{1}{P(\omega)}
+    \]
+    Puisque l'univers $\Omega$ est fini, il existe une borne supérieure finie pour tous les $Y(\omega)$ : $\max_{\omega \in \Omega} (1 / P(\omega))$. L'ensemble $\Delta$ est donc borné.
+    \item \textbf{Conclusion :} Dans l'espace $\mathbb{R}^{|\Omega|}$ (auquel $L^0$ est isomorphe), l'ensemble $\Delta$ est fermé et borné. Par le théorème de Heine-Borel, il est donc compact.
+\end{enumerate}
+\end{proof}
+
+\begin{tcolorbox}[title=Stratégie de la Preuve du FTAP (Sens $\Rightarrow$), colback=orange!5!white, colframe=orange!50!black]
+La preuve de l'implication $NA \Rightarrow \mathcal{M}^e(S) \neq \varnothing$ est le cœur du Théorème Fondamental. Elle se structure en cinq étapes logiques successives :
+
+\begin{enumerate}
+    \item \textbf{Reformulation géométrique (Lemme 2.4) :} On traduit la condition économique d'absence d'arbitrage en une condition géométrique : les ensembles $K$ (gains atteignables à coût nul) et $\Delta$ (densités de probabilités) doivent être disjoints.
+    \item \textbf{Séparation (Lemme 2.6) :} On applique le théorème de séparation de Hahn-Banach (forme géométrique) à ces deux ensembles convexes disjoints, l'un fermé ($K$) et l'autre compact ($\Delta$). Cela garantit l'existence d'un hyperplan séparateur.
+    \item \textbf{Construction de la densité $Z$ (Lemme 2.7) :} On exploite les propriétés de l'hyperplan séparateur pour construire une variable aléatoire $Z$ strictement positive telle que $\E_P[Zk] = 0$ pour tout $k \in K$.
+    \item \textbf{Construction de la mesure $Q$ (Corollaire 2.8) :} On utilise cette densité $Z$ pour définir une nouvelle mesure de probabilité $Q$, équivalente à $P$, sous laquelle tous les gains de $K$ ont une espérance nulle.
+    \item \textbf{Propriété de Martingale (Lemme 2.9) :} On montre enfin que si tous les gains atteignables ont une espérance nulle sous $Q$, alors le processus de prix $S$ est une $Q$-martingale.
+\end{enumerate}
+\end{tcolorbox}
+
+Les sections suivantes détaillent chacune de ces étapes.
+
+\section{Lien entre absence d'arbitrage et l'ensemble $\Delta$}
+
+\begin{lemme}
+\begin{equation}
+NA \Longleftrightarrow K \cap \Delta = \varnothing.
+\end{equation}
+\end{lemme}
+
+\begin{proof}
+On sait que :
+\[
+NA \Longleftrightarrow K \cap L_+^0 = \{0\}.
+\]
+On doit donc montrer que $K \cap L_+^0 = \{0\}$ équivaut à $K \cap \Delta = \varnothing$.
+
+\medskip
+\noindent
+($\Rightarrow$)  
+Si $K \cap L_+^0 = \{0\}$, alors nécessairement $K \cap \Delta = \varnothing$.
+
+\medskip
+\noindent
+($\Leftarrow$)  
+Par contraposition, supposons qu'il existe $g \in K \cap L_+^0$ avec $g \neq 0$.  
+On définit alors :
+\[
+Y = \frac{g}{\mathbb{E}_P[g]}.
+\]
+On a bien $\mathbb{E}_P[Y] = 1$ et $Y \ge 0$, donc $Y \in \Delta$.  
+Comme $Y \in K$ également (car $K$ est un espace vectoriel et $Y$ est un element de $K$ multiplié par un scalaire)  , cela contredit $K \cap \Delta = \varnothing$.  
+Ainsi, les deux conditions sont équivalentes.
+\end{proof}
+
+\section{Espaces vectoriels et fonctionnelles linéaires continues}
+
+\paragraph{Notations.}
+Si $E$ et $F$ sont des espaces vectoriels, on note :
+\[
+\mathcal{L}_c(E,F)
+\]
+l'ensemble des applications linéaires continues de $E$ dans $F$.
+
+\medskip
+\noindent
+On rappelle que pour tout espace vectoriel $E$, 
+\[
+\dim(E) = \dim(\ker(\Phi)) + \operatorname{rang}(\Phi).
+\]
+Ainsi, si $\Phi \in \mathcal{L}_c(E,F)$ est non nulle, alors $\operatorname{rang}(\Phi)=1$, et par conséquent :
+\[
+\dim(\ker(\Phi)) = \dim(E) - 1.
+\]
+Le noyau de $\Phi$ est donc un \textbf{hyperplan} de $E$.
+
+\medskip
+\noindent
+Dans notre cadre, si $E = L^0(\Omega, \mathcal{J}, P)$ et $F = \mathbb{R}$, alors $E \simeq \mathbb{R}^{|\Omega|}$ (puisque $\Omega$ est fini).  
+Tout élément $\Phi \in \mathcal{L}_c(E,F)$ peut s'exprimer à l'aide des valeurs prises sur les fonctions indicatrices.
+
+Pour tout $X \in L^0(\Omega, \mathcal{J}, P)$, on a :
+\[
+X(\omega) = \sum_{\omega' \in \Omega} X(\omega') \mathbf{1}_{\{\omega'\}}(\omega),
+\qquad \text{donc} \qquad
+X = \sum_{\omega' \in \Omega} X(\omega') \mathbf{1}_{\{\omega'\}}.
+\]
+Ainsi, pour toute fonctionnelle linéaire continue $\Phi$, on peut écrire :
+\[
+\Phi(X) = \sum_{\omega' \in \Omega} X(\omega') \, \Phi(\mathbf{1}_{\{\omega'\}}).
+\]
+
+En particulier, si l'on écrit :
+\[
+Z(\omega) = \frac{\Phi(\mathbf{1}_{\{\omega\}})}{P(\omega)},
+\]
+alors
+\[
+\Phi(X) = \sum_{\omega' \in \Omega} X(\omega') \frac{\Phi(\mathbf{1}_{\{\omega'\}})}{P(\omega')} P(\omega')
+= \mathbb{E}_P[X Z].
+\]
+Ainsi, toute fonctionnelle linéaire continue sur $L^0$ peut être représentée comme une \textbf{espérance pondérée}.
+
+
+\section{Lemme de séparation}
+
+\begin{theoreme}[Théorème de séparation]
+Dans un espace de Banach, si $A$ et $B$ sont deux ensembles convexes, fermés et disjoints, l'un d'eux étant compact,  
+alors il existe $\Phi \in \mathcal{L}_c(\text{Banach}, \mathbb{R})$ et $\alpha \in \mathbb{R}$ tels que :
+\[
+\Phi(a) < \alpha,\ \forall a \in A, \qquad \Phi(b) > \alpha,\ \forall b \in B.
+\]
+Dans notre cas, on applique ce théorème avec $A = K$ et $B = \Delta$.
+\end{theoreme}
+
+\begin{lemme}[Lemme de séparation] \label{lem:6}
+Si $NA$ est vérifié, alors il existe $\Phi \in \mathcal{L}_c(L^0(\Omega, \mathcal{J}, P), \mathbb{R})$ et $\alpha \in \mathbb{R}$ tels que :
+\begin{equation}
+\forall k \in K,\ \Phi(k) < \alpha, \qquad \forall y \in \Delta,\ \Phi(y) > \alpha.
+\end{equation}
+\end{lemme}
+
+\begin{remarque}[Remarques clé]
+\item C'est le théorème de séparation car on peut séparer A et B avec un Hyperplan affine
+\item Comme $K$ est un sous-espace vectoriel, si $\mathbb{E}_P[Zk] \neq 0$ pour un $k \in K$,  
+alors pour $t \to \pm\infty$, on aurait $tk \in K$ et :
+\[
+\mathbb{E}_P[Z(tk)] = t \, \mathbb{E}_P[Zk],
+\]
+ce qui violerait la borne stricte $\Phi(k) < \alpha$.  
+Ainsi, nécessairement :
+\[
+\mathbb{E}_P[Zk] = 0,\quad \forall k \in K.
+\]
+\end{remarque}
+
+
+\begin{lemme}\label{lem:7}
+Sous l'hypothèse de Non-Arbitrage (NA), il existe
+\[
+ Z\in L^0(\Omega,\mathcal{J},P)\simeq \RR^{|\Omega|}
+\]
+tel que
+\begin{equation}
+\forall k\in K,\quad \E_P[Zk]=0
+\qquad\text{et}\qquad
+\forall \omega\in\Omega,\ Z(\omega)>0 .
+\end{equation}
+\end{lemme}
+
+\begin{proof}[Preuve du lemme]
+En utilisant le Lemme  et la remarque précédente, il existe
+\[
+ Z\in L^0(\Omega,\mathcal{J},P)\ \ (\text{isomorphe à } \RR^{|\Omega|})
+ \qquad\text{et}\qquad
+ \alpha\in\RR
+\]
+tels que
+\[
+\forall k\in K,\quad \E_P[Zk]<\alpha
+\qquad\text{et}\qquad
+\forall Y\in\Delta,\ \E_P[YZ]>\alpha .
+\]
+En prenant $k=0$ on déduit $\alpha>0$.
+
+Définissons alors la fonctionnelle linéaire
+\[
+\varphi:K\longrightarrow\RR,\qquad
+k\longmapsto \E_P[Zk] .
+\]
+C'est une application linéaire définie sur l'espace vectoriel $K$ et elle est bornée.
+Par la séparation, on a forcément $\varphi\equiv 0$, i.e.
+\[
+\forall k\in K,\qquad \E_P[Zk]=0.
+\]
+
+Enfin, pour $\omega_0\in\Omega$, on pose
+\[
+Y=\frac{\mathbbm{1}_{\{\omega_0\}}}{P(\omega_0)}\in\Delta.
+\]
+Alors
+\[
+\E_P[YZ]>\alpha>0
+\qquad\Longrightarrow\qquad
+Z(\omega_0)=\E_P[YZ]>0 .
+\]
+Comme $\omega_0$ est arbitraire, on obtient $Z(\omega)>0$ pour tout $\omega\in\Omega$.
+\end{proof}
+
+\begin{corollaire}\label{cor:Q}
+NA $\Rightarrow$ Il existe une probabilité $Q\sim P$ telle que
+\[
+\forall k\in K,\qquad \E_Q[k]=0 .
+\]
+\end{corollaire}
+
+\begin{proof}[Preuve du corollaire \ref{cor:Q}]
+Soit $Z$ donné par le Lemme 7 et posons
+\[
+\widetilde Z=\frac{Z}{\E_P[Z]},
+\qquad
+Q(\omega)=\widetilde Z(\omega)\,P(\omega).
+\]
+Comme $Z\ge0$ et $\E_P[\widetilde Z]=1$, $Q$ est une probabilité et $Q\sim P$.
+De plus, pour tout $k\in K$,
+\[
+\E_Q[k]=\E_P[\widetilde Z\,k]
+=\frac{1}{\E_P[Z]}\,\E_P[Zk]=0 .
+\]
+\end{proof}
+
+\begin{lemme}\label{lem:8}
+NA $\Rightarrow\ \mathcal{M}^e(S)\neq\varnothing$. 
+\end{lemme}
+
+\begin{proof}[Preuve détaillée du lemme \ref{lem:8}]
+Soit $Q$ la mesure de probabilité dont l'existence est garantie par le Corollaire \ref{cor:Q}. Cette mesure satisfait $\E_Q[k]=0$ pour tout $k \in K$. Nous allons montrer que sous cette mesure, le processus de prix actuel $(S_t)$ est une martingale.
+
+\begin{enumerate}
+    \item \textbf{Objectif :} Nous devons montrer que pour tout actif $j \in \{1,\dots,d\}$ et tout instant $t \in \{0,\dots,T-1\}$, l'espérance conditionnelle des incréments de prix est nulle :
+    \[
+    \E_Q[S_{t+1}^j - S_t^j \mid \mathcal{J}_t] = 0.
+    \]
+    
+    \item \textbf{Reformulation :} Par définition de l'espérance conditionnelle, cela revient à montrer que pour tout événement $A \in \mathcal{J}_t$ (l'information disponible en $t$), l'espérance suivante est nulle :
+    \[
+    \E_Q[\mathbbm{1}_A (S_{t+1}^j - S_t^j)] = 0.
+    \]
+    
+    \item \textbf{Construction de la Stratégie de Test :} Pour prouver ce point, nous construisons une stratégie financière $H$ ad-hoc qui "parie" sur cet actif sur cet intervalle de temps si l'événement $A$ se produit. Définissons le processus prévisible $H = (H_u)$ par :
+    \[
+    H_u^k = 
+    \begin{cases} 
+    \mathbbm{1}_A & \text{si } k=j \text{ et } u=t, \\
+    0 & \text{sinon.}
+    \end{cases}
+    \]
+    Cette stratégie consiste à détenir une unité de l'actif $j$ entre $t$ et $t+1$ si et seulement si $A$ est réalisé. Elle est bien $\mathcal{J}_u$-mesurable pour tout $u$ (car $A \in \mathcal{J}_t$ donc $H_t$ est $\mathcal{J}_t$-mesurable).
+    
+    \item \textbf{Lien avec l'Espace $K$ :} Le gain final généré par cette stratégie (partant d'un capital nul) est :
+    \[
+    (H \cdot S)_T = \sum_{u=0}^{T-1} \langle H_u, S_{u+1} - S_u \rangle = \langle H_t, S_{t+1} - S_t \rangle = \mathbbm{1}_A (S_{t+1}^j - S_t^j).
+    \]
+    Par définition, ce gain appartient à l'espace $K$ des gains atteignables à coût nul. Donc, $\mathbbm{1}_A (S_{t+1}^j - S_t^j) \in K$.
+    
+    \item \textbf{Conclusion :} D'après le Corollaire \ref{cor:Q}, nous savons que $\E_Q[k] = 0$ pour tout $k \in K$. En appliquant ceci à notre gain spécifique, nous obtenons :
+    \[
+    \E_Q[\mathbbm{1}_A (S_{t+1}^j - S_t^j)] = 0.
+    \]
+    Ceci étant vrai pour tout $A \in \mathcal{J}_t$, tout $t$ et tout $j$, nous avons démontré que $(S_t)$ est une $Q$-martingale. Par conséquent, $Q \in \mathcal{M}^e(S)$, et l'ensemble des mesures martingales équivalentes n'est pas vide.
+\end{enumerate}
+\end{proof}
+
+\begin{lemme}\label{lem:9}
+Si $Q\in\mathcal{M}^e(S)$, alors pour toute stratégie $H\in\mathcal{H}^d$,
+le processus $\big((H\cdot S)_t\big)_{t=0,\dots,T}$ est une martingale sous $Q$.
+\end{lemme}
+
+\begin{proof}[Preuve du lemme \ref{lem:9}]
+On sait que
+\[
+(H\cdot S)_{t+1}=(H\cdot S)_t+\big\langle H_t,\,S_{t+1}-S_t\big\rangle .
+\]
+En prenant l'espérance conditionnelle par rapport à $\mathcal{J}_t$,
+\[
+\E_Q\!\big[(H\cdot S)_{t+1}\mid\mathcal{J}_t\big]
+=(H\cdot S)_t+\Big\langle H_t,\ \E_Q\!\big[S_{t+1}-S_t\mid\mathcal{J}_t\big]\Big\rangle .
+\]
+Sous $Q$, $(S_t)$ est une martingale, donc $\E_Q[S_{t+1}-S_t\mid\mathcal{J}_t]=0$ et ainsi
+\[
+\E_Q\!\big[(H\cdot S)_{t+1}\mid\mathcal{J}_t\big]=(H\cdot S)_t .
+\]
+\end{proof}
+
+\begin{theoreme}[Théorème fondamental de l'arbitrage — «~Thm 1~»]
+\begin{equation}
+NA\ \Longleftrightarrow\ \mathcal{M}^e(S)\neq\varnothing .
+\end{equation}
+\end{theoreme}
+
+\begin{tcolorbox}[title=Intuition : Le Sens Économique du FTAP, colback=blue!5!white, colframe=blue!50!black]
+Le Théorème Fondamental de l'Arbitrage établit un pont entre une condition économique (l'absence d'arbitrage) et un concept mathématique (l'existence d'une probabilité risque-neutre). Mais quelle est l'intuition profonde ?
+
+\begin{itemize}
+    \item \textbf{Un Monde sans Rendement Attendu :} Sous une mesure risque-neutre $Q$, le rendement espéré de tous les actifs risqués, une fois actualisés, est exactement égal au rendement de l'actif sans risque (ici 0 car actualisé). En d'autres termes, leur "sur-rendement" espéré est nul.
+    \item \textbf{Aucune Stratégie ne peut Gagner en Moyenne :} Une stratégie d'investissement est une combinaison dynamique de ces actifs. Si chaque composant de base a un rendement espéré nul (par rapport à l'actif sans risque), alors aucune combinaison de ces composants ne peut avoir un rendement espéré strictement positif si elle part d'un capital initial nul.
+    \item \textbf{L'Impossibilité de la "Machine à Argent" :} Une opportunité d'arbitrage est précisément une stratégie qui part de zéro, ne peut pas perdre, et a une chance de gagner. L'existence d'une mesure $Q$ élimine cette possibilité en garantissant que toute stratégie partant de zéro a une espérance de gain nulle. Elle transforme un marché viable en un "jeu équitable" du point de vue des rendements espérés.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{proof}
+\emph{$\Rightarrow$} : donné par les Lemm(es) \ref{lem:8} et \ref{lem:7} (via le Corollaire \ref{cor:Q}).
+
+\smallskip
+\noindent
+(\emph{$\Leftarrow$}) :  $\mathcal{M}^e(S) \neq \varnothing \implies NA$.
+
+\smallskip
+Supposons que $\mathcal{M}^e(S) \neq \varnothing$ et soit $Q \in \mathcal{M}^e(S)$ une mesure de martingale équivalente.
+Nous allons montrer que la condition $K \cap L_+^0 = \{0\}$ est satisfaite, ce qui équivaut à $NA$.
+
+Soit $g \in K \cap L_+^0$.
+\begin{enumerate}
+    \item Par définition de $K$, il existe une stratégie auto-financée $H$ telle que $V_0 = 0$ et $V_T = (H \cdot S)_T = g$.
+    \item Puisque $Q \in \mathcal{M}^e(S)$, le processus de prix $S$ est une $Q$-martingale. D'après le Lemme \ref{lem:9}, le processus de valeur $(H \cdot S)_t$ est également une $Q$-martingale (car $H$ est prévisible et borné dans un espace fini).
+    \item La propriété de martingale implique que l'espérance du gain final est égale à la valeur initiale :
+    \[
+    \E_Q[g] = \E_Q[V_T] = V_0 = 0.
+    \]
+    \item Par hypothèse, $g \in L_+^0$, c'est-à-dire $g \ge 0$ $P$-p.s.
+    Comme $Q$ est équivalente à $P$ ($Q \sim P$), l'ensemble des événements de mesure nulle est identique pour les deux mesures. Donc, $g \ge 0$ $Q$-p.s.
+    \item Nous avons une variable aléatoire $g$ telle que $g \ge 0$ $Q$-p.s. et $\E_Q[g] = 0$.
+    Or, l'intégrale d'une fonction positive n'est nulle que si la fonction est nulle presque partout.
+    On en déduit donc que $g = 0$ $Q$-p.s.
+    \item Par équivalence des mesures, $g = 0$ $P$-p.s.
+\end{enumerate}
+Ainsi, le seul élément de $K \cap L_+^0$ est l'élément nul. L'intersection est réduite à $\{0\}$, ce qui prouve l'absence d'arbitrage ($NA$).
+\end{proof}

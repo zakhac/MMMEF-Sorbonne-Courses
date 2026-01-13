@@ -1,0 +1,176 @@
+\chapter{Équilibre de Nash (Stratégies Pures)}
+
+Ce chapitre introduit la notion de prédiction la plus célèbre et la plus utilisée en théorie des jeux : l'équilibre de Nash.
+
+\section{Exemple Introductif et Intuition}
+Considérons un jeu à 2 joueurs avec $X_1 = X_2 = [0,1]$. Les fonctions de gain sont quadratiques (concaves) :
+\begin{itemize}
+    \item $u_1(x_1, x_2) = -(x_1 - x_2)^2$
+    \item $u_2(x_1, x_2) = -(1 - x_1 - x_2)^2$
+\end{itemize}
+
+\textbf{Analyse :}
+\begin{enumerate}
+    \item Pour le joueur 1, maximiser $u_1$ revient à minimiser la distance entre $x_1$ et $x_2$. Sa meilleure réponse est donc $x_1 = x_2$.
+    \item Pour le joueur 2, maximiser $u_2$ revient à choisir $x_2 = 1 - x_1$.
+    \item L'équilibre est atteint quand les deux stratégies sont mutuellement optimales : $x_1 = x_2 = \frac{1}{2}$.
+\end{enumerate}
+
+\begin{remarque}[Contraste Fondamental : Nash vs Dominance]
+Le profil $(\frac{1}{2}, \frac{1}{2})$ est un équilibre de Nash, mais ce n'est \textbf{PAS} un équilibre en stratégies dominantes.
+\begin{proof}
+Pour le joueur 1, l'action $\frac{1}{2}$ n'est pas dominante. En effet :
+\begin{itemize}
+    \item Si P2 joue $x_2 = \frac{1}{2}$, alors $u_1(\frac{1}{2}, \frac{1}{2}) = 0$ (maximum possible).
+    \item Mais si P2 joue $x_2 = 0$, alors $u_1(\frac{1}{2}, 0) = -(\frac{1}{2})^2 = -0.25$.
+    \item Or, si P1 avait joué $0$ contre $0$, il aurait eu $u_1(0,0) = 0$.
+    \item Donc jouer $\frac{1}{2}$ n'est pas toujours meilleur que jouer $0$.
+\end{itemize}
+Cela illustre que l'équilibre de Nash est une condition de stabilité plus faible que la dominance.
+\end{proof}
+\end{remarque}
+
+\section{Définitions Formelles}
+
+\begin{definition}[Équilibre de Nash]
+Considérons un jeu sous forme normale $(N, (X_i)_{i \in N}, (u_i)_{i \in N})$. Un profil d'actions $\bar{x} = (\bar{x}_i)_{i \in N}$ est un \textbf{équilibre de Nash} si pour chaque joueur $i$, aucune déviation unilatérale n'est profitable :
+$$\forall i \in N, \forall d_i \in X_i, \quad u_i(\bar{x}_i, \bar{x}_{-i}) \ge u_i(d_i, \bar{x}_{-i})$$
+\end{definition}
+
+\section{Correspondance de Meilleure Réponse (Best-reply)}
+
+\begin{definition}[Correspondance de Meilleure Réponse]
+La meilleure réponse du joueur $i$ n'est pas nécessairement une fonction unique, c'est une \textbf{correspondance} (une fonction à valeurs dans les ensembles), notée $B_i : X_{-i} \rightrightarrows X_i$ :
+$$B_i(x_{-i}) := \{ x_i \in X_i : \forall d_i \in X_i, u_i(x_i, x_{-i}) \ge u_i(d_i, x_{-i}) \}$$
+\end{definition}
+
+\begin{definition}[Correspondance Globale]
+On définit $B : X \rightrightarrows X$ par le produit cartésien des meilleures réponses individuelles :
+$$B(x) = \prod_{i \in N} B_i(x_{-i})$$
+\end{definition}
+
+\begin{theoreme}[Caractérisation par Point Fixe]
+Un profil d'actions $x \in X$ est un équilibre de Nash si et seulement si :
+\begin{enumerate}
+    \item $x$ est un \textbf{point fixe} de la correspondance $B$, c'est-à-dire $x \in B(x)$.
+    \item Géométriquement, $x$ appartient à l'\textbf{intersection des graphes} des meilleures réponses des joueurs.
+\end{enumerate}
+\end{theoreme}
+Ce lien avec les points fixes est crucial car il permettra d'utiliser des théorèmes topologiques puissants (Brouwer, Kakutani) pour prouver l'existence d'équilibres.
+
+\section{Relation avec la Dominance}
+
+\begin{proposition}[Propriété d'exclusion]
+Si une action $x_i$ est strictement dominée, alors elle n'est \textbf{jamais} une meilleure réponse (elle n'appartient jamais à $B_i(x_{-i})$ pour aucun $x_{-i}$).
+\end{proposition}
+\textit{Note :} La réciproque n'est pas toujours vraie (sauf dans les jeux à 2 joueurs à somme nulle finis, par exemple).
+
+\begin{proposition}[Stabilité par élimination]
+Soit $G'$ le jeu obtenu en supprimant une action strictement dominée d'un joueur. Alors l'ensemble des équilibres de Nash de $G$ est identique à celui de $G'$.
+\end{proposition}
+Cette propriété justifie l'utilisation de l'IESDA comme étape préliminaire pour simplifier un jeu avant de chercher ses équilibres de Nash.
+
+\subsection{Exemple de résolution rigoureuse (IESDA)}
+\begin{center}
+\begin{tabular}{c|c|c|c}
+P1 \textbackslash P2 & A & B & C \\ \hline
+a & (2,2) & (1,1) & (1,0) \\ \hline
+b & (0,2) & (0,3) & (1,1) \\ \hline
+c & (0,1) & (-1,-1) & (2,0)
+\end{tabular}
+\end{center}
+
+\textbf{Rédaction attendue :}
+\begin{enumerate}
+    \item \textbf{Étape 1 :} Pour P2, l'action A domine strictement C (car $2>0, 3>1, 1>0$). On élimine la colonne C.
+    \item \textbf{Étape 2 :} Dans le jeu réduit, pour P1, l'action $a$ domine strictement $b$ (car $2>0, 1>0$) et $c$ (car $2>0, 1>-1$). On élimine les lignes $b$ et $c$.
+    \item \textbf{Étape 3 :} Il ne reste que la ligne $a$. Pour P2, face à $a$, A rapporte 2 et B rapporte 1. A domine donc strictement B.
+\end{enumerate}
+\textbf{Conclusion :} L'unique équilibre résiduel est $(a, A)$. C'est l'unique équilibre de Nash.
+
+\section{Exercices et Méthodes de Résolution}
+
+\subsection{Méthode pour les Jeux Continus}
+Si les fonctions de gain sont différentiables et concaves par rapport à la variable du joueur :
+\begin{enumerate}
+    \item Calculer la condition du premier ordre (FOC) : $\frac{\partial u_i}{\partial x_i} = 0$.
+    \item Isoler $x_i$ pour trouver la fonction de meilleure réponse $x_i = BR_i(x_{-i})$.
+    \item Résoudre le système d'équations formé par toutes les meilleures réponses pour trouver le point fixe.
+\end{enumerate}
+
+\subsection{Exercices d'Application}
+
+\begin{exemple}[Exam 2023]
+\begin{itemize}
+    \item A) $u_1(x,y) = xy - x^2 + 2$, $u_2(x,y) = 2xy - y^2$ sur $[0,1]^2$. Calculer les équilibres par la méthode des FOC.
+    \item B) $u_i(x_1, x_2) = x_i$ si $x_1+x_2 \le 1$ et $0$ sinon. Calculer l'ensemble de Nash $N$ et les points Pareto optimaux.
+\end{itemize}
+\textbf{Correction :}
+\begin{itemize}
+    \item \textbf{A)} FOC Joueur 1 : $\frac{\partial u_1}{\partial x} = y - 2x = 0 \implies x = y/2$.
+    FOC Joueur 2 : $\frac{\partial u_2}{\partial y} = 2x - 2y = 0 \implies y = x$.
+    Système : $x = x/2 \implies x=0, y=0$. Équilibre unique $(0,0)$.
+    Hessiennes : $\partial^2 u_1 / \partial x^2 = -2 < 0$ (concave), idem J2. C'est bien un max.
+    
+    \item \textbf{B)} 
+    - Si $x_1 + x_2 < 1$, chaque joueur veut augmenter son $x_i$ (gain croissant) jusqu'à saturer la contrainte. Pas stable.
+    - Si $x_1 + x_2 > 1$, gain 0. Ils ont intérêt à réduire pour passer sous 1.
+    - Équilibre : Tout couple $(x_1, x_2)$ tel que $x_1 + x_2 = 1$ et $x_i \ge 0$. Si un joueur dévie à la hausse, gain 0. Si à la baisse, gain réduit.
+    - Pareto : Tout point de la frontière $x_1+x_2=1$ est Pareto-optimal (somme 1).
+\end{itemize}
+\end{exemple}
+
+
+\begin{exemple}[Exam 2023 : Nash et Meilleures Réponses]
+\textbf{Question :}
+Considérons un jeu continu. Déterminez la meilleure réponse du Joueur 1 à $y$ et les équilibres de Nash du jeu selon les différents paramètres.
+
+\textbf{Correction :}
+\begin{itemize}
+    \item La meilleure réponse du Joueur 1 à $y$ est la solution de $\sup_{x \in \mathbb{R}} u_1(x, y)$.
+    \item \textbf{Cas 1 :} S'il n'y a pas de solution car $\lim_{x \to \infty} u_1(x, y) = \infty$, alors il n'y a pas d'équilibre de Nash.
+    \item \textbf{Cas 2 :} Si la fonction est concave, la solution satisfait la condition nécessaire de premier ordre (FOC). Par exemple, pour le Joueur 2, $y$ doit satisfaire $4y = 7/2$ dans une configuration donnée.
+    \item Les correspondances de meilleure réponse ($BR_1$ et $BR_2$) sont analysées sur $[0, 1]$. L'équilibre de Nash se trouve à l'intersection de ces correspondances.
+\end{itemize}
+
+
+\end{exemple}
+
+\begin{exemple}[Rent-seeking / Tullock]
+$n$ lobbyistes choisissent l'effort $x_i \ge 0$. Coût $cx_i$. Gain si gagne : $V$. Payoff : $\frac{x_i}{\sum x_j}V - cx_i$.
+\textbf{Indice :} Cherchez un \textbf{équilibre symétrique} où $x_i = x^*$ pour tout $i$, ce qui simplifie grandement la résolution de la FOC.
+
+\paragraph{Correction :}
+Chaque joueur $i$ maximise $u_i(x_1, \dots, x_n) = \frac{x_i}{x_i + \sum_{j \ne i} x_j} V - c x_i$.
+CPO : $\frac{\partial u_i}{\partial x_i} = \frac{1 \cdot (\sum x_j) - x_i \cdot 0}{(\sum x_j)^2} V - c = 0$ ? Non, dérivée du quotient.
+$\frac{\partial u_i}{\partial x_i} = V \frac{1 \cdot (x_i + X_{-i}) - x_i \cdot 1}{(x_i + X_{-i})^2} - c = V \frac{X_{-i}}{(\sum x_j)^2} - c = 0$.
+À l'équilibre symétrique $x_i = x^*$. $\sum x_j = n x^*$. $X_{-i} = (n-1)x^*$.
+$V \frac{(n-1)x^*}{(n x^*)^2} = c \implies V \frac{n-1}{n^2 x^*} = c \implies x^* = \frac{n-1}{n^2} \frac{V}{c}$.
+\end{exemple}
+
+\begin{exemple}[Exam 2023 : Équilibre de Nash Symétrique et Optimalité]
+\textbf{Question :}
+Soit un jeu symétrique. Trouvez l'équilibre de Nash symétrique et déterminez s'il est socialement optimal.
+
+\textbf{Correction :}
+\begin{itemize}
+    \item Dans un équilibre symétrique, chaque Joueur $i$ maximise son gain $u_i$. On cherche $p$ tel que la dérivée de la fonction de gain soit nulle ($f'(p) = 0$).
+    \item Dans cet exercice, on trouve un équilibre symétrique $\bar{p} = 1/4$ (ou des valeurs selon $n$).
+    \item On compare ensuite le gain à l'équilibre avec le maximum social (Max $\sum u_i$).
+    \item \textbf{Conclusion :} L'équilibre de Nash est ici suboptimal d'un point de vue social.
+\end{itemize}
+
+
+\end{exemple}
+
+\begin{exemple}[Public Good]
+$n$ habitants. Richesse $W$. Contribution $x_i$. Payoff : $u_i(x) = W - x_i + \sqrt{\sum_{j=1}^n x_j}$. Montrez que la contribution individuelle à l'équilibre diminue avec $n$.
+
+\paragraph{Correction :}
+On cherche un équilibre symétrique $x_i = x^*$.
+Condition du premier ordre (le joueur $i$ considère les $x_j$ des autres comme fixés, soit $S_{-i} = \sum_{j \ne i} x_j$) :
+$$ \frac{\partial u_i}{\partial x_i} = -1 + \frac{1}{2\sqrt{x_i + S_{-i}}} = 0 $$
+À l'équilibre symétrique, $S_{-i} = (n-1)x^*$ et $x_i = x^*$.
+$$ 1 = \frac{1}{2\sqrt{n x^*}} \implies 2\sqrt{n x^*} = 1 \implies 4n x^* = 1 \implies x^* = \frac{1}{4n} $$
+La contribution individuelle $x^*(n) = \frac{1}{4n}$ est bien une fonction décroissante de $n$ (phénomène de passager clandestin).
+\end{exemple}

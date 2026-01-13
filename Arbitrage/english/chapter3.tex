@@ -1,0 +1,382 @@
+% ========================================
+% Chapter 3: Complete Markets
+% ========================================
+\chapter{Complete Markets}
+
+\begin{definition}
+The market is \emph{complete} if every bounded contingent claim is replicable, that is:
+\begin{equation}
+\forall \hat U \in L^\infty(\Omega,\mathcal{J}_T,P),\ \exists a\in\RR,\ \exists H\in\mathcal{H}^d
+\text{ such that } U = a + (H\cdot S)_T.
+\end{equation}
+\end{definition}
+
+\begin{remark}
+Under (NA), if a claim $\hat U$ is replicable at price $a$, then $a$ and the trajectory $(H\cdot S)_t$ are unique, and:
+\[
+\forall Q\in\mathcal{M}^e(S),\quad
+a = \E_Q[U], \qquad a + (H\cdot S)_t = \E_Q[U \mid \mathcal{J}_t].
+\]
+\end{remark}
+
+\begin{proof}[Proof of the remark]
+\textbf{Uniqueness of price $a$.}  
+Suppose that $U=a_1+(H^1\cdot S)_T=a_2+(H^2\cdot S)_T$ with $a_1>a_2$.  
+Then
+\[
+\big((H^1 - H^2)\cdot S\big)_T = a_2 - a_1 < 0,
+\]
+and the reverse strategy generates a positive certain gain — an arbitrage opportunity, contradiction.  
+Therefore $a_1=a_2$.
+
+\smallskip
+\textbf{Uniqueness of strategy.}  
+Suppose $U=a+(H^1\cdot S)_T=a+(H^2\cdot S)_T$ but $(H^1\cdot S)\neq(H^2\cdot S)$.  
+There then exists $t$ and a set $A\in\mathcal{J}_t$ such that
+\[
+A = \{(H^1\cdot S)_t > (H^2\cdot S)_t\},\quad P(A)>0.
+\]
+Define the strategy $H = (H^1-H^2)\indic_A \indic_{[t,T]}$.  
+Then $(H\cdot S)_T = \indic_A((H^1-H^2)\cdot S)_T - \indic_A((H^1-H^2)\cdot S)_t \ge 0$ with strictly positive probability, hence arbitrage. Contradiction.
+
+\smallskip
+\textbf{Expectation relations under $Q$.}  
+According to the previous lemma, if $Q\in\mathcal{M}^e(S)$, then $(H\cdot S)_t$ is a martingale under $Q$, hence:
+\[
+a = \E_Q[U],\qquad a + (H\cdot S)_t = \E_Q[U\mid\mathcal{J}_t].
+\]
+\end{proof}
+
+\begin{theorem}[Characterization of Complete Markets]
+\label{thm:complet_singleton}
+Under (NA), the market is complete if and only if the set of equivalent martingale measures is a singleton:
+\begin{equation}
+\text{Complete} \ \Longleftrightarrow\ \mathcal{M}^e(S)=\{Q\}.
+\end{equation}
+\end{theorem}
+
+\begin{tcolorbox}[title=Summary: Completeness and Uniqueness, colback=purple!5!white, colframe=purple!50!black]
+This result is central:
+\begin{itemize}
+    \item \textbf{Incomplete Market} ($\mathcal{M}^e(S)$ infinite): There exists intrinsic unhedgeable risk. The price of an option is not unique (price interval).
+    \item \textbf{Complete Market} ($\mathcal{M}^e(S) = \{Q\}$): Every risk can be perfectly hedged. The price is unique and given by the expectation under the unique measure $Q$.
+\end{itemize}
+In the binomial model (Chap. 1 and 5), the market is complete.
+\end{tcolorbox}
+
+\begin{lemma}\label{lem:10}
+\label{lem:UinK_iff_EQ0}
+Let $U\in L^\infty(\Omega,\mathcal{J}_T,P)$. Under (NA),
+\begin{equation}
+U\in K \quad \Longleftrightarrow \quad \forall Q\in\mathcal{M}^e(S),\ \E_Q[U]=0.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+This lemma is a powerful tool that characterizes the space $K$ of attainable gains without initial cost.
+
+\emph{Direction $\Rightarrow$.} If $U\in K$, then $U = (H\cdot S)_T$ for some strategy $H$ with zero initial cost $\hat{V}_0=0$. For all $Q\in\mathcal{M}^e(S)$, the process $((H\cdot S)_t)$ is a $Q$-martingale. Consequently, using the martingale property at $t=0$ and $t=T$:
+\[
+\E_Q[U] = \E_Q[(H\cdot S)_T] = (H\cdot S)_0 = \hat{V}_0 = 0.
+\]
+
+\emph{Direction $\Leftarrow$.} Suppose that $\E_Q[U] = 0$ for all $Q \in \mathcal{M}^e(S)$, but that $U \notin K$.
+We will use a separation argument, similar to the FTAP proof.
+\begin{enumerate}
+    \item The sets $\{U\}$ (which is convex and compact since reduced to a point) and $K$ (which is a vector space, hence convex and closed) are disjoint.
+    \item By the Hahn-Banach separation theorem, there exists a continuous linear form $\lambda$ (identifiable with a random variable since $\Omega$ is finite) such that:
+    \[
+    \langle \lambda, U \rangle > 0 \quad \text{and} \quad \langle \lambda, k \rangle = 0 \quad \forall k \in K.
+    \]
+    The second condition implies $\E_P[\lambda k] = 0$ for all $k \in K$.
+    \item The problem is that $\lambda$ is not necessarily positive everywhere, so it does not directly define a probability measure.
+    \item Let $\tilde{Q} \in \mathcal{M}^e(S)$ (whose existence is guaranteed under NA). Since $\Omega$ is finite and $\tilde{Q}(\omega)>0$, we can choose $\varepsilon > 0$ small enough so that the random variable $Z' = \frac{d\tilde{Q}}{dP} + \varepsilon \lambda$ is strictly positive everywhere:
+    \[
+    \tilde{Q}(\omega) + \varepsilon \lambda(\omega) P(\omega) > 0 \quad \forall \omega.
+    \]
+    \item We can then define a new probability $\bar{Q}$ by its density (up to normalization) proportional to $Z'$.
+    \item Let us verify that $\bar{Q}$ is a martingale measure. For all $k \in K$:
+    \[
+    \E_{\bar{Q}}[k] \propto \E_P[k \cdot (\frac{d\tilde{Q}}{dP} + \varepsilon \lambda)] = \E_{\tilde{Q}}[k] + \varepsilon \E_P[k \lambda] = 0 + 0 = 0.
+    \]
+    Therefore $\bar{Q} \in \mathcal{M}^e(S)$.
+    \item Now compute the expectation of $U$ under $\bar{Q}$:
+    \[
+    \E_{\bar{Q}}[U] \propto \E_{\tilde{Q}}[U] + \varepsilon \E_P[U \lambda].
+    \]
+    Now, $\E_{\tilde{Q}}[U]=0$ by hypothesis (since $\tilde{Q} \in \mathcal{M}^e(S)$) and $\E_P[U \lambda] = \langle \lambda, U \rangle > 0$ by separation.
+    Therefore $\E_{\bar{Q}}[U] > 0$.
+    \item We have constructed a martingale measure $\bar{Q} \in \mathcal{M}^e(S)$ for which $\E_{\bar{Q}}[U] \neq 0$, which contradicts our initial hypothesis. Therefore, $U$ must belong to $K$.
+\end{enumerate}
+\end{proof}
+
+\subsection{The Case of Non-Replicable Assets}
+When the market is incomplete, the set $\mathcal{M}^e(S)$ contains more than one martingale measure. In this case, not all assets are replicable, and their price, if it exists, is no longer unique. The following result precisely formalizes the structure of possible prices.
+
+\begin{proposition}[No-Arbitrage Price Interval]
+Under the no-arbitrage assumption (NA) and for a contingent claim $U$:
+\begin{enumerate}
+    \item[(a)] If $U$ is replicable, then $\bar{\Pi}(U) = \Pi(U)$. The set of no-arbitrage prices for $U$ is the singleton $\{\Pi(U)\}$, where $\Pi(U)$ is the unique value $\E_Q[U]$ valid for all $Q \in \mathcal{M}^e(S)$.
+    \item[(b)] If $U$ is not replicable, then $\bar{\Pi}(U) > \underline{\Pi}(U)$. The set of no-arbitrage prices for $U$ is the open interval $]\underline{\Pi}(U), \bar{\Pi}(U)[$.
+\end{enumerate}
+\end{proposition}
+
+\paragraph*{Intuition: The No-Arbitrage "Bid-Ask Spread"}
+Market incompleteness means that there exists risk that cannot be entirely eliminated by hedging. There is no longer a unique consensus on valuation, but a range of "legitimate" prices. This range can be interpreted as a theoretical bid-ask spread.
+\begin{itemize}
+    \item The upper bound, $\bar{\Pi}(U) = \sup \E_Q[U]$, represents the \textbf{ask price}. It is the minimum cost at which a seller is willing to guarantee delivery of payoff $U$ (via a super-replication strategy), which corresponds to the maximum price the buyer will have to pay.
+    \item The lower bound, $\underline{\Pi}(U) = \inf \E_Q[U]$, represents the \textbf{bid price}. It is the maximum amount a buyer is willing to pay to acquire the claim, which corresponds to the minimum price the seller can hope to receive.
+\end{itemize}
+Each measure $Q$ in $\mathcal{M}^e(S)$ represents a pricing model consistent with absence of arbitrage. The multiplicity of these measures translates directly into a range of possible prices for non-replicable assets.
+
+\begin{proof}[Proof of Theorem~\ref{thm:complet_singleton}]
+This theorem links the economic notion of completeness to the mathematical structure of the set of martingale measures.
+
+\emph{Direction $\Rightarrow$ (Complete $\Rightarrow$ Singleton)}:
+Suppose the market is complete. Let $Q_1$ and $Q_2$ be any two measures in $\mathcal{M}^e(S)$.
+For any event $A \in \mathcal{F}_T$, the contingent claim $U = \mathbf{1}_A$ is bounded.
+Since the market is complete, $U$ is replicable. There therefore exists a price $a$ and a strategy $H$ such that $\mathbf{1}_A = a + (H \cdot S)_T$.
+Taking expectation under $Q_1$ and $Q_2$ (knowing that the expectation of the stochastic part is zero under a martingale measure):
+\begin{itemize}
+    \item $\E_{Q_1}[\mathbf{1}_A] = \E_{Q_1}[a + (H \cdot S)_T] = a + 0 = a$
+    \item $\E_{Q_2}[\mathbf{1}_A] = \E_{Q_2}[a + (H \cdot S)_T] = a + 0 = a$
+\end{itemize}
+We thus have $Q_1(A) = a$ and $Q_2(A) = a$.
+Since $Q_1(A) = Q_2(A)$ for all events $A$, the measures are identical: $Q_1 = Q_2$. The set $\mathcal{M}^e(S)$ can therefore contain only one element.
+
+\smallskip
+\emph{Direction $\Leftarrow$ (Singleton $\Rightarrow$ Complete)}:
+Suppose that $\mathcal{M}^e(S) = \{Q\}$. Let $U$ be any bounded contingent claim. We want to show that it is replicable.
+\begin{enumerate}
+    \item Set $a = \E_Q[U]$. This is the candidate price.
+    \item Consider the "centered" claim $U - a$. For any measure $Q'$ in $\mathcal{M}^e(S)$, we must have $\E_{Q'}[U-a] = 0$.
+    \item Since there is only one measure $Q$, this condition reduces to $\E_Q[U-a] = \E_Q[U] - a = 0$, which is true by definition of $a$.
+    \item According to Lemma \ref{lem:UinK_iff_EQ0}, since $U-a$ has zero expectation under all measures in $\mathcal{M}^e(S)$, we have $U-a \in K$.
+    \item By definition of $K$, there exists a strategy $H$ such that $U-a = (H \cdot S)_T$.
+    \item This is the definition of replicability: $U = a + (H \cdot S)_T$. The claim $U$ is replicable at price $a$. The market is therefore complete.
+\end{enumerate}
+\end{proof}
+
+
+\section{Pricing by Absence of Arbitrage (Kreps, 1981): Static Approach}
+
+Let $U\in L^\infty(\Omega,\mathcal{J}_T,P)$ be a claim (we work with discounted values).  
+We extend the market by adding a synthetic asset $U$: at $t=0$, it can be bought/sold at price $a\in\RR$, and it pays $U$ at $T$ (no intermediate payments).
+
+An extended strategy is written $(\theta,\bar H)$ where $\theta\in\RR$ is the position on asset $U$ and $\bar H\in\mathcal{H}^{d}$ is the strategy on the $d$ risky assets.  
+If $\bar H$ is self-financing, then $(\theta,\bar H)$ is self-financing and
+\begin{equation}
+V_T = V_0 + \theta\,(U-a) + (H\cdot S)_T.
+\end{equation}
+We define
+\begin{equation}
+K_{a,U} := \{\ \theta\,(U-a) + k \ :\ \theta\in\RR,\ k\in K\ \}
+= \RR\,(U-a)+K,
+\end{equation}
+the set of attainable gains at zero initial cost in the extended market.
+
+\begin{definition}
+A real number $a$ is a \emph{no-arbitrage price} for $U$ if the extended market satisfies (NA), i.e.,
+\begin{equation}
+K_{a,U}\cap L_+^0(\Omega,\mathcal{J}_T,P)=\{0\}.
+\end{equation}
+\end{definition}
+
+\begin{remark}
+From the \emph{FTAP} and the characterization $Q\in\mathcal{M}^e(S)\iff \forall k\in K,\ \E_Q[k]=0$, we deduce:
+\[
+a \text{ is no-arbitrage } \ \Longleftrightarrow\ \exists Q\in\mathcal{M}^e(S)\ \text{ such that }\ \E_Q[U-a]=0
+\ \Longleftrightarrow\ \exists Q\in\mathcal{M}^e(S)\ \text{ with } a=\E_Q[U].
+\]
+\end{remark}
+
+\begin{theorem}[Envelope of No-Arbitrage Prices]
+\label{thm:intervalle_prix_NA}
+Under (NA), the set of no-arbitrage prices for $U\in L^\infty$ is the open interval (non-empty and bounded)
+\begin{equation}
+\big(\, \inf_{Q\in\mathcal{M}^e(S)} \E_Q[U]\ ,\ \sup_{Q\in\mathcal{M}^e(S)} \E_Q[U] \,\big),
+\end{equation}
+where the bounds are given by the extreme values of $\E_Q[U]$ as $Q$ ranges over $\mathcal{M}^e(S)$.
+In particular, if the market is complete, this set reduces to the unique value $a=\E_Q[U]$, where $Q$ is the unique equivalent martingale measure.
+\end{theorem}
+
+\begin{proof}[Proof Idea]
+($\subset$) If $a$ is no-arbitrage, there exists $Q\in\mathcal{M}^e(S)$ with $a=\E_Q[U]$ (previous remark).  
+($\supset$) If $a=\E_Q[U]$ for some $Q\in\mathcal{M}^e(S)$, then for all $k'\in K_{a,U}$,
+\[
+\E_Q[k'] = \E_Q[\theta(U-a)+k]= \theta\,\E_Q[U-a]+\E_Q[k]=0,
+\]
+so the extended market satisfies (NA) by FTAP.  
+The lower/upper bound results from compactness of $\mathcal{M}^e(S)$ on finite space.
+\end{proof}
+
+
+
+\begin{remark}\label{rq:UinK_implique_0}
+If $U\in K$, then for any equivalent martingale measure $Q\in\mathcal{M}^e(S)$ we have
+\[
+\E_Q[U]=0.
+\]
+In particular, the set of possible no-arbitrage prices for $U$ is reduced to $\{0\}$.
+\end{remark}
+
+\begin{definition}[No-Arbitrage Bounds]
+For $U\in L^\infty(\Omega,\mathcal{J}_T,P)$, we define
+\begin{equation}
+\bar\Pi(U)=\sup\{\E_Q[U]\ :\ Q\in\mathcal{M}^e(S)\}, \qquad
+\underline{\Pi}(U)=\inf\{\E_Q[U]\ :\ Q\in\mathcal{M}^e(S)\}.
+\end{equation}
+\end{definition}
+
+\begin{lemma}\label{lem:replicabilite_intervalle_prix}
+Under (NA) and for a claim $U\in L^\infty$:
+\begin{enumerate}
+\item[(a)] If $\bar\Pi(U)=\underline{\Pi}(U)$, then $U$ is replicable at the unique price
+\[
+\Pi(U)=\bar\Pi(U)=\underline{\Pi}(U),
+\]
+and the set of no-arbitrage prices is the singleton $\{\Pi(U)\}$.
+\item[(b)] If $\bar\Pi(U)>\underline{\Pi}(U)$, then $U$ is not replicable and
+the set of no-arbitrage prices is the open interval
+\[
+\big(\,\underline{\Pi}(U),\,\bar\Pi(U)\,\big).
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) The set $\{\E_Q[U]:Q\in\mathcal{M}^e(S)\}$ is non-empty (FTAP) and compact (finite space).
+If it reduces to a single point $m$, set $f=U-m$. Then $\E_Q[f]=0$ for all $Q\in\mathcal{M}^e(S)$,
+
+Therefore $U=m+f$ is replicable at price $m=\bar\Pi(U)=\underline{\Pi}(U)$ and this price is unique
+(\emph{cf.} uniqueness remark above).
+
+(b) If $U$ were replicable, there would exist $a$ such that $\E_Q[U]=a$ for all $Q\in\mathcal{M}^e(S)$,
+which would force $\bar\Pi(U)=\underline{\Pi}(U)=a$, contradiction. Therefore $U$ is not replicable.
+
+Moreover, the image of the convex set $\mathcal{M}^e(S)$ by the affine map $Q\mapsto \E_Q[U]$
+is an interval of $\RR$; we already know it is contained in $[\underline{\Pi}(U),\bar\Pi(U)]$,
+and it is not reduced to a point. It remains to see that the extremities are not attained by a no-arbitrage price
+in the \emph{extended} market.
+
+Suppose for example that there exists $Q^\star\in\mathcal{M}^e(S)$ such that
+$\E_{Q^\star}[U]=\bar\Pi(U)$. By compactness, we can find $\tilde Q\in\mathcal{M}^e(S)$
+with $\E_{\tilde Q}[U]<\E_{Q^\star}[U]$. For small $\varepsilon>0$, define
+$Q_\varepsilon \propto Q^\star+\varepsilon(Q^\star-\tilde Q)$; for $\varepsilon$ small enough,
+$Q_\varepsilon\in\mathcal{M}^e(S)$ (same argument as in the proof of EMM existence),
+and
+\[
+\E_{Q_\varepsilon}[U]
+=\frac{\E_{Q^\star}[U]+\varepsilon\big(\E_{Q^\star}[U]-\E_{\tilde Q}[U]\big)}
+      {\sum_\omega \big(Q^\star(\omega)+\varepsilon(Q^\star-\tilde Q)(\omega)\big)}
+>\E_{Q^\star}[U],
+\]
+contradiction with the definition of $\bar\Pi(U)$. An identical argument applies for $\underline{\Pi}(U)$.
+We deduce that the set of no-arbitrage prices is exactly the open interval
+$\big(\underline{\Pi}(U),\bar\Pi(U)\big)$.
+\end{proof}
+
+\section{Dynamic Approach: No-Arbitrage Price Process}
+
+\begin{definition}\label{def:processus_prix_NA}
+A process $(A_t)_{t=0..T}$ is a \emph{no-arbitrage price process} for a claim $U$
+if $A_T=U$ and if the market extended to $(S^1,\dots,S^d,A)$ (still in discounted values)
+satisfies (NA).
+\end{definition}
+
+\begin{lemma}\label{lem:prix_dynamique_EQ}
+If the initial market $(S^1,\dots,S^d)$ satisfies (NA), then $(A_t)$ is a no-arbitrage price process
+for $U$ if and only if there exists $Q\in\mathcal{M}^e(S)$ such that
+\[
+A_t=\E_Q[U\mid \mathcal{J}_t],\qquad t=0,\dots,T.
+\]
+\end{lemma}
+
+\begin{proof}
+This is a direct application of Definition \ref{def:processus_prix_NA} and the FTAP:
+in the extended market, (NA) $\Leftrightarrow$ existence of a $Q$ under which all discounted assets
+(including $A$) are martingales, hence $A_t=\E_Q[A_T\mid\mathcal{J}_t]=\E_Q[U\mid\mathcal{J}_t]$.
+The converse is immediate.
+\end{proof}
+
+\begin{lemma}\label{lem:unicite_processus_si_replicable}
+Suppose (NA) and $U$ is replicable. Then:
+\begin{enumerate}
+\item[(i)] The no-arbitrage price process for $U$ is unique.
+\item[(ii)] For all $Q\in\mathcal{M}^e(S)$, we have $A_t=\E_Q[U\mid\mathcal{J}_t]$.
+\item[(iii)] A process $(H_t)$ is a replication process for $U$ if and only if
+\[
+A_0=\bar\Pi(U)\quad\text{and}\quad A_t=\bar\Pi(U)+(H\cdot S)_t,\ \ t=0,\dots,T.
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+If $U=\bar\Pi(U)+(H\cdot S)_T$ is replicable, then for all $Q\in\mathcal{M}^e(S)$,
+\[
+A_t:=\E_Q[U\mid\mathcal{J}_t]=\bar\Pi(U)+\E_Q[(H\cdot S)_T\mid\mathcal{J}_t]
+=\bar\Pi(U)+(H\cdot S)_t,
+\]
+since $(H\cdot S)$ is a martingale under $Q$. This expression depends neither on the choice
+of $Q$ nor on another process $A$, hence (i) and (ii). Point (iii) is the direct equivalence:
+$A_T=U$ if and only if $A_t=\bar\Pi(U)+(H\cdot S)_t$ for all $t$ (martingale property).
+\end{proof}
+
+\section{Super-Replication and Super-Hedging Bound}
+
+\begin{definition}
+We say that $U$ is \emph{super-replicable} at price $a\in\RR$ if there exists $H\in\mathcal{H}^d$ such that
+\[
+a + (H\cdot S)_T \ge U\ \ \text{$P$-a.s.}
+\]
+We set
+\begin{equation}
+A(U)=\big\{\, a\in\RR\ :\ \exists H\in\mathcal{H}^d,\ a+(H\cdot S)_T\ge U \,\big\},
+\qquad
+\alpha := \inf A(U).
+\end{equation}
+\end{definition}
+
+\begin{theorem}\label{thm:superhedging_equals_upper_envelope}
+Under (NA), we have $A(U)=[\alpha,+\infty)$ and
+\begin{equation}
+\alpha=\bar\Pi(U)=\sup_{Q\in\mathcal{M}^e(S)} \E_Q[U].
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Theorem 3.12 establishes a remarkable duality result: this cost, obtained by a primal approach (portfolio search), equals the supremum of expected prices under all martingale measures (dual approach).
+
+\textbf{Step 1: Show that $A(U)$ is a closed interval $[\alpha, +\infty)$.}
+\begin{itemize}
+    \item If $a \in A(U)$, there exists $k \in K$ such that $a+k \ge U$. If $b > a$, then $b+k = (a+k) + (b-a) \ge U + (b-a) > U$. We can find a portfolio that generates $b+k$, so $b \in A(U)$. The set is an interval.
+    \item To show it is closed, we must prove that the set $K + L^0_+$ is closed. In finite dimension ($\Omega$ finite), this is the case. Let $f_m = k_m + l_m$ be a sequence converging to $f$, with $k_m \in K$ and $l_m \in L^0_+$. Let $Q \in \mathcal{M}^e(S)$. By continuity of expectation, $\E_Q[f_m] \to \E_Q[f]$. The sequence $(\E_Q[f_m])$ is therefore bounded. Now, $\E_Q[f_m] = \E_Q[k_m] + \E_Q[l_m] = \E_Q[l_m]$. Thus, the sequence $(\E_Q[l_m])$ is bounded. Since $l_m(\omega) \ge 0$ and $Q(\omega) > 0$ for all $\omega$ ($\Omega$ finite), this implies that the sequence $(l_m)$ is bounded in $\mathbb{R}^{|\Omega|}$. By the Bolzano-Weierstrass theorem, we can extract a convergent subsequence $l_{\phi(m)} \to l \in L^0_+$. Consequently, $k_{\phi(m)} = f_{\phi(m)} - l_{\phi(m)}$ converges to $f-l$. Since $K$ is closed, $f-l \in K$. Finally, $f = (f-l) + l \in K + L^0_+$, proving the set is closed.
+\end{itemize}
+
+\textbf{Step 2: Show that $\alpha \ge \bar\Pi(U)$.}
+\begin{itemize}
+    \item Let $a \in A(U)$ be any super-replication cost. By definition, there exists $k \in K$ (representing the gain of a zero-cost portfolio) such that $a + k \ge U$.
+    \item Take the expectation of this inequality under any measure $Q \in \mathcal{M}^e(S)$.
+    \item $\E_Q[a + k] \ge \E_Q[U]$. By linearity, $a + \E_Q[k] \ge \E_Q[U]$.
+    \item Since $k \in K$, we know that $\E_Q[k]=0$. The inequality becomes $a \ge \E_Q[U]$.
+    \item This being true for all measures $Q \in \mathcal{M}^e(S)$, we deduce that $a$ is greater than or equal to the supremum: $a \ge \sup_{Q \in \mathcal{M}^e(S)} \E_Q[U] = \bar\Pi(U)$.
+    \item Finally, since this holds for all costs $a \in A(U)$, it also holds for their infimum $\alpha$. Therefore, $\alpha \ge \bar\Pi(U)$.
+\end{itemize}
+
+\textbf{Step 3: Show that $\alpha \le \bar\Pi(U)$.}
+\begin{itemize}
+    \item We reason by contradiction assuming $\alpha > \bar\Pi(U)$. We can then choose a real $a$ such that $\bar\Pi(U) < a < \alpha$. By definition of $\alpha$, $a$ is not a super-replication cost, so $a \notin A(U)$.
+    \item This means that the set $\{a - U + k \mid k \in K\}$ is disjoint from the set of positive variables $L^0_+$.
+    \item We have two disjoint closed convex sets. The separation theorem gives us the existence of a linear form $\lambda \ge 0$ ($\lambda \neq 0$) such that $\langle k, \lambda \rangle = 0$ for all $k \in K$ and $\langle a - U, \lambda \rangle \le 0$.
+    \item Normalizing $\lambda$, we construct a probability $Q = \lambda / \sum \lambda(\omega)$. This probability $Q$ is a martingale measure ($\E_Q[k]=0$), but not necessarily equivalent to $P$. The separation inequality implies $a \le \E_Q[U]$.
+    \item If $Q$ were equivalent ($Q \in \mathcal{M}^e(S)$), we would have $a \le \E_Q[U] \le \bar\Pi(U)$, contradicting $a > \bar\Pi(U)$.
+    \item If $Q$ is not equivalent, we must refine the argument. Take a measure $\tilde{Q} \in \mathcal{M}^e(S)$ (which exists under NA). For all $\varepsilon \in (0, 1)$, define the measure $Q_\varepsilon = \varepsilon \tilde{Q} + (1-\varepsilon)Q$. This is a convex combination of martingale measures, so $Q_\varepsilon$ is also a martingale measure. Moreover, $Q_\varepsilon$ is equivalent to $P$ because $\tilde{Q}$ is. Therefore $Q_\varepsilon \in \mathcal{M}^e(S)$.
+    \item By definition of $\bar\Pi(U)$, we have $\bar\Pi(U) \ge \E_{Q_\varepsilon}[U]$ for all $\varepsilon$.
+    \item Developing: $\bar\Pi(U) \ge \varepsilon \E_{\tilde{Q}}[U] + (1-\varepsilon) \E_Q[U]$.
+    \item Since $a \le \E_Q[U]$, we have $\bar\Pi(U) \ge \varepsilon \E_{\tilde{Q}}[U] + (1-\varepsilon)a$.
+    \item This inequality holds for all $\varepsilon \in (0, 1)$. Taking $\varepsilon$ to 0, we obtain $\bar\Pi(U) \ge a$.
+    \item This contradicts our initial hypothesis $a > \bar\Pi(U)$. The hypothesis $\alpha > \bar\Pi(U)$ is therefore false. We must have $\alpha \le \bar\Pi(U)$.
+\end{itemize}
+
+The two inequalities combined prove that $\alpha = \bar\Pi(U)$.
+\end{proof}

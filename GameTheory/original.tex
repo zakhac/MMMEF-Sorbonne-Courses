@@ -1,0 +1,917 @@
+% --- PRÉAMBULE RECOMMANDÉ (à ne copier qu'une fois) ---
+% \documentclass{article}
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+% \usepackage[french]{babel}
+% \usepackage{amsmath, amssymb, amsthm}
+% \usepackage{array}
+% \begin{document}
+
+% --- CHAPITRE 1 : JEU SOUS FORME NORMALE ---
+
+\section{Introduction et Informations Pratiques} % [cite: 175, 181]
+
+\begin{itemize}
+    \item \textbf{Enseignant :} Philippe BICH (bich@univ-paris1.fr) % [cite: 183, 184]
+    \item \textbf{Crédits :} 5 ECTS (pour Théorie des Jeux 1-2) % [cite: 185]
+    \item \textbf{Méthode :} Cours magistral et résolution de problèmes % [cite: 186]
+    \item \textbf{Prérequis :} Analyse et bases de probabilités % [cite: 187]
+    \item \textbf{Références :} 
+        \begin{enumerate}
+            \item "Game theory" - Maschler, Solan, Zamir % [cite: 189]
+            \item "Bases mathématiques de la théorie des jeux" - Sorin, Laraki, Renault % [cite: 190]
+        \end{enumerate}
+    \item \textbf{Évaluation :} Présence, exercices des slides (avec bonus pour les exercices étoffés *) et examen final reprenant des questions similaires % [cite: 191, 192, 193, 194]
+\end{itemize}
+
+\subsection{Concepts Introductifs} % [cite: 197]
+La théorie des jeux analyse les situations où le comportement optimal d'un individu dépend des choix des autres %[cite: 199, 201].
+\begin{itemize}
+    \item \textbf{Économie :} Prix d'Apple, enchères % [cite: 208, 209, 210]
+    \item \textbf{Biologie :} Stratégies coopératives des espèces % [cite: 212, 214]
+    \item \textbf{Politique :} Armement nucléaire, votes, grèves % [cite: 217, 219, 221, 223, 224]
+    \item \textbf{Modèle de Schelling (Ségrégation) :} Analyse de l'émergence d'un ordre (ou ségrégation) à partir d'optimisations individuelles fondées sur un seuil de conformisme ($x$ \% de voisins similaires requis) %[cite: 257, 267, 318].
+    \item \textbf{Guess two-third of the average :} Jeu illustrant la nécessité de deviner le niveau de rationalité des autres joueurs %[cite: 306, 321, 322].
+\end{itemize}
+
+\section{Chapter 1: Normal Form Game} % [cite: 326, 327]
+
+\subsection{Définitions} % [cite: 331]
+\begin{definition}
+Un jeu sous forme normale est un triplet $(N, (X_i)_{i \in N}, (u_i)_{i \in N})$ où : % [cite: 333, 342, 343]
+\begin{itemize}
+    \item $N$ est l'ensemble des joueurs %[cite: 335].
+    \item $X_i$ est l'ensemble des actions du joueur $i \in N$ %[cite: 336].
+    \item $u_i: X \rightarrow \mathbb{R}$ est la fonction de gain, avec $X = \prod_{i \in N} X_i$ l'ensemble des profils d'actions %[cite: 337].
+\end{itemize}
+\end{definition}
+
+\subsection{Exemples Célèbres} % [cite: 350, 376, 401, 428]
+
+\begin{enumerate}
+    \item \textbf{Coordination Game :} Exemple de la conduite (choix du côté de la route) %[cite: 352, 363].
+    \begin{center}
+    \begin{tabular}{c|c|c}
+    P1 \textbackslash P2 & a & b \\ \hline
+    A & (1,1) & (0,0) \\ \hline
+    B & (0,0) & (1,1)
+    \end{tabular} % [cite: 354, 368-372]
+    \end{center}
+
+    \item \textbf{Chicken Game (Hawk-Dove) :} Exemple d'une course aux brevets %[cite: 378, 387].
+    \begin{center}
+    \begin{tabular}{c|c|c}
+    P1 \textbackslash P2 & a & b \\ \hline
+    A & (0,0) & (4,1) \\ \hline
+    B & (1,4) & (3,3)
+    \end{tabular} % [cite: 381, 392-397]
+    \end{center}
+
+    \item \textbf{Matching Penny :} Exemple des penalties au football %[cite: 403, 418].
+    \begin{center}
+    \begin{tabular}{c|c|c}
+    P1 \textbackslash P2 & a & b \\ \hline
+    A & (1,-1) & (-1,1) \\ \hline
+    B & (-1,1) & (1,-1)
+    \end{tabular} % [cite: 408-411, 424-426]
+    \end{center}
+
+    \item \textbf{Prisoner Dilemma :} Confesser (C) ou Non Confesser (NC) %[cite: 430, 440].
+    \begin{center}
+    \begin{tabular}{c|c|c}
+    P1 \textbackslash P2 & NC & C \\ \hline
+    NC & (-1,-1) & (-5,0) \\ \hline
+    C & (0,-5) & (-3,-3)
+    \end{tabular} % [cite: 436-439, 450]
+    \end{center}
+
+    \item \textbf{First Price Auction (Enchère au premier prix) :} % [cite: 454]
+    $N = \{1, 2\}$, $X_1 = X_2 = [0, +\infty[$. Valeurs monétaires $v_1 = 1M$ et $v_2 = 1.1M$ %[cite: 470, 471, 460, 461].
+    $u_i(x_i, x_j) = v_i - x_i$ si $x_i > x_j$, $\frac{v_i - x_i}{2}$ si $x_i = x_j$, et $0$ sinon %[cite: 476].
+\end{enumerate}
+
+\subsection{Exercices du Chapitre 1} % [cite: 480]
+\textbf{Ex 1 (Second price auction) :} Le gagnant paie le prix de la deuxième offre. Représenter $u_1(x_1, x_2)$ pour $x_2 < v_1$ fixé %[cite: 482, 484, 486].\\
+\textbf{Ex 2 (All pay auction) :} Chaque enchérisseur paie son offre, même s'il perd %[cite: 487].\\
+\textbf{Ex 3 (Ice-cream sellers) :} Deux vendeurs sur $[0, 1]$. Les clients vont au plus proche. Écrire le jeu et tracer $u_1(x_1, x_2)$ pour $x_2 < 1$ %[cite: 489, 490, 492, 493].
+
+% --- CHAPITRE 2 : DOMINANCE ---
+
+\newpage
+\section{Chapter 2: Dominance} % [cite: 6, 7]
+
+\subsection{Notation Importante} % [cite: 11, 19, 27]
+\begin{itemize}
+    \item $X_{-i} = \prod_{j \in N, j \ne i} X_j$ désigne l'ensemble des profils d'actions de tous les joueurs sauf $i$ %[cite: 24, 31].
+    \item $x_{-i}$ désigne un élément de $X_{-i}$ %[cite: 24, 32].
+    \item $u_i(x_i, x_{-i})$ est une notation abusive pour $u_i(x)$ %[cite: 25, 32].
+\end{itemize}
+
+\subsection{Action Dominante et Équilibre} % [cite: 42, 50, 57]
+\begin{definition}
+Une action $x_i \in X_i$ est \textbf{dominante} si : % [cite: 45]
+$$\forall d_{-i} \in X_{-i}, \forall d_i \in X_i, u_i(x_i, d_{-i}) \ge u_i(d_i, d_{-i})$$ % [cite: 46]
+\end{definition}
+
+\begin{definition}
+Un profil $x = (x_i)_{i \in N}$ est un \textbf{équilibre en stratégies dominantes} si pour chaque $i$, $x_i$ est dominante %[cite: 47].
+\end{definition}
+
+\paragraph{Exemple de défaillance collective :} Même avec une action dominante unique, le résultat peut être catastrophique %[cite: 64, 74]:
+\begin{center}
+\begin{tabular}{c|c|c}
+P1 \textbackslash P2 & a & b \\ \hline
+A & (1M, 1M) & (0, 1M+1) \\ \hline
+B & (1M+1, 0) & (0.1, 0.1)
+\end{tabular} % [cite: 68-73]
+\end{center}
+
+\subsection{Exercices de Dominance} % [cite: 52, 59]
+\textbf{Ex 1 (Exam 2023) :} $X = Y = ]0, +\infty[$. $u_1(x,y) = (x-x^2+1)e^y$ et $u_2(x,y) = (2y-y^2+2)x^2$. Calculer l'équilibre %[cite: 53, 54, 55].\\
+\textbf{Ex 2 :} Existe-t-il un équilibre en stratégies dominantes dans le Dilemme du Prisonnier ? Le jeu de coordination ? Le Chicken game ? % [cite: 59, 60]
+
+\subsection{Common Knowledge (Connaissance Commune)} % [cite: 81, 88]
+\begin{definition}
+Un énoncé $S$ est \textbf{connaissance commune} si chacun sait que $S$ est vrai, sait que les autres savent que $S$ est vrai, etc. à l'infini %[cite: 89, 90].
+\end{definition}
+L'exemple de l'e-mail montre que la simple connaissance de $S$ diffère de la connaissance commune, ce qui impacte les comportements % [cite: 83-86, 91].
+
+\subsection{Élimination Itérée des Actions Strictement Dominées} % [cite: 94, 107, 123, 146]
+
+\begin{definition}
+$x_i$ est \textbf{strictement dominée} par $y_i$ si : % [cite: 95, 108]
+$$\forall d_{-i} \in X_{-i}, u_i(x_i, d_{-i}) < u_i(y_i, d_{-i})$$ % [cite: 96, 109]
+\end{definition}
+
+\paragraph{Processus IESDA :} % [cite: 131, 139]
+\begin{itemize}
+    \item On part du jeu $G = G(0)$ %[cite: 141].
+    \item Si les agents sont rationnels et que cela est connaissance commune, on élimine les actions strictement dominées pour obtenir $G(1)$ %[cite: 142, 143].
+    \item Par induction, on obtient $G(n)$. L'équilibre est défini par $\cap_{n \ge 0} X(n)$ %[cite: 144, 154].
+\end{itemize}
+
+\subsection{Exercices IESDA} % [cite: 156, 162, 170]
+\textbf{Ex 1 :} Calculer l'équilibre par IESDA pour la matrice suivante %[cite: 158]:
+$$\begin{pmatrix} & A & B & C \\ a & (1,-1) & (0,1) & (-1,2) \\ b & (2,3) & (1,2) & (0,1) \\ c & (1,4) & (0,3) & (1,2) \end{pmatrix}$$ % [cite: 159]
+\textbf{Ex 2 :} 2 joueurs, $x_i \ge 0$, $u_i(x_i, x_{-i}) = -|x_i - (1+x_{-i})|$ %[cite: 166, 167].\\
+\textbf{Ex 3 :} Soit $G$ un jeu où $u_i$ sont continues et $X_i$ compacts non vides. Prouver que l'ensemble des équilibres par IESDA est compact et non vide %[cite: 172, 173].
+
+% --- CHAPITRE 3 : ÉQUILIBRE DE NASH (STRATÉGIES PURES) ---
+
+\section{Chapter 3: Nash Equilibrium (Pure Strategy)}
+
+[cite_start]Ce chapitre introduit la notion de prédiction la plus célèbre et la plus utilisée en théorie des jeux : l'équilibre de Nash[cite: 506, 623].
+
+\subsection{Exemple Introductif}
+
+[cite_start]Considérons un jeu à 2 joueurs avec $X_1 = X_2 = [0,1]$[cite: 629, 636]:
+\begin{itemize}
+    [cite_start]\item $u_1(x_1, x_2) = -(x_1 - x_2)^2$ [cite: 637, 643]
+    [cite_start]\item $u_2(x_1, x_2) = -(1 - x_1 - x_2)^2$ [cite: 638, 644]
+\end{itemize}
+
+\textbf{Analyse :}
+\begin{itemize}
+    [cite_start]\item Pour le joueur 1, le meilleur choix est $x_1 = x_2$[cite: 646].
+    [cite_start]\item Pour le joueur 2, le meilleur choix est $x_2 = 1 - x_1$[cite: 647].
+    [cite_start]\item L'équilibre est atteint quand les deux conditions sont satisfaites : $x_1 = x_2 = \frac{1}{2}$[cite: 650].
+\end{itemize}
+
+\begin{remark}
+[cite_start]Le profil $(\frac{1}{2}, \frac{1}{2})$ est un équilibre de Nash, mais ce n'est \textbf{PAS} un équilibre en stratégies dominantes[cite: 658]. [cite_start]Par exemple, $\frac{1}{2}$ n'est pas dominant pour le joueur 1 car si le joueur 2 joue $0$, $u_1(\frac{1}{2}, 0) = -1/4$, ce qui est inférieur à $u_1(0,0) = 0$[cite: 661, 662].
+\end{remark}
+
+\subsection{Définitions Formelles}
+
+\begin{definition}[Équilibre de Nash]
+Considérons un jeu sous forme normale $(N, (X_i)_{i \in N}, (u_i)_{i \in N})$. [cite_start]Un profil d'actions $\bar{x} = (\bar{x}_i)_{i \in N}$ est un équilibre de Nash si pour chaque joueur $i$, aucune déviation unilatérale n'est profitable[cite: 509, 514, 678]:
+[cite_start]$$\forall i \in N, \forall d_i \in X_i, \quad u_i(\bar{x}_i, \bar{x}_{-i}) \ge u_i(d_i, \bar{x}_{-i})$$ [cite: 520, 679]
+[cite_start]Le vecteur $u(\bar{x}) = (u_i(\bar{x}))_{i \in N}$ est le vecteur de gains à l'équilibre associé[cite: 680].
+\end{definition}
+
+\subsection{Correspondance de Meilleure Réponse (Best-reply)}
+
+\begin{definition}[Meilleure Réponse]
+[cite_start]La correspondance de meilleure réponse du joueur $i$, notée $B_i : X_{-i} \rightrightarrows X_i$, associe à chaque profil des autres joueurs $x_{-i}$ l'ensemble des actions optimales pour lui[cite: 522, 695, 714]:
+[cite_start]$$B_i(x_{-i}) := \{ x_i \in X_i : \forall d_i \in X_i, u_i(x_i, x_{-i}) \ge u_i(d_i, x_{-i}) \}$$ [cite: 524, 697, 716]
+\end{definition}
+
+\begin{definition}[Correspondance de Meilleure Réponse Globale]
+[cite_start]On définit $B : X \rightrightarrows X$ par le produit des meilleures réponses individuelles[cite: 525, 742]:
+[cite_start]$$B(x) = \prod_{i \in N} B_i(x_{-i})$$ [cite: 525, 744]
+\end{definition}
+
+\begin{theorem}[Caractérisations de Nash]
+[cite_start]Un profil d'actions $x \in X$ est un équilibre de Nash si et seulement si l'une des conditions équivalentes est vérifiée[cite: 525, 526, 751, 775]:
+\begin{enumerate}
+    [cite_start]\item $\forall i \in N, x_i$ est une meilleure réponse à $x_{-i}$[cite: 525, 754, 778].
+    [cite_start]\item $x$ est un \textbf{point fixe} de la correspondance $B$ ($x \in B(x)$)[cite: 525, 755, 779].
+    [cite_start]\item $x$ appartient à l'intersection des graphes de meilleures réponses des joueurs : $\bigcap_{i \in N} \{ (x_i, y_{-i}) \in X : x_i \in B_i(y_{-i}) \}$[cite: 525, 757, 781].
+\end{enumerate}
+\end{theorem}
+
+\subsection{Relation avec la Dominance}
+
+\begin{proposition}
+Soit $b_i$ une action strictement dominée du joueur $i$. Soit $G'$ le jeu obtenu en supprimant cette action. [cite_start]Alors l'ensemble des équilibres de Nash de $G$ est égal à celui de $G'$[cite: 531, 792, 795, 803].
+\end{proposition}
+
+\begin{corollary}
+[cite_start]L'ensemble des équilibres de Nash est inclus dans l'ensemble des équilibres obtenus par élimination itérée des stratégies strictement dominées (IESDA)[cite: 532, 534, 796, 804].
+\end{corollary}
+
+\subsubsection{Exemple de résolution par IESDA}
+
+[cite_start]Soit le jeu matriciel suivant[cite: 562, 817]:
+\begin{center}
+\begin{tabular}{c|c|c|c}
+P1 \textbackslash P2 & A & B & C \\ \hline
+a & (2,2) & (1,1) & (1,0) \\ \hline
+b & (0,2) & (0,3) & (1,1) \\ \hline
+c & (0,1) & (-1,-1) & (2,0)
+\end{tabular}
+\end{center}
+
+[cite_start]\textbf{Étapes d'élimination[cite: 570]:}
+\begin{enumerate}
+    \item \textbf{Étape 1 :} Pour P2, l'action A domine strictement C (car $2>0, 2>1, 1>0$). On supprime C.
+    \item \textbf{Étape 2 :} Dans le jeu restant, pour P1, l'action $a$ domine strictement $b$ (car $2>0, 1>0$) et $c$ (car $2>0, 1>-1$). On supprime $b$ et $c$.
+    \item \textbf{Étape 3 :} Il ne reste que la ligne $a$. Pour P2, A domine alors strictement B ($2>1$).
+\end{enumerate}
+[cite_start]\textbf{Résultat :} L'unique équilibre de Nash est $(a, A)$ avec un gain de $(2,2)$[cite: 573, 576].
+
+\subsection{Autres Exemples de Jeux Finis}
+
+\begin{itemize}
+    \item \textbf{Multiplicité :} Un jeu peut avoir plusieurs équilibres de Nash. [cite_start]Exemple : Coordination (A,a) et (B,b) avec gains (1,1) et (2,2)[cite: 586, 587, 874].
+    \item \textbf{Non-existence :} Un jeu peut ne pas avoir d'équilibre de Nash en stratégies pures. [cite_start]Exemple : Matching Pennies ou variantes[cite: 587, 888].
+\end{itemize}
+
+\subsection{Exercices du Chapitre 3}
+
+[cite_start]\textbf{Ex 1 (Exam 2023)[cite: 685, 686]:}
+\begin{itemize}
+    \item A) $u_1(x,y) = xy - x^2 + 2$, $u_2(x,y) = 2xy - y^2$ sur $[0,1]^2$. Calculer les équilibres.
+    \item B) $u_i(x_1, x_2) = x_i$ si $x_1+x_2 \le 1$ et $0$ sinon. [cite_start]Calculer l'ensemble de Nash $N$ et les points Pareto optimaux[cite: 687, 690].
+\end{itemize}
+
+[cite_start]\textbf{Ex 2 (Rent-seeking / Tullock)[cite: 588, 899]:} $n$ lobbyistes choisissent l'effort $x_i \ge 0$. Coût $cx_i$. Gain si gagne : $V$. Payoff : $\frac{x_i}{\sum x_j}V - cx_i$. [cite_start]Trouver un équilibre[cite: 903, 905].
+
+[cite_start]\textbf{Ex 3 (Bien public)[cite: 592, 908]:} $n$ habitants avec richesse $W$. Donation $x_i$. Payoff : $W - x_i + \sqrt{\sum x_j}$. [cite_start]Trouver un équilibre[cite: 912, 913].
+
+% --- CHAPITRE 4 : EXISTENCE ---
+
+\newpage
+\section{Chapter 4: Existence of Nash Equilibrium}
+
+\subsection{Exemples de Non-existence}
+
+\begin{enumerate}
+    \item \textbf{Absence de compacité :} 2 joueurs sur $[0, +\infty[$, $u_1 = x_1$, $u_2 = x_2$. [cite_start]Pas d'équilibre car les gains ne sont pas bornés[cite: 611].
+    \item \textbf{Absence de convexité ou continuité :} "I like you, you don't like me". $u_1 = -|x_1 - x_2|$, $u_2 = |x_1 - x_2|$ sur $[0,1]$. Si $x_1=x_2$ (sol. P1), alors P2 veut $x_2 \ne x_1$. [cite_start]Contradiction[cite: 611, 614].
+\end{enumerate}
+
+\subsection{Obstacles à l'existence}
+[cite_start]Les principaux obstacles à l'existence d'un équilibre de Nash sont[cite: 615, 618]:
+\begin{itemize}
+    [cite_start]\item Le manque de \textbf{convexité} des fonctions de gain (souvent lié à l'appétence au risque)[cite: 618].
+    [cite_start]\item Le manque de \textbf{continuité} des fonctions ou de \textbf{compacité} des ensembles d'actions[cite: 611, 614].
+\end{itemize}
+
+% --- CHAPITRE 4 : EXISTENCE DE L'ÉQUILIBRE DE NASH ---
+
+\section{Chapter 4: Existence of Nash Equilibria}
+
+\subsection{Non-existence of Nash Equilibria}
+L'existence d'un équilibre de Nash n'est pas garantie. [cite_start]Plusieurs obstacles peuvent l'empêcher[cite: 924, 1467]:
+
+\begin{itemize}
+    [cite_start]\item \textbf{Ensembles d'actions non convexes :} Dans les jeux finis (ex: Matching Pennies), les ensembles de stratégies présentent des "trous"[cite: 936, 1468].
+    [cite_start]\item \textbf{Ensembles d'actions non bornés :} Exemple : $X_1 = \mathbb{R}$, $u_1(x_1, x_2) = x_1$[cite: 955, 1469].
+    [cite_start]\item \textbf{Ensembles d'actions non fermés :} Exemple : $X_1 = [0, 1[$, $u_1 = x_1$[cite: 973, 1469].
+    [cite_start]\item \textbf{Fonctions de gain discontinues :} Exemple : $u_1(x_1, x_2) = 1-x_1$ si $x_1 \neq 0$ et $0$ sinon[cite: 991, 1469].
+    [cite_start]\item \textbf{Absence de quasi-concavité :} Exemple du jeu "I like you, you do not like me" (Carmen) où $x_2 \mapsto u_2(x_1, x_2) = |x_1 - x_2|$ n'est pas concave[cite: 1014, 1024, 1473].
+\end{itemize}
+
+\subsection{Quasiconcavité et Goût pour le Risque}
+[cite_start]La quasi-concavité est liée à l'aversion ou au goût pour le risque[cite: 1028, 1030]. 
+
+\begin{definition}[Quasiconcavité]
+Soit $X$ un espace vectoriel. [cite_start]$f: X \rightarrow \mathbb{R}$ est \textbf{quasiconcave} si pour tout $\lambda \in [0,1]$ et tout $(x, y) \in X^2$[cite: 1066, 1068, 1074]:
+$$f(\lambda x + (1-\lambda)y) \ge \min\{f(x), f(y)\}$$
+\end{definition}
+
+[cite_start]\textbf{Exemple de goût pour le risque :} Si $u(x) = x^2$ sur $\mathbb{R}$, un agent préférera un résultat incertain (0 avec proba 1/2 ou 10000 avec proba 1/2) à son équivalent certain (5000) car l'utilité moyenne ($1/2 \cdot 10000^2$) est supérieure à $5000^2$[cite: 1035, 1054, 1056].
+
+\subsection{Théorème de Glicksberg}
+[cite_start]Il s'agit du théorème fondamental pour l'existence en stratégies pures[cite: 1092, 1478].
+
+\begin{theorem}[Glicksberg]
+Soit un jeu $G = (N, (X_i)_{i \in N}, (u_i)_{i \in N})$ tel que :
+\begin{enumerate}
+    [cite_start]\item $X_i$ est un sous-ensemble \textbf{compact et convexe} d'un espace vectoriel topologique[cite: 1101, 1108, 1481].
+    [cite_start]\item $u_i$ est \textbf{continue} sur $X = \prod X_i$[cite: 1094, 1106, 1489].
+    [cite_start]\item $x_i \mapsto u_i(x_i, x_{-i})$ est \textbf{quasiconcave} pour tout $x_{-i}$[cite: 1109, 1117, 1490].
+\end{enumerate}
+[cite_start]Alors, il existe un équilibre de Nash[cite: 1118, 1490].
+\end{theorem}
+
+\subsection{Théorèmes de Point Fixe}
+La preuve de Glicksberg repose sur deux théorèmes majeurs :
+
+[cite_start]\paragraph{Théorème de Brouwer :} Si $f: C \rightarrow C$ est continue et $C$ est compact convexe, alors il existe $\bar{x}$ tel que $f(\bar{x}) = \bar{x}$[cite: 1198, 1201, 1211, 1490].
+]
+
+\paragraph{Théorème de Kakutani :} Extension de Brouwer aux correspondances $\Phi: X \rightrightarrows X$. [cite_start]Si $X$ est compact convexe, $\Phi(x)$ est non-vide et convexe, et le graphe de $\Phi$ est fermé, alors il existe un point fixe $x \in \Phi(x)$[cite: 1130, 1145, 1176, 1526, 1527].
+
+\subsection{Démonstration de Glicksberg (Cas dimension finie)}
+[cite_start]L'idée est d'appliquer Kakutani à la correspondance de meilleure réponse $BR(x) = \prod BR_i(x_{-i})$[cite: 1230, 1248, 1534]:
+\begin{enumerate}
+    [cite_start]\item \textbf{$BR_i(x)$ est non-vide :} Garanti par le théorème de Weierstrass (utilité continue sur un compact)[cite: 1257, 1595, 1598].
+    [cite_start]\item \textbf{$BR_i(x)$ est convexe :} Découle de la quasiconcavité de $u_i$[cite: 1265, 1610, 1628].
+    [cite_start]\item \textbf{Le graphe de $BR$ est fermé :} Découle de la continuité de $u_i$ par passage à la limite[cite: 1274, 1576, 1590].
+\end{enumerate}
+
+\subsection{Corrections d'exercices}
+
+\paragraph{Correction : Public Good Provision}
+Pour $n$ habitants, $u_i = W - x_i + \sqrt{\sum x_j}$. [cite_start]On cherche un équilibre symétrique $(a, \dots, a)$[cite: 1350, 1368, 1373].
+[cite_start]En posant $f(x_i) = W - x_i + \sqrt{(n-1)a + x_i}$, la condition du premier ordre $f'(a) = 0$ donne[cite: 1377, 1379, 1388]:
+[cite_start]$$-1 + \frac{1}{2\sqrt{na}} = 0 \iff na = \frac{1}{4} \iff a = \frac{1}{4n^2} \text{ [cite: 1390, 1393]}$$
+
+\paragraph{Correction : Rent-seeking (Tullock)}
+$n$ firmes, payoff $u_i = \frac{x_i}{\sum x_j}V - cx_i$. [cite_start]Pour un équilibre symétrique $a$[cite: 1401, 1416, 1447]:
+[cite_start]$$f'(x_i) = \frac{V((n-1)a + x_i) - Vx_i}{((n-1)a + x_i)^2} - c = 0 \text{ [cite: 1451]}$$
+[cite_start]En $x_i = a$, on obtient $\frac{(n-1)V}{n^2 a} = c$, d'où $a = \frac{n-1}{cn^2}V$[cite: 1461, 1462].
+
+
+% --- AJOUT AU CHAPITRE 4 ---
+\subsection{Caractérisation de la quasiconcavité}
+
+La quasiconcavité peut être définie de manière équivalente par la convexité des ensembles de niveau supérieur \cite{Note 10 oct. 2024.pdf}.
+
+\begin{proposition}
+Soit $f: X \rightarrow \mathbb{R}$ une fonction définie sur un ensemble convexe $X$ \cite{Note 10 oct. 2024.pdf}.
+\begin{itemize}
+    \item $f$ est \textbf{quasiconcave} si et seulement si, pour tout $\lambda \in \mathbb{R}$, l'ensemble de niveau supérieur $S_{\lambda}(f) = \{x \in X : f(x) \ge \lambda\}$ est un ensemble \textbf{convexe} \cite{Note 10 oct. 2024.pdf}.
+    \item $f$ est \textbf{quasiconvexe} si et seulement si, pour tout $\lambda \in \mathbb{R}$, l'ensemble de niveau inférieur $\{x \in X : f(x) \le \lambda\}$ est un ensemble \textbf{convexe} \cite{Note 10 oct. 2024.pdf}.
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+Supposons $f$ quasiconcave. Soient $x, y \in S_{\lambda}(f)$. Alors $f(x) \ge \lambda$ et $f(y) \ge \lambda$ \cite{Note 10 oct. 2024.pdf}. Par définition de la quasiconcavité, pour tout $\alpha \in [0,1]$, $f(\alpha x + (1-\alpha)y) \ge \min(f(x), f(y)) \ge \lambda$ \cite{Note 10 oct. 2024.pdf}. Donc $\alpha x + (1-\alpha)y \in S_{\lambda}(f)$, ce qui prouve la convexité de l'ensemble \cite{Note 10 oct. 2024.pdf}.
+\end{proof}
+% --- CHAPITRE 5 : STRATÉGIES MIXTES ---
+
+\newpage
+\section{Chapter 5: Mixed Strategies}
+
+\subsection{Introduction et Motivation}
+Dans certains jeux (ex: tireur vs gardien de but), si le tireur connaît les statistiques du gardien, il peut optimiser son tir. [cite_start]Si le gardien plonge à droite avec proba 2/3, le tireur doit tirer à gauche[cite: 1651, 1655, 1660]. [cite_start]L'équilibre réel est souvent imprévisible et nécessite de l'aléa[cite: 1660].
+
+\subsection{Définitions Techniques}
+\begin{definition}[Stratégie Mixte]
+Soit $X_i$ l'ensemble des actions (espace vectoriel topologique compact). [cite_start]Une \textbf{stratégie mixte} est une mesure de probabilité régulière $\mu$ sur la $\sigma$-algèbre borélienne de $X_i$[cite: 1661, 1662].
+[cite_start]On note $\Delta(X_i)$ l'ensemble des stratégies mixtes[cite: 1662].
+\end{definition}
+
+\begin{itemize}
+    [cite_start]\item \textbf{Espace vectoriel topologique :} Espace muni d'une topologie telle que l'addition et la multiplication par un scalaire sont continues[cite: 1101, 1661].
+    [cite_start]\item \textbf{$\sigma$-algèbre borélienne :} Générée par tous les ensembles ouverts de la topologie[cite: 1661, 1662].
+\end{itemize}
+
+% --- CHAPITRE 5 : ÉQUILIBRE DE NASH EN STRATÉGIES MIXTES ---
+
+\section{Chapter 5: Nash Equilibria in Mixed Strategies}
+
+\subsection{Mixed Strategies (Case of Finite Action Sets)}
+
+\begin{definition}[Mixed Strategy]
+[cite_start]Une stratégie mixte du joueur $i$ est une distribution de probabilité sur son ensemble d'actions (fini) $X_i$[cite: 4024, 4048].
+\begin{itemize}
+    [cite_start]\item On note $\Delta(X_i)$ l'ensemble de ces distributions[cite: 4025, 4049].
+    [cite_start]\item $\sigma_i \in \Delta(X_i)$ désigne une stratégie mixte, où $\sigma_i(x_i)$ est la probabilité que l'action pure $x_i$ soit choisie[cite: 4026, 4051].
+\end{itemize}
+\end{definition}
+
+\begin{itemize}
+    [cite_start]\item \textbf{Pure Strategy :} Une stratégie mixte $\sigma_i$ est pure si elle met tout son poids sur une seule action $x_i$ ($\sigma_i(x_i)=1$)[cite: 4066, 4089]. [cite_start]On identifie alors $X_i \subset \Delta(X_i)$[cite: 4068, 4092].
+    [cite_start]\item \textbf{Totally Mixed Strategy :} Une stratégie $\sigma_i$ est totalement mixte si $\sigma_i(x_i) > 0$ pour chaque $x_i \in X_i$[cite: 4101, 4107].
+\end{itemize}
+
+\subsection{Mixed Extension of a Game}
+
+\begin{definition}[Mixed Extension]
+Considérons un jeu $(N, (X_i)_{i \in N}, (u_i)_{i \in N})$ avec $X_i$ fini. [cite_start]L'extension mixte est le jeu $(N, (\Delta(X_i))_{i \in N}, (\tilde{u}_i)_{i \in N})$ où $\tilde{u}_i$ est l'espérance du gain[cite: 4113, 4131].
+\end{definition}
+
+\subsubsection{Calcul de l'espérance de gain}
+[cite_start]Pour un profil de stratégies mixtes $\sigma = (\sigma_1, \dots, \sigma_n)$, le gain espéré du joueur $i$ est défini par[cite: 4116, 4134]:
+$$\tilde{u}_i(\sigma) := \sum_{(x_1, \dots, x_n) \in X} u_i(x_1, \dots, x_n) \sigma_1(x_1) \sigma_2(x_2) \dots \sigma_n(x_n)$$
+
+\paragraph{Propriété de linéarité :}
+[cite_start]$\tilde{u}_i$ est linéaire par rapport à chaque variable $\sigma_j$ (les autres étant fixées)[cite: 4141, 4149]. [cite_start]Une égalité cruciale est[cite: 4143, 4151]:
+$$\tilde{u}_i(\sigma_i, \sigma_{-i}) = \sum_{x_i \in X_i} \sigma_i(x_i) \tilde{u}_i(x_i, \sigma_{-i})$$
+
+\subsection{Computation of Nash Equilibria (Best-reply method)}
+
+[cite_start]Un équilibre de Nash mixte est un équilibre de Nash de l'extension mixte du jeu[cite: 4173, 4175].
+
+\paragraph{Exemple : Battle of the Sexes}
+\begin{center}
+\begin{tabular}{c|c|c}
+Husband \textbackslash Wife & F (y) & C (1-y) \\ \hline
+F (x) & (2,1) & (0,0) \\ \hline
+C (1-x) & (0,0) & (1,2)
+\end{tabular}
+\end{center}
+
+[cite_start]Soit $x$ la probabilité que le mari joue F, et $y$ la probabilité que la femme joue F[cite: 4229]. [cite_start]Les fonctions de gain et meilleures réponses sont[cite: 4230]:
+\begin{itemize}
+    \item $u_1(x,y) = x(3y-1) + 1-x \implies BR_1(y) = 
+    \begin{cases} 
+    \{0\} & \text{si } y < 1/3 \\
+    [0,1] & \text{si } y = 1/3 \\
+    \{1\} & \text{si } y > 1/3
+    \end{cases}$
+    \item $u_2(x,y) = y(3x-2) + 2-2x \implies BR_2(x) = 
+    \begin{cases} 
+    \{0\} & \text{si } x < 2/3 \\
+    [0,1] & \text{si } x = 2/3 \\
+    \{1\} & \text{si } x > 2/3
+    \end{cases}$
+\end{itemize}
+[cite_start]L'intersection des graphes donne l'équilibre mixte : $x^* = 2/3, y^* = 1/3$[cite: 4253, 4255].
+
+\subsection{Indifference Principle (Principe d'indifférence)}
+
+[cite_start]C'est souvent la méthode la plus simple pour calculer les équilibres[cite: 4327].
+
+\begin{proposition}[Indifference Principle]
+[cite_start]Si $\sigma = (\sigma_1, \dots, \sigma_n)$ est un équilibre de Nash mixte, alors pour tout joueur $i$, si deux actions pures $x_i$ et $x_i'$ sont jouées avec une probabilité strictement positive ($\sigma_i(x_i) > 0$ et $\sigma_i(x_i') > 0$), alors elles doivent rapporter le même gain espéré contre $\sigma_{-i}$[cite: 4278, 4290, 4310]:
+$$u_i(x_i, \sigma_{-i}) = u_i(x_i', \sigma_{-i})$$
+\end{proposition}
+
+\subsection{Mathematical Foundations of $\Delta(X_i)$}
+
+\subsubsection{Topologie Faible-*}
+[cite_start]Pour définir une notion de convergence sur les stratégies mixtes, on utilise la topologie faible-*[cite: 4550, 4662].
+\begin{itemize}
+    [cite_start]\item On définit une famille de semi-normes $P_f$ pour chaque fonction $f$ continue et bornée ($f \in C_b^0(X_i, \mathbb{R})$) par[cite: 4648, 4663]:
+    $$P_f(\mu) = \left| \int_{X_i} f(x) d\mu \right|$$
+    [cite_start]\item Une suite de mesures $\mu_k$ converge vers $\mu$ si $\int f d\mu_k \rightarrow \int f d\mu$ pour toute fonction $f$ continue bornée[cite: 4559, 4565].
+\end{itemize}
+
+\begin{theorem}
+[cite_start]Si l'ensemble des actions pures $X_i$ est compact, alors l'ensemble des stratégies mixtes $\Delta(X_i)$ est \textbf{compact} pour la topologie faible-*[cite: 4549, 4664].
+\end{theorem}
+
+\subsection{Exercices}
+\begin{itemize}
+    [cite_start]\item \textbf{Chicken Game :} Calculer les équilibres mixtes par les deux méthodes[cite: 4360].
+    [cite_start]\item \textbf{All-pay Auction :} Prouver qu'il n'y a pas d'équilibre en stratégies pures et trouver un équilibre mixte[cite: 4406, 4407].
+    [cite_start]\item \textbf{Guess 2/3 of the Average :} Montrer que l'unique équilibre de Nash est en stratégies pures[cite: 4414].
+\end{itemize}
+
+% --- CHAPITRE 6 : JEUX À SOMME NULLE ---
+
+\section{Chapter 6: Zero-Sum Games}
+
+\subsection{Définitions}
+
+\begin{definition}[Jeu à somme nulle à 2 joueurs]
+Un jeu à somme nulle à deux joueurs est un triplet $(X, Y, u)$ où :
+\begin{enumerate}
+    \item $X$ est l'ensemble des actions du joueur 1.
+    \item $Y$ est l'ensemble des actions du joueur 2.
+    \item $u: X \times Y \rightarrow \mathbb{R}$ est la fonction de gain du joueur 1.
+\end{enumerate}
+Dans ce cadre, on suppose que le gain du joueur 2 est exactement l'opposé de celui du joueur 1 : si le joueur 1 obtient $u(x, y)$, le joueur 2 obtient $-u(x, y)$.
+\end{definition}
+
+\subsection{Cas particulier : Jeux matriciels}
+Lorsque les ensembles d'actions $X$ et $Y$ sont finis, on note $I$ l'ensemble des actions du joueur 1 et $J$ celui du joueur 2. Le jeu est alors défini par une matrice $A = (a_{ij})$ où :
+\begin{itemize}
+    \item $i \in I$ est la stratégie du joueur 1.
+    \item $j \in J$ est la stratégie du joueur 2.
+    \item $a_{ij} = u(i, j)$ est le gain du joueur 1 (et $-a_{ij}$ celui du joueur 2).
+\end{itemize}
+
+\subsection{Valeurs Maximin et Minimax}
+
+On suppose désormais que la fonction de gain $u$ est bornée.
+
+\begin{definition}[Valeur Maximin]
+Pour une action $x$ donnée, le pire gain que le joueur 1 puisse recevoir est $w(x) = \inf_{y \in Y} u(x, y)$. La \textbf{valeur maximin} du jeu est :
+$$\underline{v} = \sup_{x \in X} \inf_{y \in Y} u(x, y)$$
+\end{definition}
+
+\begin{remark}
+Intuitivement, $\underline{v}$ représente un gain "sécurisé" : le joueur 1 est certain de pouvoir obtenir un gain au moins proche de $\underline{v}$, quelle que soit l'action choisie par le joueur 2. En effet, pour tout $\epsilon > 0$, il existe $x_\epsilon \in X$ tel que $\forall y \in Y, u(x_\epsilon, y) \ge \underline{v} - \epsilon$.
+\end{remark}
+
+\begin{definition}[Valeur Minimax]
+Si le joueur 2 est prudent, il cherche à minimiser le gain maximum que le joueur 1 pourrait obtenir. La \textbf{valeur minimax} du jeu est :
+$$\overline{v} = \inf_{y \in Y} \sup_{x \in X} u(x, y)$$
+\end{definition}
+
+\begin{remark}
+$\overline{v}$ est une valeur de sécurité pour le joueur 2 : il est certain de ne pas avoir à "payer" plus qu'une valeur très proche de $\overline{v}$ au joueur 1.
+\end{remark}
+
+\subsection{Propriétés et Valeur du Jeu}
+
+\begin{proposition}
+L'inégalité suivante est toujours vraie :
+$$\underline{v} \le \overline{v}$$
+Cependant, une inégalité stricte est possible.
+\end{proposition}
+
+\begin{definition}[Valeur du jeu]
+On dit qu'un jeu à somme nulle a une \textbf{valeur} $v \in \mathbb{R}$ si les valeurs maximin et minimax sont égales :
+$$v = \underline{v} = \overline{v}$$
+\end{definition}
+
+\subsection{Exercice : Analyse d'un jeu matriciel fini}
+
+Considérons le jeu défini par la matrice de gains suivante pour le joueur 1 :
+\begin{center}
+\begin{tabular}{c|cccc|c}
+P1 \textbackslash P2 & 1 & 2 & 3 & 4 & \textit{min ligne} \\ \hline
+1 & (1, -1) & (2, -2) & (-1, 1) & (0, 0) & -1 \\
+2 & (0, 0) & (4, -4) & (3, -3) & (5, -5) & 0 \\
+3 & (9, -9) & (-2, 2) & (8, -8) & (2, -2) & -2 \\
+4 & (1, -1) & (4, -4) & (-9, 9) & (5, -5) & -9 \\ \hline
+\textit{max col} & 9 & 4 & 8 & 5 & 
+\end{tabular}
+\end{center}
+
+\textbf{Calcul des valeurs :}
+\begin{itemize}
+    \item $\underline{v} = \max(-1, 0, -2, -9) = 0$
+    \item $\overline{v} = \min(9, 4, 8, 5) = 4$
+\end{itemize}
+
+\textbf{Conclusion :}
+Comme $\underline{v} < \overline{v}$ ($0 < 4$), ce jeu n'a pas de valeur en stratégies pures. L'analyse des meilleures réponses montre également qu'il n'existe pas d'équilibre de Nash en stratégies pures dans ce cas.
+
+% --- COMPLÉMENTS DU CHAPITRE 5 : STRATÉGIES MIXTES ---
+
+\subsection{Lien entre Équilibres de Nash Purs et Mixtes}
+
+\begin{proposition}
+Soit $G = (N, (X_i)_{i \in N}, (u_i)_{i \in N})$ un jeu. Si $x = (x_1, \dots, x_n)$ est un équilibre de Nash en stratégies pures, alors le profil de stratégies mixtes $\sigma = (\delta_{x_1}, \dots, \delta_{x_n})$ (où $\delta_{x_i}$ est la distribution de Dirac sur $x_i$) est un équilibre de Nash de l'extension mixte.
+\end{proposition}
+
+\begin{proof}
+C'est une conséquence immédiate de la définition de l'espérance de gain : pour une distribution de Dirac, $\tilde{u}_i(\delta_{x_i}, \delta_{x_{-i}}) = u_i(x_i, x_{-i})$. La condition de Nash en stratégies mixtes est plus exigeante, mais si elle est vérifiée pour toute action pure, elle l'est par linéarité pour toute combinaison convexe d'actions.
+\end{proof}
+
+\subsection{Existence de l'Équilibre de Nash Mixte}
+
+\begin{theorem}
+Tout jeu fini $G = (N, (X_i)_{i \in N}, (u_i)_{i \in N})$ possède au moins un équilibre de Nash en stratégies mixtes.
+\end{theorem}
+
+\begin{proof}[Idée de la preuve]
+On applique le théorème de Glicksberg à l'extension mixte :
+\begin{enumerate}
+    \item \textbf{Compacité et Convexité :} 
+    \begin{lemma}
+    Si $A$ est un ensemble fini, alors l'ensemble des distributions de probabilité $\Delta(A)$ est un sous-ensemble compact et convexe d'un espace vectoriel de dimension finie $\mathbb{R}^{|A|}$.
+    \end{lemma}
+    \item \textbf{Continuité :} La fonction $\tilde{u}_i$ est polynomiale (et donc continue) par rapport aux probabilités $\sigma_i(x_i)$.
+    \item \textbf{Quasiconcavité :} $\tilde{u}_i$ est affine (donc concave et quasiconcave) par rapport à $\sigma_i$.
+\end{enumerate}
+Le résultat découle alors directement de l'existence d'un point fixe pour la correspondance de meilleure réponse.
+\end{proof}
+
+\subsection{Preuve du Principe d'Indifférence}
+
+\begin{proposition}[Principe d'indifférence]
+Soit $\sigma^*$ un équilibre de Nash mixte. Pour tout joueur $i$, si $x_i$ appartient au support de $\sigma^*_i$ (i.e., $\sigma^*_i(x_i) > 0$), alors :
+$$\tilde{u}_i(x_i, \sigma^*_{-i}) = \max_{a_i \in X_i} \tilde{u}_i(a_i, \sigma^*_{-i})$$
+\end{proposition}
+
+\begin{proof}
+Supposons par l'absurde qu'il existe $n_i$ tel que $\sigma^*_i(n_i) > 0$ mais $\tilde{u}_i(n_i, \sigma^*_{-i}) < \max_{a_i} \tilde{u}_i(a_i, \sigma^*_{-i})$. Soit $n'_i$ une action pure maximisant le gain. On peut construire une nouvelle stratégie $\sigma'_i$ en transférant la probabilité de $n_i$ vers $n'_i$. Par linéarité de l'espérance, $\tilde{u}_i(\sigma'_i, \sigma^*_{-i}) > \tilde{u}_i(\sigma^*_i, \sigma^*_{-i})$, ce qui contredit le fait que $\sigma^*_i$ est une meilleure réponse.
+\end{proof}
+
+\paragraph{Exemple : Jeu du Chicken (La fureur de vivre)}
+Matrice des gains :
+\begin{center}
+\begin{tabular}{c|c|c}
+P1 \textbackslash P2 & Dare ($q$) & Chicken ($1-q$) \\ \hline
+Dare ($p$) & (-4,-4) & (1,-1) \\ \hline
+Chicken ($1-p$) & (-1,1) & (0,0)
+\end{tabular}
+\end{center}
+
+Par le principe d'indifférence pour P1 :
+$-4q + 1(1-q) = -1q + 0(1-q) \implies -5q + 1 = -q \implies q^* = \frac{1}{4}$.
+De même, par symétrie, $p^* = \frac{1}{4}$. L'équilibre mixte est $(\frac{1}{4}, \frac{1}{4})$.
+
+% --- AJOUT AU CHAPITRE 5 ---
+\subsection{Détails théoriques sur l'existence}
+
+\begin{lemma}
+Si l'ensemble des actions pures $X_i$ est fini, alors l'ensemble des stratégies mixtes $\Delta(X_i)$ est un ensemble \textbf{compact et convexe} dans un espace vectoriel de dimension finie \cite{Note 7 oct. 2024 (3).pdf}.
+\end{lemma}
+
+\begin{proposition}
+L'ensemble des équilibres de Nash en stratégies mixtes est un ensemble \textbf{compact} \cite{Note 7 oct. 2024 (3).pdf}.
+\end{proposition}
+
+\begin{proof}
+Soit $(\sigma^k)$ une suite d'équilibres de Nash convergeant vers $\sigma$ \cite{Note 7 oct. 2024 (3).pdf}. Pour chaque joueur $i$, nous avons $\tilde{u}_i(\sigma_i^k, \sigma_{-i}^k) \ge \tilde{u}_i(s_i, \sigma_{-i}^k)$ pour toute stratégie $s_i$ \cite{Note 7 oct. 2024 (3).pdf}. Par continuité de la fonction d'espérance de gain $\tilde{u}_i$ en dimension finie, l'inégalité est préservée à la limite : $\tilde{u}_i(\sigma_i, \sigma_{-i}) \ge \tilde{u}_i(s_i, \sigma_{-i})$ \cite{Note 7 oct. 2024 (3).pdf}.
+\end{proof}
+
+\subsection{Démonstration du principe d'indifférence}
+
+\begin{proof}
+Supposons qu'un joueur $i$ joue une action pure $x_i$ avec une probabilité $\sigma_i(x_i) > 0$ telle que $u_i(x_i, \sigma_{-i}) < \max_{a_i \in X_i} u_i(a_i, \sigma_{-i})$ \cite{Note 7 oct. 2024 (3).pdf}. Alors le joueur pourrait strictement augmenter son espérance de gain en transférant la probabilité allouée à $x_i$ vers l'action maximisant le gain \cite{Note 7 oct. 2024 (3).pdf}. Cela contredirait la définition de l'équilibre de Nash, où $\sigma_i$ doit être une meilleure réponse \cite{Note 7 oct. 2024 (3).pdf}.
+\end{proof}
+% --- COMPLÉMENTS DU CHAPITRE 6 : JEUX À SOMME NULLE ---
+
+\subsection{Théorème d'Équivalence}
+
+\begin{theorem}
+Pour un jeu à somme nulle à deux joueurs $G = (X, Y, u)$, les propriétés suivantes sont équivalentes :
+\begin{enumerate}[label=(\roman*)]
+    \item $(\bar{x}, \bar{y})$ est un équilibre de Nash.
+    \item $G$ possède une valeur $v = \underline{v} = \overline{v}$ et $\bar{x}, \bar{y}$ sont des stratégies optimales.
+    \item Chaque joueur peut garantir une valeur $w = u(\bar{x}, \bar{y})$.
+\end{enumerate}
+Dans ce cas, le gain à l'équilibre est égal à la valeur du jeu : $u(\bar{x}, \bar{y}) = Val(G)$.
+\end{theorem}
+
+\begin{definition}[Stratégie optimale]
+Une stratégie $\bar{x} \in X$ est dite \textbf{optimale} pour le joueur 1 si elle garantit au moins la valeur du jeu : $\forall y \in Y, u(\bar{x}, y) \ge Val(G)$.
+\end{definition}
+
+\begin{itemize}
+    \item \textbf{Propriété :} L'ensemble des équilibres de Nash est un produit cartésien : $NE = O_1 \times O_2$, où $O_i$ est l'ensemble des stratégies optimales du joueur $i$.
+\end{itemize}
+
+\subsection{Propriétés de la Quasiconcavité}
+
+\begin{proposition}[Caractérisation par les ensembles de niveau]
+Une fonction $f: X \rightarrow \mathbb{R}$ est quasiconcave si et seulement si pour tout $\alpha \in \mathbb{R}$, l'ensemble de niveau supérieur $\{x \in X : f(x) \ge \alpha\}$ est \textbf{convexe}.
+\end{proposition}
+
+\begin{proof}
+($\implies$) Soient $x, y$ tels que $f(x) \ge \alpha$ and $f(y) \ge \alpha$. Par quasiconcavité, $f(\lambda x + (1-\lambda)y) \ge \min(f(x), f(y)) \ge \alpha$. Donc le segment $[x,y]$ est dans l'ensemble de niveau.
+($\impliedby$) Soient $x, y \in X$. Posons $\alpha = \min(f(x), f(y))$. Alors $x$ et $y$ sont dans l'ensemble $\{z : f(z) \ge \alpha\}$. Par convexité de cet ensemble, $\lambda x + (1-\lambda)y$ y est aussi, d'où $f(\lambda x + (1-\lambda)y) \ge \alpha = \min(f(x), f(y))$.
+\end{proof}
+
+\begin{remark}
+Une fonction concave est toujours quasiconcave (son épigraphe est convexe). Une fonction monotone sur un intervalle est également quasiconcave.
+\end{remark}
+
+% --- AJOUT AU CHAPITRE 6 ---
+\subsection{Théorèmes fondamentaux d'existence de valeur}
+
+\begin{theorem}[Minimax de Von Neumann]
+Soit $A$ une matrice de dimensions $I \times J$ représentant un jeu à somme nulle fini \cite{cours-game-theory-chapter6(zero-sum-game).pdf}. L'extension mixte du jeu admet toujours une valeur :
+$$v = \max_{x \in \Delta(I)} \min_{y \in \Delta(J)} xAy = \min_{y \in \Delta(J)} \max_{x \in \Delta(I)} xAy \cite{cours-game-theory-chapter6(zero-sum-game).pdf}$$
+Il existe des stratégies optimales $x^*$ et $y^*$ garantissant cette valeur \cite{cours-game-theory-chapter6(zero-sum-game).pdf}.
+\end{theorem}
+
+\begin{theorem}[Théorème de Sion]
+Soit $(X, Y, u)$ un jeu à somme nulle où $X$ et $Y$ sont convexes et l'un des deux est compact \cite{sion-proof.pdf}. Si $u$ est quasiconcave et semi-continue supérieurement en $x$, et quasiconvexe et semi-continue inférieurement en $y$, alors le jeu possède une valeur \cite{sion-proof.pdf} :
+$$\sup_{x \in X} \inf_{y \in Y} u(x, y) = \inf_{y \in Y} \sup_{x \in X} u(x, y) \cite{sion-proof.pdf}$$
+\end{theorem}
+
+\subsection{Limites et contre-exemples}
+
+\begin{lemma}[Lemme d'intersection]
+Soient $C_1, \dots, C_n$ des ensembles compacts convexes non vides \cite{sion-counter-example.pdf}. Si leur union est convexe et que toute intersection de $n-1$ ensembles est non vide, alors l'intersection globale $\bigcap C_i$ est non vide \cite{sion-counter-example.pdf}.
+\end{lemma}
+
+\begin{example}[Jeu de Sion-Wolfe]
+Sans les hypothèses de régularité (continuité ou convexité), un équilibre peut ne pas exister \cite{sion-counter-example.pdf}.
+Considérons $S_1 = S_2 = \mathbb{R}$ avec :
+$$u_1(x, y) = \begin{cases} -1 & \text{si } x < y < x + 1/2 \\ 0 & \text{si } y = x \text{ ou } y = x + 1/2 \\ 1 & \text{sinon} \end{cases} \cite{sion-counter-example.pdf}$$
+Ce jeu n'admet pas d'équilibre de Nash en stratégies mixtes \cite{sion-counter-example.pdf}.
+\end{example}
+
+% --- COMPLÉMENT : APPROFONDISSEMENT SUR LE THÉORÈME DE SION ---
+\subsection{Preuves liées au théorème de Sion}
+
+\paragraph{Question de preuve (Existence de valeur) :}
+On suppose par l'absurde que le jeu n'a pas de valeur ($\underline{v} < \bar{v}$). Alors il existe un réel $v$ tel que $\underline{v} < v < \bar{v}$ \cite{Note 3 déc. 2025.pdf}. 
+Ceci implique \cite{Note 3 déc. 2025.pdf} :
+\begin{enumerate}
+    \item $\forall x \in X, \exists y \in Y : u(x, y) < v$
+    \item $\forall y \in Y, \exists x \in X : u(x, y) > v$
+\end{enumerate}
+
+\paragraph{Semi-continuité et stratégie optimale :}
+\begin{lemma}
+Si $(f_i)_{i \in I}$ est une famille de fonctions semi-continues supérieurement (u.s.c.), alors $g(x) = \inf_{i \in I} f_i(x)$ est u.s.c. \cite{Note 3 déc. 2025.pdf}.
+\end{lemma}
+
+\begin{proposition}
+L'application $x \mapsto \min_{y \in Y} u(x, y)$ est u.s.c. Par conséquent, d'après le théorème de Weierstrass (une fonction u.s.c. sur un compact atteint son maximum), il existe une stratégie optimale pour le joueur 1 \cite{Note 3 déc. 2025.pdf}.
+\end{proposition}
+
+\subsection{Exercice : Calcul de valeur 2x2}
+
+Soit le jeu à somme nulle défini par la matrice \cite{Note 10 déc. 2025.pdf} :
+$M = \begin{pmatrix} 2 & 1 \\ 0 & 2 \end{pmatrix}$.
+
+\textbf{En stratégies pures :}
+\begin{itemize}
+    \item Pour le joueur 1 : $\min(2,1)=1$ et $\min(0,2)=0$. $\underline{v} = \max(1, 0) = 1$ \cite{Note 10 déc. 2025.pdf}.
+    \item Pour le joueur 2 : $\max(2,0)=2$ et $\max(1,2)=2$. $\bar{v} = \min(2, 2) = 2$ \cite{Note 10 déc. 2025.pdf}.
+\end{itemize}
+$\underline{v} \neq \bar{v}$, il n'y a pas de valeur en stratégies pures. Un consensus ne peut être atteint par des joueurs prudents sans aléa \cite{Note 10 déc. 2025.pdf}.
+
+
+% --- NOUVEAU CHAPITRE : JEUX SOUS FORME EXTENSIVE ---
+\section{Chapter 7: Extensive Form Games}
+
+Un jeu sous forme extensive modélise des situations où les joueurs jouent l'un après l'autre (aspect séquentiel) \cite{Note 10 déc. 2025.pdf}.
+
+\begin{itemize}
+    \item \textbf{Stratégies :} Ce sont des "plans de jeu" qui définissent l'action à entreprendre dans toutes les situations possibles \cite{Note 10 déc. 2025.pdf}.
+    \item \textbf{Équilibre de Nash associé :} On peut toujours associer un jeu sous forme extensive à un jeu sous forme normale en listant toutes les stratégies possibles et les gains correspondants \cite{Note 10 déc. 2025.pdf}.
+\end{itemize}
+
+\paragraph{Exemple :} Dans un jeu où le premier joueur peut choisir entre $W$ et $N$, et le second répond par $W'$ ou $N'$, on construit une matrice de gains (ex: Dilemme du prisonnier séquentiel) pour identifier les équilibres de Nash du jeu global \cite{Note 10 déc. 2025.pdf}.
+
+\section{Sujet d'Examen : Questions et Corrections}
+
+\subsection{Exercice 1 : Élimination itérée des stratégies strictement dominées (IESDA)}
+
+\textbf{Question :}
+Soit un jeu à deux joueurs défini par la matrice de gains suivante (le premier chiffre représente le gain du Joueur 1, le second celui du Joueur 2) \cite{Note 24 nov. 2025 (4).pdf} :
+
+\begin{center}
+\begin{tabular}{c|cccc}
+P1 \textbackslash P2 & W & X & Y & Z \\ \hline
+A & (2, 2) & (4, 1) & (0, 3) & (1, 0) \\
+B & (3, 2) & (5, 2) & (1, 1) & (2, 2) \\
+C & (1, 3) & (1, 2) & (1, 3) & (0, 3) \\
+D & (2, 1) & (1, 1) & (0, 1) & (2, 1)
+\end{tabular}
+\end{center}
+
+Déterminez l'équilibre de Nash en utilisant l'élimination itérée des stratégies strictement dominées \cite{Note 24 nov. 2025 (4).pdf}.
+
+\textbf{Correction :}
+\begin{enumerate}
+    \item \textbf{Étape 1 :} Pour le Joueur 1, l'action $A$ est strictement dominée par $B$ (car $3 > 2$, $5 > 4$, $1 > 0$, $2 > 1$). On élimine la ligne $A$ \cite{Note 24 nov. 2025 (4).pdf}.
+    \item \textbf{Étape 2 :} Pour le Joueur 2, dans le jeu restant, on élimine l'action $X$ (dominée par d'autres colonnes) \cite{Note 24 nov. 2025 (4).pdf}.
+    \item \textbf{Étape 3 :} Pour le Joueur 1, on élimine l'action $C$ \cite{Note 24 nov. 2025 (4).pdf}.
+    \item \textbf{Étape 4 :} Pour le Joueur 2, on élimine l'action $W$ \cite{Note 24 nov. 2025 (4).pdf}.
+    \item \textbf{Étape 5 :} Pour le Joueur 1, on élimine l'action $B$ \cite{Note 24 nov. 2025 (4).pdf}.
+\end{enumerate}
+\textbf{Résultat :} Le profil $(D, Z)$ est l'équilibre unique obtenu par élimination \cite{Note 24 nov. 2025 (4).pdf}. On vérifie facilement que $(D, Z)$ est un équilibre de Nash \cite{Note 24 nov. 2025 (4).pdf}.
+
+\subsection{Exercice 2 : Équilibres de Nash et Meilleures Réponses}
+
+\textbf{Question :}
+Considérons un jeu continu. Déterminez la meilleure réponse du Joueur 1 à $y$ et les équilibres de Nash du jeu selon les différents paramètres \cite{Note 24 nov. 2025 (4).pdf}.
+
+\textbf{Correction :}
+\begin{itemize}
+    \item La meilleure réponse du Joueur 1 à $y$ est la solution de $\sup_{x \in \mathbb{R}} u_1(x, y)$ \cite{Note 24 nov. 2025 (4).pdf}.
+    \item \textbf{Cas 1 :} S'il n'y a pas de solution car $\lim_{x \to \infty} u_1(x, y) = \infty$, alors il n'y a pas d'équilibre de Nash \cite{Note 24 nov. 2025 (4).pdf}.
+    \item \textbf{Cas 2 :} Si la fonction est concave, la solution satisfait la condition nécessaire de premier ordre (FOC) \cite{Note 24 nov. 2025 (4).pdf}. Par exemple, pour le Joueur 2, $y$ doit satisfaire $4y = 7/2$ dans une configuration donnée \cite{Note 24 nov. 2025 (4).pdf}.
+    \item Les correspondances de meilleure réponse ($BR_1$ et $BR_2$) sont analysées sur $[0, 1]$ \cite{Note 24 nov. 2025 (4).pdf}. L'équilibre de Nash se trouve à l'intersection de ces correspondances \cite{Note 24 nov. 2025 (4).pdf}.
+\end{itemize}
+
+\subsection{Exercice 3 : Équilibre de Nash Symétrique et Optimalité}
+
+\textbf{Question :}
+Soit un jeu symétrique. Trouvez l'équilibre de Nash symétrique et déterminez s'il est socialement optimal \cite{Note 24 nov. 2025 (4).pdf}.
+
+\textbf{Correction :}
+\begin{itemize}
+    \item Dans un équilibre symétrique, chaque Joueur $i$ maximise son gain $u_i$. On cherche $p$ tel que la dérivée de la fonction de gain soit nulle ($f'(p) = 0$) \cite{Note 24 nov. 2025 (4).pdf}.
+    \item Dans cet exercice, on trouve un équilibre symétrique $\bar{p} = 1/4$ (ou des valeurs selon $n$) \cite{Note 24 nov. 2025 (4).pdf}.
+    \item On compare ensuite le gain à l'équilibre avec le maximum social (Max $\sum u_i$) \cite{Note 24 nov. 2025 (4).pdf}.
+    \item \textbf{Conclusion :} L'équilibre de Nash est ici suboptimal d'un point de vue social \cite{Note 24 nov. 2025 (4).pdf}.
+\end{itemize}
+
+\subsection{Exercice 4 : Preuve d'Existence (Coercivité)}
+
+\textbf{Question :}
+Prouvez l'existence d'un équilibre de Nash pour un jeu où les fonctions d'utilité sont coercives \cite{Note 24 nov. 2025 (4).pdf}.
+
+\textbf{Correction :}
+\begin{enumerate}
+    \item Par hypothèse, $\lim_{|x| \to \infty} u_i(x, y) = -\infty$ \cite{Note 24 nov. 2025 (4).pdf}. La fonction est donc coercive sur un ensemble fermé, ce qui garantit l'existence d'un maximum et donc d'une meilleure réponse \cite{Note 24 nov. 2025 (4).pdf}.
+    \item En considérant une séquence de jeux sur des ensembles compacts $X_n \times Y_n$, on applique le théorème de Glicksberg pour garantir l'existence d'un équilibre de Nash $(\bar{x}_n, \bar{y}_n)$ \cite{Note 24 nov. 2025 (4).pdf}.
+    \item Puisque les meilleures réponses sont bornées par coercivité, la séquence converge vers un équilibre $(\bar{x}, \bar{y})$ du jeu original \cite{Note 24 nov. 2025 (4).pdf}.
+\end{enumerate}
+
+
+\section*{Introduction et Hypothèse de Contradiction}
+
+On cherche à démontrer le théorème de Sion. On suppose par l'absurde que le jeu n'a pas de valeur[cite: 4, 5]. 
+
+\subsection*{Question 1}
+Expliquer pourquoi il existe un réel $v$ tel que :
+\[ \underline{v} = \sup_{x \in X} \inf_{y \in Y} u(x, y) < v < \inf_{y \in Y} \sup_{x \in X} u(x, y) = \overline{v} \] [cite: 3]
+
+\textbf{Correction :}
+Puisque nous supposons par l'absurde que $\underline{v} < \overline{v}$, il existe nécessairement un nombre réel $v$ strictement compris entre ces deux bornes[cite: 10]. 
+\begin{itemize}
+    \item Si $\underline{v}, \overline{v} \in \mathbb{R}$, on peut choisir $v = \frac{\underline{v} + \overline{v}}{2}$[cite: 12, 13].
+    \item Si l'une des bornes est infinie, on choisit $v$ en ajoutant ou soustrayant une unité à la borne finie (ex: $v = \underline{v} + 1$ si $\overline{v} = +\infty$)[cite: 14, 15, 16].
+\end{itemize}
+
+\subsection*{Question 2}
+Expliquer pourquoi :
+\begin{enumerate}
+    \item $\forall x \in X, \exists y \in Y : u(x, y) < v$ [cite: 17]
+    \item $\forall y \in Y, \exists x \in X : u(x, y) > v$ [cite: 17]
+\end{enumerate}
+
+\textbf{Correction :}
+Cela découle de la définition des bornes supérieure et inférieure[cite: 18]. 
+\begin{itemize}
+    \item Comme $\sup_{x} \inf_{y} u(x, y) < v$, alors pour chaque $x$, l'infimum sur $y$ est strictement inférieur à $v$, donc il existe un $y$ tel que $u(x, y) < v$[cite: 20, 24, 26].
+    \item De même, comme $v < \inf_{y} \sup_{x} u(x, y)$, pour chaque $y$, le supremum sur $x$ est strictement supérieur à $v$, impliquant l'existence d'un $x$ tel que $u(x, y) > v$[cite: 28, 29].
+\end{itemize}
+
+\section*{Ouverture et Recouvrement Compact}
+
+\subsection*{Question 3}
+Pour tout $y \in Y$ et $\epsilon > 0$, soit $X_y^\epsilon = \{x \in X : u(x, y) < v - \epsilon\}$. Prouver que c'est un ouvert[cite: 34].
+
+\textbf{Correction :}
+L'ensemble complémentaire est $^c X_y^\epsilon = \{x \in X : u(x, y) \ge v - \epsilon\}$[cite: 35]. Comme l'application $x \mapsto u(x, y)$ est semi-continue supérieurement (u.s.c.), ses ensembles de niveau supérieur sont fermés[cite: 37, 39]. Ainsi, $X_y^\epsilon$ est ouvert[cite: 38].
+
+\subsection*{Question 4 \& 5}
+Prouver que $X \subset \bigcup_{y \in Y, \epsilon > 0} X_y^\epsilon$[cite: 52].
+
+\textbf{Correction :}
+Pour tout $x \in X$, il existe $y$ tel que $u(x, y) < v$[cite: 41]. On pose $\epsilon = \frac{v - u(x, y)}{2} > 0$[cite: 47]. Alors $u(x, y) < v - \epsilon$, donc $x \in X_y^\epsilon$[cite: 48, 53].
+
+\subsection*{Question 6}
+Prouver qu'il existe un ensemble fini $Y_0 \subset Y$ et $\epsilon > 0$ tels que $X \subset \bigcup_{y \in Y_0} X_y^\epsilon$[cite: 58].
+
+\textbf{Correction :}
+$X$ étant compact, de tout recouvrement par des ouverts on peut extraire un sous-recouvrement fini[cite: 59]. En prenant le minimum des $\epsilon_i$ (soit $\epsilon = \min\{\epsilon_1, \dots, \epsilon_n\}$), on obtient l'inclusion pour un $\epsilon$ commun car $X_y^{\epsilon_i} \subset X_y^\epsilon$[cite: 60, 62, 63, 68].
+
+\section*{Compacité de l'Enveloppe Convexe}
+
+\subsection*{Question 7 \& 8}
+Prouver que $Y' := conv(Y_0)$ est compact et convexe[cite: 76, 111].
+
+\textbf{Correction :}
+$conv(Y_0) = \{ \sum_{i=1}^n \lambda_i y_i \mid \lambda_i \ge 0, \sum \lambda_i = 1 \}$ est convexe par définition[cite: 83, 84]. Dans un espace de dimension finie, c'est un ensemble borné[cite: 90, 91]. Pour la fermeture, on utilise une suite de poids $(\lambda_i^{(k)})$ dans le simplexe compact de $\mathbb{R}^n$ ; par le théorème de Bolzano-Weierstrass, elle admet une valeur d'adhérence qui définit un point limite dans $conv(Y_0)$[cite: 101, 105, 106, 110].
+
+\section*{Construction du Système Symétrique}
+
+\subsection*{Question 8 (bis), 9 \& 10}
+Prouver que $Y_x^\epsilon = \{y \in Y' : u(x, y) > v + \epsilon\}$ est ouvert et que $Y' \subset \bigcup_{x \in X, \epsilon > 0} Y_x^\epsilon$[cite: 145, 150].
+
+\textbf{Correction :}
+C'est le raisonnement symétrique : $y \mapsto u(x, y)$ est semi-continue inférieurement (l.s.c.), donc $Y_x^\epsilon$ est ouvert[cite: 146, 148]. Le recouvrement provient de l'inégalité $v < \inf_{y \in Y'} \sup_{x \in X} u(x, y)$[cite: 141, 142, 143].
+
+\subsection*{Question 11, 12 \& 13}
+Prouver qu'il existe $X_0 \subset X$ fini tel que $Y' \subset \bigcup_{x \in X_0} Y_x^\epsilon$, et que $X' := conv(X_0)$ est compact convexe[cite: 162, 163].
+
+\textbf{Correction :}
+Par compacité de $Y'$, on extrait un sous-recouvrement fini $X_0$[cite: 162]. On a alors les inégalités sur les enveloppes convexes :
+\[ \sup_{x \in X'} \inf_{y \in Y'} u(x, y) < v < \inf_{y \in Y'} \sup_{x \in X'} u(x, y) \][cite: 166, 168, 176, 189].
+
+\section*{Minimalité et Contradiction Finale}
+
+\subsection*{Question 16}
+Il existe des ensembles finis $X_0$ et $Y_0$ satisfaisant l'Équation 6 minimaux pour l'inclusion[cite: 193].
+
+\textbf{Correction :}
+Il suffit de retirer tout élément superflu de $X_0$ ou $Y_0$ jusqu'à ce que les inégalités ne soient plus vérifiées si l'on retire un point supplémentaire[cite: 194, 195].
+
+\subsection*{Question 17 \& 18}
+Soit $A_x = \{y \in Y' : u(x, y) \le v\}$. Prouver que $A_x$ est compact convexe et que $\bigcap_{x \in X_0} A_x = \emptyset$[cite: 200, 201, 218].
+
+\textbf{Correction :}
+$A_x$ est fermé (car $u$ est l.s.c. en $y$) et contenu dans le compact $Y'$, donc compact[cite: 204, 206, 210]. Il est convexe car $y \mapsto u(x, y)$ est quasi-convexe[cite: 212, 215]. L'intersection est vide sinon il existerait $y$ tel que $\sup_{x \in X_0} u(x, y) \le v$, contredisant l'inf-sup $> v$[cite: 222, 223, 226].
+
+\subsection*{Question 19 \& 20}
+Prouver que $\bigcup_{x \in X_0} A_x$ n'est pas convexe[cite: 245].
+
+\textbf{Correction :}
+Par minimalité de $X_0$, toute intersection de $n-1$ ensembles $A_x$ est non vide[cite: 228, 235, 238]. Si l'union était convexe, elle contiendrait $Y'$, ce qui contredirait le lemme d'intersection (type KKM) puisque l'intersection totale est vide[cite: 246, 248].
+
+\subsection*{Question 21, 22 \& 23}
+Conclure la preuve[cite: 272].
+
+\textbf{Correction :}
+Comme $\bigcup A_x \neq Y'$, il existe $y_0 \in Y'$ tel que $y_0 \notin A_x$ pour tout $x \in X_0$, soit $u(x, y_0) > v$[cite: 255, 257, 261]. Par quasi-concavité en $x$, cela reste vrai pour tout $x \in X'$[cite: 262, 264]. Par symétrie, il existe $x_0 \in X'$ tel que $u(x_0, y) < v$ pour tout $y \in Y'$[cite: 272, 280, 281]. En évaluant en $(x_0, y_0)$, on obtient $v < u(x_0, y_0) < v$, une contradiction[cite: 283, 284]. Donc $\underline{v} = \overline{v}$[cite: 285].
+
+\section*{Existence des Stratégies Optimales}
+
+\subsection*{Question 25}
+Prouver que $x \mapsto \min_{y \in Y} u(x, y)$ est u.s.c. et qu'il existe une stratégie optimale[cite: 286, 287].
+
+\textbf{Correction :}
+L'infimum d'une famille de fonctions u.s.c. est u.s.c.[cite: 289]. Comme $x \mapsto u(x, y)$ est u.s.c., $f(x) = \min_y u(x, y)$ l'est aussi[cite: 291]. Par le théorème de Weierstrass, une fonction u.s.c. sur un compact atteint son maximum, ce qui garantit l'existence d'une stratégie optimale $x^*$[cite: 285, 291].
+
+\end{document}

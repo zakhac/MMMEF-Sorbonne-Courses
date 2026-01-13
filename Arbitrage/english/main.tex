@@ -1,0 +1,242 @@
+%===========================
+% File: main.tex
+% Arbitrage Theory Course - MMMEF
+%===========================
+\documentclass[11pt,a4paper,oneside]{book}
+
+%---------------------------
+% Encoding & Language
+%---------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+
+%---------------------------
+% Mathematics
+%---------------------------
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm}
+\usepackage{amsfonts}
+
+\usepackage{float}
+\numberwithin{equation}{chapter}
+
+%---------------------------
+% Figures & Illustrations
+%---------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{trees, arrows.meta, positioning, calc, shapes.geometric}
+\usepackage{tikz-3dplot}
+
+%---------------------------
+% Colored Boxes (tcolorbox)
+%---------------------------
+\usepackage[most]{tcolorbox}
+
+%---------------------------
+% Page Layout & Style
+%---------------------------
+\usepackage{geometry}
+\geometry{margin=2.5cm, headheight=14pt, footskip=50pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\thepage}
+\fancyfoot[L]{\footnotesize 2025-2026 \textperiodcentered{} Arbitrage Theory - MMMEF}
+\fancyfoot[R]{\footnotesize Written by Zakari Hachemi}
+
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet,leftmargin=1.5em}
+
+\usepackage{array}
+
+%---------------------------
+% Hyperlinks
+%---------------------------
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage[nameinlink,capitalise,noabbrev]{cleveref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    citecolor=blue!50!black,
+    urlcolor=blue!50!black,
+    pdfauthor={Zakari Hachemi},
+    pdftitle={MMMEF Course - Arbitrage Theory},
+    pdfsubject={Complete Course},
+    pdfcreator={LaTeX},
+    plainpages=false
+}
+
+%---------------------------
+% Colors for Environments
+%---------------------------
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{darkgray}{gray}{0.35}
+\definecolor{darkred}{RGB}{99,0,0}
+
+%---------------------------
+% Theorem Environments & Colors
+%---------------------------
+
+% 1. Standard environment definitions
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{assumption}[theorem]{Assumption}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{remarks}{Remarks}
+
+% 2. Apply colors (tcolorbox)
+
+% --- Style for THEOREMS (Red) ---
+\tcolorboxenvironment{theorem}{
+    enhanced,
+    colback=red!5!white,
+    colframe=red!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    drop fuzzy shadow
+}
+
+% --- Style for PROPOSITIONS (Orange) ---
+\tcolorboxenvironment{proposition}{
+    enhanced,
+    colback=orange!5!white,
+    colframe=orange!80!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- Style for DEFINITIONS (Blue) ---
+\tcolorboxenvironment{definition}{
+    enhanced,
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- Style for ASSUMPTIONS (Gray/Blue) ---
+\tcolorboxenvironment{assumption}{
+    enhanced,
+    colback=gray!5!white,
+    colframe=gray!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- Style for EXAMPLES (Green) ---
+\tcolorboxenvironment{example}{
+    blanker,
+    breakable,
+    left=5mm,
+    before skip=10pt,
+    after skip=10pt,
+    borderline west={3pt}{0pt}{green!60!black}
+}
+
+% --- Style for LEMMAS (Violet) ---
+\tcolorboxenvironment{lemma}{
+    enhanced,
+    colback=violet!5!white,
+    colframe=violet!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    drop fuzzy shadow
+}
+
+% --- Style for COROLLARIES (Cyan) ---
+\tcolorboxenvironment{corollary}{
+    enhanced,
+    colback=cyan!5!white,
+    colframe=cyan!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    drop fuzzy shadow
+}
+
+%---------------------------
+% Smart References (cleveref)
+%---------------------------
+\crefname{theorem}{theorem}{theorems}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{lemma}{lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{corollary}{corollary}{corollaries}
+\Crefname{corollary}{Corollary}{Corollaries}
+\crefname{definition}{definition}{definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{example}{example}{examples}
+\Crefname{example}{Example}{Examples}
+\crefname{equation}{equation}{equations}
+\Crefname{equation}{Equation}{Equations}
+\crefname{chapter}{chapter}{chapters}
+\Crefname{chapter}{Chapter}{Chapters}
+\crefname{section}{section}{sections}
+\Crefname{section}{Section}{Sections}
+\crefname{remark}{remark}{remarks}
+\Crefname{remark}{Remark}{Remarks}
+
+%---------------------------
+% Useful Macros
+%---------------------------
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\indic}{\mathbf{1}}
+\DeclarePairedDelimiter{\sca}{\langle}{\rangle}
+\newcommand{\circled}[1]{\text{\tikz[baseline=(char.base)]\node[shape=circle,draw,inner sep=0.6pt] (char) {\scriptsize #1};}}
+
+%---------------------------
+% Document Information
+%---------------------------
+\title{\textbf{Arbitrage Theory}\\[0.5em]
+       \large Complete Course in English}
+\author{Zakari HACHEMI}
+\date{Based on the course by Christophe Chorro - MMMEF \\ 2025-2026}
+
+%===========================
+\begin{document}
+%===========================
+
+\maketitle
+\tableofcontents
+\mainmatter
+
+%---------------------------
+% Course Content
+%---------------------------
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+
+\appendix
+
+\end{document}
+%===========================

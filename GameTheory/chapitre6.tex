@@ -1,0 +1,320 @@
+\chapter{Jeux à Somme Nulle}
+
+\section{Préliminaires Topologiques}
+
+\begin{definition}[Semi-continuité]
+Une fonction $f:X \to \mathbb{R}$ est \textbf{semi-continue supérieurement (s.c.s.)} si pour tout $\alpha \in \mathbb{R}$, l'ensemble $\{x \in X : f(x) \ge \alpha\}$ est fermé.
+
+Une fonction $f:X \to \mathbb{R}$ est \textbf{semi-continue inférieurement (s.c.i.)} si pour tout $\alpha \in \mathbb{R}$, l'ensemble $\{x \in X : f(x) \le \alpha\}$ est fermé.
+\end{definition}
+
+\begin{exercice}[Propriétés à démontrer]
+\begin{itemize}
+    \item Montrer que l'infimum d'une famille de fonctions s.c.s. est s.c.s.
+    \item Montrer que le supremum d'une famille de fonctions s.c.i. est s.c.i.
+\end{itemize}
+\paragraph{Correction :}
+\begin{enumerate}
+    \item Soit $f = \inf_{i \in I} f_i$ où chaque $f_i$ est s.c.s.
+    $ \{ x : f(x) \ge \alpha \} = \{ x : \forall i, f_i(x) \ge \alpha \} = \bigcap_{i \in I} \{ x : f_i(x) \ge \alpha \} $.
+    Chaque ensemble $\{ f_i \ge \alpha \}$ est fermé (déf s.c.s.). Une intersection quelconque de fermés est fermée. Donc $f$ est s.c.s.
+    
+    \item Soit $g = \sup f_i$ avec $f_i$ s.c.i.
+    $ \{ x : g(x) \le \alpha \} = \{ x : \sup f_i(x) \le \alpha \} = \{ x : \forall i, f_i(x) \le \alpha \} = \bigcap \{ f_i \le \alpha \}$.
+    Intersection de fermés $\implies$ fermé. Donc $g$ est s.c.i.
+\end{enumerate}
+\end{exercice}
+
+
+\begin{exercice}[Caractérisation de la quasi-concavité]
+Prouver qu'une fonction $f:X \to \mathbb{R}$ est quasi-concave si et seulement si, pour tout $\alpha \in \mathbb{R}$, l'ensemble de niveau supérieur $L_{\alpha} = \{x \in X : f(x) \ge \alpha\}$ est un ensemble convexe.
+\end{exercice}
+
+\paragraph{Correction :}
+\begin{itemize}
+    \item $\Rightarrow$ : Supposons $f$ quasi-concave. Par définition $f(\lambda x + (1-\lambda)y) \ge \min(f(x), f(y))$.
+    Soient $x, y \in L_\alpha$. Alors $f(x) \ge \alpha$ et $f(y) \ge \alpha$. Donc $\min \ge \alpha$.
+    D'où $f(z) \ge \alpha$ pour tout $z$ segment $[x,y]$. Donc $z \in L_\alpha$. $L_\alpha$ est convexe.
+    \item $\Leftarrow$ : Supposons les $L_\alpha$ convexes.
+    Soit $\alpha = \min(f(x), f(y))$. Alors $x \in L_\alpha$ et $y \in L_\alpha$.
+    Par convexité, le segment joint est dans $L_\alpha$, donc $f(\lambda x + \dots) \ge \alpha$, c.q.f.d.
+\end{itemize}
+
+\section{Définitions et Analogies}
+
+\begin{definition}[Jeu à somme nulle à 2 joueurs]
+Un jeu à somme nulle est un triplet $(X, Y, u)$ où :
+\begin{itemize}
+    \item $X$ est l'ensemble des stratégies du Joueur 1 (maximizant).
+    \item $Y$ est l'ensemble des stratégies du Joueur 2 (minimizant).
+    \item $u: X \times Y \rightarrow \mathbb{R}$ représente le gain du Joueur 1.
+    \item Le gain du Joueur 2 est \textbf{identiquement opposé} : $-u(x, y)$.
+\end{itemize}
+Ce modèle capture l'essence du \textbf{conflit pur} : ce que l'un gagne, l'autre le perd nécessairement.
+\end{definition}
+
+\paragraph{Analogies Sportives et Classiques :}
+\begin{itemize}
+    \item \textbf{Penalty au Football :} Si le tireur marque (+1), le gardien encaisse (-1). C'est l'archétype du jeu à somme nulle.
+    \item \textbf{Matching Pennies (Pile ou Face) :} Chaque joueur choisit H ou T. Si les choix correspondent, J1 gagne 1 (J2 perd 1). Sinon, J1 perd 1 (J2 gagne 1).
+    $$M = \begin{pmatrix} 1 & -1 \\ -1 & 1 \end{pmatrix}$$
+\end{itemize}
+
+\section{Valeurs Maximin et Minimax (Intuition)}
+
+Soit $v_1(x) = \inf_{y \in Y} u(x, y)$ le pire résultat possible pour J1 s'il joue $x$.
+Le joueur 1, prudent, cherchera à maximiser cette sécurité :
+$$\underline{v} = \sup_{x \in X} \inf_{y \in Y} u(x, y) \quad \text{(Valeur Maximin ou Niveau de Sécurité)}$$
+
+De même, le joueur 2 veut minimiser le gain de J1 (donc maximiser le sien). Il anticipe le meilleur coup de J1 :
+$$\overline{v} = \inf_{y \in Y} \sup_{x \in X} u(x, y) \quad \text{(Valeur Minimax ou Plafond de Paiement)}$$
+
+\begin{definition}[Valeur du Jeu]
+Un jeu à somme nulle $G=(X, Y, u)$ possède une \textbf{valeur} $V \in \mathbb{R}$ si :
+$$ V = \underline{v} = \overline{v} $$
+C'est-à-dire si le maximin est égal au minimax.
+\end{definition}
+
+\begin{remarque}[Valeur de Sécurité]
+La valeur minimax $\overline{v}$ peut être vue comme une sorte de "valeur de sécurité" pour le joueur 2 (dans le sens où le joueur 2 est sûr de ne pas avoir à payer plus qu'une valeur très proche de $\overline{v}$).
+\end{remarque}
+
+\begin{proposition}[Inégalité Fondamentale]
+Pour toute fonction $u$, on a toujours :
+$$\underline{v} \le \overline{v}$$
+L'inverse est faux en général (sauf s'il y a un point-selle).
+\end{proposition}
+
+\section{Outils Topologiques (Préalables)}
+Le théorème de Sion requiert des notions précises de continuité et de convexité.
+
+\begin{definition}[Semi-continuité]
+Soit $f: X \to \mathbb{R}$.
+\begin{itemize}
+    \item $f$ est \textbf{semi-continue supérieurement (s.c.s.)} si pour tout $\lambda$, l'ensemble de niveau supérieur $\{x : f(x) \ge \lambda\}$ est \textbf{fermé}.
+    \item $f$ est \textbf{semi-continue inférieurement (s.c.i.)} si pour tout $\lambda$, l'ensemble de niveau inférieur $\{x : f(x) \le \lambda\}$ est \textbf{fermé}.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Quasi-convexité]
+$f$ est \textbf{quasi-convexe} si ses ensembles de niveau inférieur $\{x : f(x) \le \lambda\}$ sont \textbf{convexes}. (L'opposé d'une fonction quasi-concave).
+\end{definition}
+
+\subsection{Le Lemme d'Intersection}
+Ce lemme est crucial pour la preuve de Sion :
+\begin{lemme}[de Séparation (Préliminaire)]
+Soient $A$ et $B$ deux ensembles convexes compacts non vides et disjoints. Soit $H$ l'hyperplan qui les sépare strictement (Théorème de Hahn-Banach). Si un ensemble convexe $C$ a une intersection non vide avec $A$ et avec $B$, alors $C \cap H \neq \emptyset$.
+\end{lemme}
+
+\begin{lemme}[d'Intersection]
+Soient $C_1, \dots, C_n$ des ensembles convexes compacts non vides. Si $\cup_{i=1}^n C_i$ est convexe et si pour tout $j \in \{1,\dots,n\}$, $\cap_{i \neq j} C_i \neq \emptyset$, alors $\cap_{i=1}^n C_i \neq \emptyset$.
+\end{lemme}
+
+\begin{proof}[Démonstration (par récurrence sur n)]
+\begin{itemize}
+    \item \textbf{Initialisation ($n=2$) :} Si $C_1 \cup C_2$ est convexe avec $C_1 \cap C_2 = \emptyset$, alors par Hahn-Banach il existe un hyperplan $H$ séparant strictement $C_1$ et $C_2$. Comme $C_1 \cup C_2$ est convexe et intersecte les deux côtés de $H$, il doit intersecter $H$. Or $H$ ne rencontre ni $C_1$ ni $C_2$, contradiction. Donc $C_1 \cap C_2 \neq \emptyset$.
+    \item \textbf{Hérédité :} On suppose le résultat vrai pour $n-1$. (La suite de la preuve utilise la construction d'intersections de type $C_i \cap C_n$).
+\end{itemize}
+\end{proof}
+
+\subsection{Notation Matricielle de Von Neumann}
+Pour un jeu fini défini par une matrice $A$, on note le gain :
+\[ val(A) = \max_{x \in \Delta(I)} \min_{y \in \Delta(J)} xAy = \min_{y \in \Delta(J)} \max_{x \in \Delta(I)} xAy \]
+où $x$ est un vecteur ligne et $y$ un vecteur colonne.
+
+\section{Équilibre $\epsilon$-Nash et Valeur}
+
+\begin{definition}[$\epsilon$-équilibre]
+Un profil $(x, y)$ est un $\epsilon$-équilibre si personne ne peut gagner plus de $\epsilon$ en déviant :
+$$u(d_x, y) - \epsilon \le u(x, y) \quad \text{et} \quad -u(x, d_y) - \epsilon \le -u(x, y)$$
+\end{definition}
+
+\begin{proposition}
+Un jeu possède une valeur si et seulement si pour tout $\epsilon > 0$, il existe un $\epsilon$-équilibre.
+\end{proposition}
+
+\section{Étude Détaillée : Théorème de Minimax de Sion}
+
+\subsection{Hypothèses et Définitions}
+Soit un jeu $(X, Y, u)$ où:
+\begin{itemize}
+    \item $X$ est un ensemble compact et convexe.
+    \item $Y$ est un ensemble convexe.
+    \item $u$ est quasi-concave et semi-continue supérieurement (s.c.s.) en $x$.
+    \item $u$ est quasi-convexe et semi-continue inférieurement (s.c.i.) en $y$.
+\end{itemize}
+
+\subsection{Partie 1 : Construction de la Contradiction}
+
+\paragraph{Question 1} Expliquer pourquoi il existe un réel $v$ tel que :
+$$ \sup_{x \in X} \inf_{y \in Y} u(x,y) < v < \inf_{y \in Y} \sup_{x \in X} u(x,y) $$
+\textbf{Correction :} On suppose par l'absurde que le jeu n'a pas de valeur, soit $\underline{v} < \overline{v}$. Par la propriété de densité des réels, on peut choisir un $v$ entre ces deux bornes. Si les valeurs sont finies, on peut prendre $v = \frac{\underline{v} + \overline{v}}{2}$. Si $\overline{v} = +\infty$, on peut prendre $v = \underline{v} + 1$.
+
+\paragraph{Question 2} Expliquer pourquoi (1) $\forall x \in X, \exists y \in Y : u(x,y) < v$ et (2) $\forall y \in Y, \exists x \in X : u(x,y) > v$.
+\textbf{Correction :} 
+(1) Puisque $\sup_x (\inf_y u(x,y)) < v$, alors pour n'importe quel $x$, la valeur minimale $\inf_y u(x,y)$ est strictement inférieure à $v$. Il existe donc forcément un $y$ (qui dépend de $x$) tel que $u(x,y) < v$. 
+(2) De même, $\inf_y (\sup_x u(x,y)) > v$ implique que pour tout $y$, le meilleur gain possible pour le joueur 1 est au-dessus de $v$, donc il existe un $x$ tel que $u(x,y) > v$.
+
+\paragraph{Question 3} Pour chaque $y \in Y$ et $\epsilon > 0$, soit $X_y^\epsilon = \{x \in X : u(x,y) < v - \epsilon\}$. Prouver que c'est un ouvert.
+\textbf{Correction :} Le complémentaire de cet ensemble dans $X$ est $\{x \in X : u(x,y) \geq v - \epsilon\}$. Comme l'application $x \mapsto u(x,y)$ est semi-continue supérieurement (s.c.s.), ses ensembles de niveau supérieur sont fermés par définition. Le complémentaire $X_y^\epsilon$ est donc un ouvert.
+
+\paragraph{Question 4} Prouver que pour tout $x \in X$, il existe $y \in Y$ et $\epsilon > 0$ tels que $u(x,y) < v - \epsilon$.
+\textbf{Correction :} D'après la question 2, pour tout $x$, il existe $y$ tel que $u(x,y) < v$. En posant $\epsilon = \frac{v - u(x,y)}{2} > 0$, on obtient bien $u(x,y) = v - 2\epsilon < v - \epsilon$.
+
+\paragraph{Question 5} Prouver que $X \subset \bigcup_{y \in Y, \epsilon > 0} X_y^\epsilon$.
+\textbf{Correction :} Puisque chaque point $x$ de $X$ appartient à au moins un ensemble $X_y^\epsilon$ (d'après la Question 4), l'union de tous ces ouverts recouvre nécessairement $X$.
+
+\paragraph{Question 6} Prouver qu'il existe un ensemble fini $Y_0 \subset Y$ et $\epsilon > 0$ tels que $X \subset \bigcup_{y \in Y_0} X_y^\epsilon$.
+\textbf{Correction :} L'ensemble $X$ est compact. Par la propriété de Borel-Lebesgue, de tout recouvrement ouvert, on peut extraire un sous-recouvrement fini. Il existe donc $y_1, \dots, y_n$ et $\epsilon_i$ associés. En prenant $\epsilon = \min(\epsilon_1, \dots, \epsilon_n)$, on conserve l'inclusion car $X_{y_i}^{\epsilon_i} \subset X_{y_i}^{\epsilon}$ pour $\epsilon \leq \epsilon_i$.
+
+\paragraph{Question 7} Prouver que $Y' := \text{conv}(Y_0)$ est compact et convexe.
+\textbf{Correction :} $Y'$ est l'enveloppe convexe d'un nombre fini de points. Il est convexe par définition. Comme on travaille dans un espace de dimension finie (le span de $Y_0$), il est borné. Pour la compacité, toute suite dans $Y'$ a ses coefficients de mélange dans le simplexe (qui est compact), donc par Bolzano-Weierstrass, on peut extraire une sous-suite convergente dont la limite est encore dans $Y'$.
+
+\paragraph{Question 8} Prouver que : $\sup_{x \in X} \inf_{y \in Y_0} u(x,y) < v < \inf_{y \in Y'} \sup_{x \in X} u(x,y)$.
+\textbf{Correction :}
+(Gauche) Puisque $X$ est couvert par les $X_y^\epsilon$ pour $y \in Y_0$, pour tout $x$, il existe un $y \in Y_0$ tel que $u(x,y) < v - \epsilon$. L'infimum sur $Y_0$ est donc toujours inférieur à $v$.
+(Droite) Comme $Y' \subset Y$, l'infimum sur $Y'$ est supérieur ou égal à l'infimum sur $Y$, qui est lui-même strictement supérieur à $v$ d'après l'hypothèse de la Question 1.
+
+\subsection{Partie 2 : Symétrisation}
+
+\paragraph{Question 11} Prouver qu'il existe un ensemble fini $X_0 \subset X$ tel que $Y' \subset \bigcup_{x \in X_0} Y_x^\epsilon$.
+\textbf{Correction :} On applique le même raisonnement que précédemment : $Y'$ est compact et $u$ est s.c.i. en $y$, donc les ensembles $Y_x^\epsilon = \{y \in Y' : u(x,y) > v + \epsilon\}$ sont ouverts. Par compacité de $Y'$, on extrait un sous-recouvrement fini $X_0$.
+
+\paragraph{Question 13} Prouver que $\sup_{x \in X'} \inf_{y \in Y'} u(x,y) < v < \inf_{y \in Y'} \sup_{x \in X_0} u(x,y)$ (où $X' = \text{conv}(X_0)$).
+\textbf{Correction :} Cela découle de la monotonie du sup et de l'inf sur les sous-ensembles compacts $X'$ et $Y'$.
+
+\paragraph{Question 16} Justifier l'existence de $X_0$ et $Y_0$ minimaux satisfaisant ces inégalités.
+\textbf{Correction :} Si un élément de $X_0$ ou $Y_0$ n'est pas nécessaire pour maintenir l'inégalité, on peut simplement le retirer de l'ensemble fini jusqu'à ce que l'ensemble soit minimal pour l'inclusion.
+
+\subsection{Partie 3 : Lemme d'Intersection et Contradiction}
+
+\paragraph{Question 17} Pour $x \in X_0$, soit $A_x = \{y \in Y' : u(x,y) \leq v\}$. Prouver que $A_x$ est compact et convexe.
+\textbf{Correction :} 
+\begin{itemize}
+    \item \textbf{Compact :} $u$ est s.c.i. en $y$, donc $A_x$ est fermé. Étant contenu dans le compact $Y'$, il est compact.
+    \item \textbf{Convexe :} $u$ est quasi-convexe en $y$, donc ses ensembles de niveau inférieur sont convexes par définition.
+\end{itemize}
+
+\paragraph{Question 18} Prouver que $\bigcap_{x \in X_0} A_x = \emptyset$.
+\textbf{Correction :} Si l'intersection contenait un point $y^*$, on aurait $u(x, y^*) \leq v$ pour tout $x \in X_0$. Cela impliquerait $\sup_{x \in X_0} u(x, y^*) \leq v$, ce qui contredit l'inégalité de droite de la Question 13 : $\inf_{y \in Y'} \sup_{x \in X_0} u(x, y) > v$.
+
+\paragraph{Question 20} Prouver que $\bigcup_{x \in X_0} A_x$ n'est pas convexe et n'est pas égal à $Y'$.
+\textbf{Correction :} Par le Lemme d'Intersection, si une famille d'ensembles compacts convexes $A_x$ a une intersection totale vide mais que toutes ses sous-familles ont une intersection non vide (par minimalité de $X_0$), alors leur union n'est pas convexe. En particulier, elle ne peut pas être égale à l'ensemble convexe $Y'$.
+
+\paragraph{Question 21 \& 22} Prouver l'existence de $y_0 \in Y'$ tel que $u(x, y_0) > v$ pour tout $x \in X'$.
+\textbf{Correction :} Comme l'union des $A_x$ ne couvre pas $Y'$, il existe $y_0 \in Y' \setminus \bigcup A_x$. Donc $y_0$ n'appartient à aucun $A_x$, d'où $\forall x \in X_0, u(x, y_0) > v$. Par quasi-concavité de $u$ en $x$, cette propriété reste vraie pour toute combinaison convexe $x \in X' = \text{conv}(X_0)$.
+
+\paragraph{Question 23} Finir la preuve.
+\textbf{Correction :} Par un argument symétrique, il existe $x_0 \in X'$ tel que pour tout $y \in Y'$, $u(x_0, y) < v$. En évaluant au point $(x_0, y_0)$, on obtient $u(x_0, y_0) > v$ et $u(x_0, y_0) < v$. C'est une contradiction. Donc $\underline{v} = \overline{v}$.
+
+\paragraph{Question 25} Prouver l'existence d'une stratégie optimale.
+\textbf{Correction :} L'application $f(x) = \inf_{y \in Y} u(x,y)$ est l'infimum d'une famille de fonctions s.c.s., elle est donc s.c.s.. D'après le théorème de Weierstrass, une fonction s.c.s. sur un compact ($X$) atteint son maximum. Il existe donc un $\overline{x}$ tel que $f(\overline{x}) = \sup_x f(x)$, ce qui est la stratégie optimale.
+
+\begin{exercice}[Contre-exemple de Sion-Wolfe]
+Soit le jeu sur $S_1 = S_2 = [0,1]$ avec :
+$$u_1(x,y) = \begin{cases} -1 & \text{si } x < y < x + 1/2 \\ 0 & \text{si } x = y \text{ ou } y = x + 1/2 \\ 1 & \text{sinon} \end{cases}$$
+Montrer que ce jeu ne possède pas de valeur (le Min-Max diffère du Max-Min) car les conditions de régularité (semi-continuité) de Sion ne sont pas vérifiées.
+\end{exercice}
+
+\paragraph{Correction :}
+\begin{itemize}
+    \item \textbf{Calcul du Maximin ($\underline{v}$)} :
+    Pour $x$ fixé, le joueur 2 peut choisir $y=x + \epsilon$ (avec $\epsilon$ petit). Alors $x < y < x+1/2$, donc $u=-1$.
+    Ainsi $\inf_y u(x,y) = -1$.
+    Et $\sup_x (-1) = -1$. Donc $\underline{v} = -1$.
+    
+    \item \textbf{Calcul du Minimax ($\overline{v}$)} :
+    Pour $y$ fixé, le joueur 1 peut choisir $x = y$ ou très proche.
+    Si J1 choisit $x=y$, $u=0$.
+    Mais J1 peut choisir $x$ tel que $y$ ne soit pas dans $]x, x+1/2[$. Par exemple $x$ tel que $x > y$. Alors $u=1$.
+    Ainsi $\sup_x u(x,y) = 1$.
+    Et $\inf_y (1) = 1$. Donc $\overline{v} = 1$.
+    
+    \item \textbf{Conclusion :} $-1 \ne 1$. Le jeu n'a pas de valeur. Cela vient de la discontinuité grossière des gains.
+\end{itemize}
+
+\section{Exercices Complémentaires}
+
+\subsection{Exercice Matriciel 4x4}
+Calculer $\underline{v}$ et $\overline{v}$ pour :
+$$M = \begin{pmatrix} -1 & 2 & -1 & 0 \\ 1 & 3 & 3 & 5 \\ -9 & -2 & 8 & 2 \\ -1 & 4 & -4 & 5 \end{pmatrix}$$
+\textit{Méthode :}
+\begin{itemize}
+    \item Maximin (Ligne) : Min de chaque ligne $\to (-1, 1, -9, -4)$. Le max est $1$ (Ligne 2). Donc $\underline{v} = 1$.
+    \item Minimax (Colonne) : Max de chaque colonne $\to (1, 4, 8, 5)$. Le min est $1$ (Colonne 1). Donc $\overline{v} = 1$.
+    \item Conclusion : Point selle $(L2, C1)$, valeur $v=1$.
+\end{itemize}
+
+\subsection{Exercice "No Value" (Cours)}
+Considérons le jeu à somme nulle donné par la matrice suivante (actions J1: $i$, actions J2: $j$) :
+$$ A = \begin{pmatrix} 1 & 2 & -1 & 0 \\ 0 & 1 & 3 & 5 \\ 9 & -2 & 8 & 2 \\ 1 & 4 & -4 & 5 \end{pmatrix} $$
+
+\textbf{Analyse des gains :}
+Par exemple, si $i=1$ et $j=2$ (J1 joue 1, J2 joue 2), alors J1 gagne 2 et J2 gagne -2.
+
+\textbf{Calcul des valeurs pures :}
+\begin{itemize}
+    \item \textbf{Maximin ($\underline{V}$)} :
+    \begin{itemize}
+        \item Ligne 1 : min = -1
+        \item Ligne 2 : min = 0
+        \item Ligne 3 : min = -2
+        \item Ligne 4 : min = -4
+    \end{itemize}
+    Le maximum de ces minimums est $\underline{V} = 0$.
+
+    \item \textbf{Minimax ($\overline{V}$)} :
+    \begin{itemize}
+        \item Col 1 : max = 9
+        \item Col 2 : max = 4
+        \item Col 3 : max = 8
+        \item Col 4 : max = 5
+    \end{itemize}
+    Le minimum de ces maximums est $\overline{V} = 4$.
+\end{itemize}
+
+\textbf{Conclusion :}
+$$ \underline{V} = 0 < 4 = \overline{V} $$
+Le jeu n'a \textbf{pas de valeur} (en stratégies pures). Il n'y a donc pas d'équilibre de Nash ni de consensus possible.
+
+\subsection{Jeu 2x2 sans valeur pure (Exemple du cours)}
+$$M = \begin{pmatrix} 2 & 1 \\ 0 & 2 \end{pmatrix}$$
+\begin{enumerate}
+    \item \textbf{Valeurs Pures :}
+    \begin{itemize}
+        \item Maximin (J1) : min ligne 1 = 1, min ligne 2 = 0. Max = 1. Donc $\underline{v} = 1$.
+        \item Minimax (J2) : max col 1 = 2, max col 2 = 2. Min = 2. Donc $\overline{v} = 2$.
+    \end{itemize}
+    Comme $\underline{v} < \overline{v}$, il n'y a pas de point selle (pas de consensus).
+
+    \item \textbf{Stratégies Mixtes (Méthode de l'indifférence) :}
+    Soient $p$ la probabilité que J1 joue Haut, et $q$ la probabilité que J2 joue Gauche.
+    \begin{itemize}
+        \item \textbf{Indifférence de J1 :} J1 doit gagner la même chose si J2 joue G ou D (pour que J2 soit prêt à mixer).
+         \textit{Note : L'image des notes inverse parfois la logique, mais théoriquement :}
+         J1 rend J2 indifférent :
+         $$2p + 0(1-p) = 1p + 2(1-p)$$
+         $$2p = p + 2 - 2p \implies 3p = 2 \implies p = 2/3$$
+        
+        \item \textbf{Indifférence de J2 :} J2 rend J1 indifférent :
+        $$2q + 1(1-q) = 0q + 2(1-q)$$
+        $$q + 1 = 2 - 2q \implies 3q = 1 \implies q = 1/3$$
+    \end{itemize}
+    \textbf{Équilibre de Nash :} $((2/3, 1/3), (1/3, 2/3))$.
+    \textbf{Valeur du jeu :} $v = 3(1/3) + 1(2/3) \dots$ non, calculons le gain de J1 :
+    $u_1 = 2(1/3) + 1(2/3) = 4/3$ (si J1 joue H contre q).
+    Vérif: $0(1/3) + 2(2/3) = 4/3$. OK.
+\end{enumerate}
+
+\begin{exercice}[Lien entre Valeur et $\epsilon$-Nash]
+Prouver qu'un jeu à somme nulle possède une valeur $V$ si et seulement si, pour tout $\epsilon > 0$, il existe un profil de stratégies $(x^*_\epsilon, y^*_\epsilon)$ tel que :
+$$ \underline{v}(x^*_\epsilon) \ge V - \epsilon \quad \text{et} \quad \overline{v}(y^*_\epsilon) \le V + \epsilon $$
+\end{exercice}
+
+\paragraph{Correction :}
+\begin{itemize}
+    \item $\Rightarrow$ Si $V$ existe, $\underline{v} = \overline{v} = V$. Il suffit de prendre $x^*_\epsilon$ une stratégie $\epsilon$-optimale pour le maximin, et $y^*_\epsilon$ pour le minimax.
+    \item $\Leftarrow$ On a toujours $\underline{v} \le \overline{v}$.
+    L'hypothèse donne : $V - \epsilon \le \underline{v}(x^*_\epsilon) \le \underline{v} \le \overline{v} \le \overline{v}(y^*_\epsilon) \le V + \epsilon$.
+    En faisant tendre $\epsilon \to 0$, on obtient $V \le \underline{v} \le \overline{v} \le V$, donc égalité partout.
+\end{itemize}

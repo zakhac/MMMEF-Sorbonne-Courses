@@ -1,0 +1,2228 @@
+\documentclass[12pt,a4paper]{article}
+
+% ==== Packages de base ====
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[nameinlink,capitalise,noabbrev]{cleveref}
+
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usetikzlibrary{trees, arrows.meta, positioning, calc, shapes.geometric}
+
+
+% ==== Couleurs pour les environnements ====
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{darkgray}{gray}{0.35}
+
+
+\geometry{margin=2.5cm}
+
+% ==== Métadonnées PDF ====
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!50!black,
+  pdfauthor={},
+  pdftitle={Cours MMMEF - Arbitrage Theory}
+}
+
+% ==== Numérotation ====
+\numberwithin{equation}{section}
+
+% ==== Styles & compteurs par STYLE (pas par section) ====
+\theoremstyle{plain} % énoncés (italique)
+\newtheorem{theoreme}{Théorème}              % compteur du style "énoncés"
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemme}{Lemme}
+\newtheorem{corollaire}{Corollaire}
+
+\theoremstyle{definition} % définitions (roman)
+\newtheorem{definition}{Définition}          % compteur du style "définitions"
+% (exemple sera redéfini plus bas avec un style dédié, en vert)
+% \newtheorem{exemple}[definition]{Exemple}
+\newtheorem{hypothese}[definition]{Hypothèse}
+
+\theoremstyle{remark} % remarques (roman, petite emphase)
+% Remarques sans numérotation
+\newtheorem*{remarque}{Remarque}
+\newtheorem*{remarques}{Remarques}
+
+% ==== Styles colorés et espacements pour les environnements ====
+% On crée des styles dérivés d'amsthm pour ajuster couleur et espacement
+% ---- Couleur rouge foncé pour les énoncés ----
+\definecolor{darkred}{RGB}{99,0,0}
+
+% ==== Styles colorés et espacements pour les environnements ====
+\newtheoremstyle{myplain}% name
+  {1.0em}% Space above
+  {1.0em}% Space below
+  {\itshape\color{darkred}}% Body font   <-- (était {\itshape})
+  {}% Indent amount
+  {\bfseries\color{darkred}}% Head font  <-- (était \color{black})
+  {.}% Punctuation after head
+  {0.5em}% Space after head
+  {}% Head spec
+
+
+\newtheoremstyle{mydefinition}% name
+  {1.0em}% Space above
+  {1.0em}% Space below
+  {\normalfont\color{darkblue}}% Body font
+  {}% Indent amount
+  {\bfseries\color{darkblue}}% Head font
+  {.}% Punctuation after head
+  {0.5em}% Space after head
+  {}% Head spec
+
+\newtheoremstyle{myremark}% name
+  {1.0em}% Space above
+  {1.0em}% Space below
+  {\normalfont\color{darkgray}}% Body font
+  {}% Indent amount
+  {\bfseries\color{darkgray}}% Head font
+  {.}% Punctuation after head
+  {0.5em}% Space after head
+  {}% Head spec
+
+% Style spécifique pour les exemples (vert)
+\newtheoremstyle{myexample}% name
+  {1.0em}% Space above
+  {1.0em}% Space below
+  {\normalfont\color{darkgreen}}% Body font
+  {}% Indent amount
+  {\bfseries\color{darkgreen}}% Head font
+  {.}% Punctuation after head
+  {0.5em}% Space after head
+  {}
+
+% On applique ces styles aux catégories standard d'amsthm
+\makeatletter
+\let\th@plain\th@myplain
+\let\th@definition\th@mydefinition
+\let\th@remark\th@myremark
+\makeatother
+
+% Déclaration de l'environnement Exemple avec le style vert dédié
+\theoremstyle{myexample}
+\newtheorem{exemple}[definition]{Exemple}
+\theoremstyle{definition}
+
+% Preuve en cyan + espacement supplémentaire
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\vspace{0.8em}% espace avant
+  \pushQED{\qed}%
+  \normalfont\color{cyan}% couleur du texte de la preuve
+  \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep\bfseries\color{cyan}#1\@addpunct{.}]\ignorespaces
+}{%
+  \popQED\endtrivlist\vspace{0.8em}% espace après
+}
+\makeatother
+
+
+% ==== Renvois intelligents (cleveref) ====
+\crefname{theoreme}{théorème}{théorèmes}
+\Crefname{theoreme}{Théorème}{Théorèmes}
+\crefname{lemme}{lemme}{lemmes}
+\Crefname{lemme}{Lemme}{Lemmes}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{corollaire}{corollaire}{corollaires}
+\Crefname{corollaire}{Corollaire}{Corollaires}
+\crefname{definition}{définition}{définitions}
+\Crefname{definition}{Définition}{Définitions}
+\crefname{exemple}{exemple}{exemples}
+\Crefname{exemple}{Exemple}{Exemples}
+\crefname{equation}{équation}{équations}
+\Crefname{equation}{Équation}{Équations}
+\crefname{section}{section}{sections}
+\Crefname{section}{Section}{Sections}
+\crefname{remarque}{remarque}{remarques}
+\Crefname{remarque}{Remarque}{Remarques}
+\crefname{remarques}{remarques}{remarques}
+\Crefname{remarques}{Remarques}{Remarques}
+
+% ==== Macros utiles ====
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\indic}{\mathbf{1}}
+\DeclarePairedDelimiter{\sca}{\langle}{\rangle}
+% Petit label entouré d'un cercle utilisable en mode math
+\newcommand{\circled}[1]{\text{\tikz[baseline=(char.base)]\node[shape=circle,draw,inner sep=0.6pt] (char) {\scriptsize #1};}}
+
+% ==============================
+\title{\textbf{Arbitrage Theory}}
+\author{Zakari Hachemi - Based on the course of Christophe Chorro}
+\date{2025-2026}
+
+\begin{document}
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+\bigskip
+
+\section*{Références principales}
+\[
+\begin{cases}
+\text{Mathematics of Arbitrage (Schachermayer \& Delbaen), Chapitre 2},\\[3pt]
+\text{Introduction to Stochastic Calculus (Lamberton \& Lapeyre), Chapitres 1 et 2.}
+\end{cases}
+\]
+
+\section{Présentation du problème}
+
+\subsection{Le modèle}
+
+\paragraph{A)} Temps discret fini :
+\[
+t \in \{0, 1, \ldots, T\}.
+\]
+
+\paragraph{B)} Espace probabilisé : \((\Omega, \mathcal{F}^{P}, P)\)
+avec $\Omega$ fini, $\mathcal{F}^{P} = \mathcal{P}(\Omega)$ et $\forall \omega \in \Omega,\; P(\omega)>0$. On a $\text{card}(\mathcal{P}(\Omega)) = 2^n$ et $\text{card}(\Omega) = n$.
+
+\medskip
+\textbf{Interprétation intuitive :}
+\begin{itemize}
+    \item $\Omega$ : espace des configurations économiques possibles sur $[0,T]$ ;
+    \item $\mathcal{F}^{P}$ : information disponible sur la période ;
+    \item $P$ : probabilité historique.
+\end{itemize}
+
+\paragraph{C)} Filtration :
+\[
+\mathcal{J}^{P} = (\mathcal{J}^{P}_{t})_{t=0,\ldots,T}, \quad \mathcal{J}^{P}_{0}=\{\emptyset,\Omega\}, \quad \mathcal{J}^{P}_{T}=\mathcal{F}^{P}.
+\]
+où $\mathcal{J}^{P}_{0}$ est la plus petite $\sigma$-algèbre.
+
+\paragraph{D)} Actifs financiers.\\
+
+\textbf{1. Actif sans risque :}
+\[
+(S_t^0)_{t=0,\ldots,T} \text{ adapté à } (\mathcal{J}_t), \quad S_t^0(\omega)>0.
+\]
+
+\textbf{2. Actifs risqués :} $d\in\mathbb{N}^*$ actifs :
+\[
+S_t^j = \text{valeur à la date } t \text{ de l’actif } j, \quad S_t = (S_t^0, S_t^1, \ldots, S_t^d).
+\]
+
+\begin{remarques}
+\item L’hypothèse $\Omega$ fini est essentielle : les espaces $L^0,L^p,L^\infty$ sont isomorphes à $\RR^{|\Omega|}$.
+\item L’actif sans risque joue le rôle de numéraire : $S_t^0 = e^{rt}$.
+\item Variable aléatoire mesurable :
+
+$X : (\Omega, \mathcal{A}) \longrightarrow (\mathbb{R}, \mathcal{B}(\mathbb{R}))$
+
+$X \text{ variable aléatoire mesurable} \Longleftrightarrow \forall B \in \mathcal{B}(\mathbb{R}), \; X^{-1}(B) \in \mathcal{A}$
+
+$P_X : \mathcal{B}(\mathbb{R}) \longrightarrow [0,1], \quad B \longmapsto P(X^{-1}(B))$
+
+\vspace{1em}
+\textbf{Si } $\mathcal{A} = \{\emptyset, \Omega\}$, 
+alors $X$ variable aléatoire $\Longleftrightarrow X$ constante.
+
+\vspace{1em}
+
+\textbf{Si } $\mathcal{A} = \mathcal{F}_t = \mathcal{P}(\Omega)$
+
+\text{Quel est le sens d'être } $\mathcal{F}_t$-mesurable ? Une variable aléatoire dans ce cas est simplement une application.
+
+\vspace{1em}
+\item Mesurabilité :
+$\hat{S}_{t+1}$ est $\mathcal{F}_{t+1}$-mesurable mais pas $\mathcal{F}_t$-mesurable. $\Rightarrow$ On peut être dans $\mathcal{F}_{t+1}$ sans être dans $\mathcal{F}_t$
+
+\end{remarques}
+
+\subsection{Processus adapté à une filtration}
+
+\paragraph{Intuition générale.}
+Un processus stochastique $(X_t)_{t=0,\dots,T}$ est dit \textbf{adapté} à une filtration $(\mathcal{F}_t)_{t=0,\dots,T}$ si, à chaque instant $t$, 
+la variable aléatoire $X_t$ est \textbf{connue à ce moment-là}, c'est-à-dire \textbf{mesurable} par rapport à $\mathcal{F}_t$.
+
+\medskip
+Autrement dit :
+\[
+\text{Être adapté} \;\;\Longleftrightarrow\;\; X_t \text{ dépend uniquement de l'information disponible jusqu'au temps } t.
+\]
+
+\begin{definition}[Définition formelle]
+Un processus $(X_t)_{t=0,\dots,T}$ est \textbf{adapté} à la filtration $(\mathcal{F}_t)$ si :
+\[
+\forall t \in \{0,1,\dots,T\}, \quad X_t \text{ est } \mathcal{F}_t\text{-mesurable.}
+\]
+Autrement dit :
+\[
+\forall B \in \mathcal{B}(\mathbb{R}), \quad X_t^{-1}(B) \in \mathcal{F}_t.
+\]
+\end{definition}
+
+\begin{exemple} [Interprétation économique]
+En finance, $\mathcal{F}_t$ représente \textbf{l'information disponible sur le marché} au temps $t$.
+Dire que le prix d’un actif $S_t$ est $\mathcal{F}_t$-mesurable signifie que sa valeur est \textbf{connue à la date $t$}
+à partir des informations de marché.
+
+Ainsi, un processus de prix $(S_t)$ \textbf{adapté} signifie que :
+\[
+S_t \text{ dépend du passé et du présent, mais pas du futur (on ne connaît pas } S_{t+1} \text{ à la date } t).
+\]
+\end{exemple}
+
+
+
+\subsection{Actifs risqués et actif sans risque ; rappel sur $L^p$ (cas $\Omega$ fini)}
+
+\paragraph{Actifs risqués.}
+Soit $d\in\mathbb{N}^*$ le nombre d’actifs risqués. Pour tout $j\in\{1,\dots,d\}$ et
+$t\in\{0,\dots,T\}$, on note
+\[
+\hat S_t^{\,j}\quad\text{la valeur à la date }t\text{ du $j$-ième actif risqué.}
+\]
+On suppose que, pour tout $j$, le processus $\big(\hat S_t^{\,j}\big)_{t=0,\dots,T}$ est adapté à la
+filtration $\big(\mathcal{J}_t\big)_{t=0,\dots,T}$. \emph{Remarque.} Contrairement à l’actif sans risque,
+un actif risqué peut (en principe) toucher $0$.
+
+\paragraph{Notation.}
+On regroupe les prix en un vecteur
+\[
+\hat S_t:=\big(\hat S_t^{\,0},\hat S_t^{\,1},\dots,\hat S_t^{\,d}\big)\in\RR_+^{\,d+1},
+\qquad
+\hat S:=\big(\hat S_t\big)_{t=0,\dots,T},
+\]
+de sorte que $\hat S$ est un processus stochastique à valeurs dans $\RR^{d+1}$, adapté à
+$\big(\mathcal{J}_t\big)$.
+
+\paragraph{Actif sans risque et numéraire.}
+L’actif non risqué (compte monétaire) joue le rôle de numéraire. Dans les modèles élémentaires
+(et dans cette partie du cours), on suppose qu’il est possible d’emprunter/prêter au taux
+constant $r>0$ \emph{en composition continue}. On pose alors
+\[
+\hat S_t^{\,0}=e^{rt},\qquad t\in\{0,\dots,T\},
+\]
+c’est-à-dire la valeur à la date $t$ d’un euro placé à la date $0$.
+
+\bigskip
+\paragraph{Remarques techniques (cas $\Omega$ fini).}
+Pour des raisons d’analyse fonctionnelle, on supposera $\Omega$ \emph{fini}. En particulier,
+les espaces
+\[
+L^0(\Omega,\mathcal{F},P),\quad L^p(\Omega,\mathcal{F},P)\ (1\le p<\infty),\quad
+L^\infty(\Omega,\mathcal{F},P)
+\]
+s’identifient tous canoniquement à $\RR^{|\Omega|}$ (donc une seule topologie « naturelle »).
+On rappelle les définitions usuelles :
+\[
+\begin{aligned}
+L^0(\Omega,\mathcal{F},P)
+&=\bigl\{\,X:\Omega\to\RR\ \bigm|\ X\ \text{est }\mathcal{F}\text{-mesurable}\,\bigr\},\\[2mm]
+L^p(\Omega,\mathcal{F},P)
+&=\Bigl\{\,X\in L^0\ \Bigm|\ \E\bigl[|X|^p\bigr]<\infty\Bigr\},
+\quad 1\le p<\infty,\\[2mm]
+L^\infty(\Omega,\mathcal{F},P)
+&=\Bigl\{\,X\in L^0\ \Bigm|\ \exists M>0\ \text{tel que }P(|X|\le M)=1\Bigr\}.
+\end{aligned}
+\]
+Quand $\Omega$ est fini, toutes les normes usuelles sont équivalentes et
+\(
+L^0\simeq L^p\simeq L^\infty\simeq \RR^{|\Omega|}.
+\)
+
+
+\paragraph{Convention sur les taux d’intérêt :}
+
+\begin{center}
+\begin{tabular}{l|lll}
+\textbf{Composition} & $t=0$ & $t=1$ & $t=T$ \\
+\hline
+Annuelle & 1 & $(1+r)$ & $(1+r)^T$ \\
+Semestrielle & 1 & $\left(1+\frac{r}{2}\right)^2$ & $\left(1+\frac{r}{2}\right)^{2T}$ \\
+Journalière & 1 & $\left(1+\frac{r}{365}\right)^{365}$ & $\left(1+\frac{r}{365}\right)^{365T}$ \\
+$m$ périodes/an & 1 & $\left(1+\frac{r}{m}\right)^m$ & $\left(1+\frac{r}{m}\right)^{mT}$ \\
+Continue & 1 & $e^r$ & $e^{rT}$ \\
+\end{tabular}
+\end{center}
+
+Ainsi $S_t^0 = e^{rt}$.
+
+\subsection{Binomial Model ($T=3$, $d=1$)}
+
+\subsubsection*{NON RISKY}
+$S_0^0 = e^{rt}$
+
+\subsubsection*{RISKY}
+$P(w_1, w_2) = P(w_2 \mid w_1) \cdot P(w_1)$
+
+$P(w_1) = \begin{cases}
+P(u) \\
+P(d)
+\end{cases}$
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tikzpicture}[
+  grow=right,
+  level distance=3.5cm,
+  level 1/.style={sibling distance=4cm},
+  level 2/.style={sibling distance=3.5cm},
+  level 3/.style={sibling distance=3.1cm},
+  every node/.style={align=center},
+  edge from parent/.style={draw, -Stealth, thick}
+]
+
+\node {$S_0^1 = D$}
+  child { % down branch
+    node (d1) {$\langle S_1^1(w_d) = Dd \rangle$}
+      child {
+        node[below right=1cm of d1] (dd) {$\langle S_2^1(w_d, w_d) = Dd^2 \rangle$}
+          child {
+            node[right=0.5cm] (ddd) {$S_3^1(ddd) = Dd^3$}
+            edge from parent node[below, sloped, pos=0.5, font=\small] {$1-P$}
+          }
+          child {
+            node[right=0.5cm] (ddu) {$S_3^1(ddu) = Dud^2$}
+            edge from parent node[above, sloped, pos=0.5, font=\small] {$P$}
+          }
+          edge from parent node[below, sloped, pos=0.5, font=\small] {$1-P$}
+      }
+      edge from parent node[below, sloped, pos=0.5, font=\small] {$1-P$}
+  }
+  child { % up branch
+    node (u1) {$\langle S_1^1(w_u) = Du \rangle$}
+      child {
+        node (ud) {$\langle S_2^1(w_u, w_d) = Dud \rangle$}
+        edge from parent node[below, sloped, pos=0.5, font=\small] {$1-P$}
+      }
+      child {
+        node (uu) {$\langle S_2^1(w_u, w_u) = Du^2 \rangle$}
+          child {
+            node[right=0.5cm] (uud) {$S_3^1(uud) = Du^2d$}
+            edge from parent node[below, sloped, pos=0.5, font=\small] {$1-P$}
+          }
+          child {
+            node[right=0.5cm] (uuu) {$S_3^1(uuu) = Du^3$}
+            edge from parent node[above, sloped, pos=0.5, font=\small] {$P$}
+          }
+          edge from parent node[above, sloped, pos=0.5, font=\small] {$P$}
+      }
+      edge from parent node[above, sloped, pos=0.5, font=\small] {$P$}
+  };
+
+% Straight extra lines for recombination (NO curves)
+\draw[-Stealth, thick] (d1) -- node[above, sloped, pos=0.5, font=\small] {$P$} (ud);
+\draw[-Stealth, thick] (ud) -- node[above, sloped, pos=0.5, font=\small] {$P$} (uud);
+\draw[-Stealth, thick] (ud) -- node[below, sloped, pos=0.5, font=\small] {$1-P$} (ddu);
+
+\end{tikzpicture}
+\end{center}
+
+
+
+\vspace{1cm}
+
+\noindent où
+
+$A_1 = \{\omega \in \Omega \mid \omega_1 = w_u\}$
+
+$A_2 = \{\omega \in \Omega \mid \omega_1 = w_d\}$
+
+$B_1 = \{\omega \in \Omega \mid \omega_1 = w_u, \omega_2 = w_u\}$
+
+$B_2 = \{\omega \in \Omega \mid \omega_1 = w_u, \omega_2 = w_d\}$
+
+$B_3 = \{\omega \in \Omega \mid \omega_1 = w_d, \omega_2 = w_u\}$
+
+$B_4 = \{\omega \in \Omega \mid \omega_1 = w_d, \omega_2 = w_d\}$
+
+\vspace{0.5cm}
+
+$\mathcal{J}_0 = \{\emptyset, \Omega\}, \quad \mathcal{J}_1 = \sigma(A_1, A_2), \quad \mathcal{J}_2 = \sigma(B_1, B_2, B_3, B_4)$
+
+\vspace{1cm}
+
+\noindent \textbf{T=3 Payoff}
+
+\noindent Final Payoff
+
+\subsection{Stratégies d’investissement}
+
+\textbf{Hypothèse de marché sans frictions :}
+\begin{enumerate}
+\item Pas de coûts de transaction,
+\item Possibilité de vente à découvert,
+\item Possibilité d’emprunter/prêter,
+\item Divisibilité parfaite,
+\item Pas de dividendes.
+\end{enumerate}
+
+
+
+
+\subsubsection*{Rappel : Qu’est-ce qu’une vente à découvert (short sell) ?}
+
+Une \textbf{vente à découvert} consiste à vendre un actif que l’on ne possède pas.  
+En pratique, un investisseur (\(C_1\)) demande à un courtier d’effectuer une vente à découvert sur un actif.  
+Le courtier trouve parmi ses clients un autre investisseur (\(C_2\)) prêt à prêter cet actif.  
+Le courtier vend alors l’actif et transfère le produit de la vente (en espèces) à \(C_1\).  
+Par la suite, \(C_1\) devra racheter l’actif sur le marché pour le restituer à \(C_2\) via le courtier.  
+Le processus peut être représenté schématiquement comme suit :
+
+\begin{center}
+\begin{tikzpicture}[
+  >=Stealth, thick,
+  circ/.style = {circle, draw, minimum size=14mm, align=center},
+  elli/.style = {ellipse, draw, minimum width=30mm, minimum height=16mm, align=center}
+]
+
+% Nodes
+\node[circ] (c1) {C$_1$};
+\node[elli, right=2.8cm of c1] (brk) {Broker};
+\node[circ, right=2.8cm of brk] (c2) {C$_2$};
+\node[circ, right=2.8cm of c2] (c2p) {C$_2'$};
+
+% Arrows with more spacing in labels
+\draw[->] (c1) to[bend left=20] node[midway, above=4pt] {short sell} (brk);
+\draw[->] (brk) to[bend left=20] node[midway, below=4pt] {cash} (c1);
+
+\draw[->] (brk) to[bend left=20] node[midway, above=4pt] {ask for the asset} (c2);
+\draw[->] (c2) to[bend left=20] node[midway, below=4pt] {asset} (brk);
+
+\draw[->] (c2p) -- (c2);
+
+\end{tikzpicture}
+\end{center}
+
+À la fin de l’opération :
+\begin{itemize}
+  \item \(C_1\) profite si le prix de l’actif diminue ;
+  \item \(C_2\) et le courtier perçoivent des frais ;
+  \item \(C_2\) continue de recevoir les dividendes (le cas échéant) et peut mettre fin au prêt à tout moment.
+\end{itemize}
+
+
+\subsection{Stratégies financières et portefeuilles auto-financés}
+
+\begin{definition}[Stratégie financière]
+Une \textbf{stratégie financière} (ou d’investissement, ou de couverture) est un processus stochastique à valeurs dans $\RR^{d+1}$ :
+\[
+(\hat H_t)_{t\in\{0,\ldots,T\}} = (\hat H_t^0, \hat H_t^1, \ldots, \hat H_t^d),
+\]
+que l’on notera simplement $\hat H_t$, et qui est adapté à la filtration $(\mathcal{F}_t)$.
+
+À toute stratégie financière, on associe un \textbf{portefeuille financier} contenant, entre les instants $t$ et $t+1$ (en fait, pendant tout l’intervalle $[t,t+1[$), la quantité $\hat H_t^j$ de l’actif $j \in \{0,\ldots,d\}$.
+
+Ainsi, la valeur au temps $t$ d’un tel portefeuille est donnée par :
+\[
+\hat V_t = \langle \hat H_t, \hat S_t \rangle = \sum_{k=0}^d \hat H_t^k \hat S_t^k.
+\]
+
+En particulier, on appelle $\hat V_0$ \textbf{l’investissement initial}.
+\end{definition}
+
+\begin{remarque}
+La définition précédente découle de l’hypothèse de \emph{non-friction}.
+\end{remarque}
+
+\begin{definition}[Processus de consommation]
+Soit $(\hat H_t)_{t\in\{0,\ldots,T\}}$ une stratégie financière.  
+On définit le \textbf{processus de consommation} $(\hat C_t)_{t\in\{1,\ldots,T\}}$ par :
+\[
+-\hat C_t = \hat V_t - \langle \hat H_{t-1}, \hat S_t \rangle,
+\]
+où $\langle \hat H_{t-1}, \hat S_t \rangle$ représente la valeur du portefeuille ``ancien'' au temps $t$.
+
+Une stratégie financière est dite \textbf{auto-financée} si, pour tout $t\in\{1,\ldots,T\}$,
+\[
+\hat C_t = 0.
+\]
+\end{definition}
+
+\medskip
+
+Dans ce cas, entre $0$ et $T$, on ne dispose pas du droit de consommer ou d’investir.  
+On peut seulement réajuster le portefeuille en respectant la contrainte budgétaire à tout instant.
+
+\begin{exemple}
+Si l’on investit au temps $t=0$ et que l’on ne fait rien jusqu’à l’échéance $T$, on réalise une stratégie \emph{auto-financée}.
+\end{exemple}
+
+\begin{lemme}
+Une stratégie financière peut être caractérisée par $(\hat V_0, (\hat C_t)_{t\in\{1,\ldots,T\}}, (\hat H_t)_{t\in\{0,\ldots,T\}})$.
+\end{lemme}
+
+\begin{remarque}
+Le lemme formalise le lien entre les flux financiers (achat, vente, consommation) et la composition du portefeuille.
+L’idée est qu’à chaque période t, on veut savoir :
+combien on a de chaque actif ;
+combien vaut le portefeuille ;
+combien on retire ou ajoute (la consommation ou l'injection de cash).
+Le lemme dit que si on connaît ces trois choses, on sait tout sur la stratégie.
+\end{remarque}
+
+
+\begin{proof}[Preuve]
+On note $\hat S_t=(\hat S_t^0,\hat S_t^1,\ldots,\hat S_t^d)$ le vecteur des prix au temps $t$ (non actualisés),
+$\hat H_t=(\hat H_t^0,\ldots,\hat H_t^d)$ la stratégie, et
+\[
+\hat V_t \;=\; \langle \hat H_t,\hat S_t\rangle \;=\; \sum_{k=0}^d \hat H_t^k\,\hat S_t^k
+\]
+la valeur du portefeuille au temps $t$.
+Le \emph{processus de consommation} $(\hat C_t)_{t=1,\ldots,T}$ est défini par
+\begin{equation}\label{eq:consumption-def}
+-\hat C_t \;=\; \hat V_t - \langle \hat H_{t-1}, \hat S_t\rangle
+\qquad (t=1,\ldots,T),
+\end{equation}
+c’est-à-dire : on part de la valeur de l’ancien portefeuille après le mouvement de prix,
+on consomme $\hat C_t$ (positif = retrait, négatif = apport), puis on réalloue pour obtenir $\hat H_t$.
+
+\smallskip
+\noindent\textbf{Étape 1 ($t=0$).}
+Par définition,
+\[
+\hat V_0 \;=\; \sum_{k=0}^d \hat H_0^k\,\hat S_0^k
+\;=\; \hat H_0^0\,\hat S_0^0 \;+\; \sum_{k=1}^d \hat H_0^k\,\hat S_0^k.
+\]
+En isolant la composante sans risque, on obtient immédiatement
+\[
+\hat H_0^0 \;=\; \frac{\hat V_0 - \sum_{k=1}^d \hat S_0^k\,\hat H_0^k}{\hat S_0^0}.
+\]
+
+\smallskip
+\noindent\textbf{Étape 2 ($t\ge 1$).}
+La contrainte budgétaire au temps $t$ s’obtient en réécrivant \eqref{eq:consumption-def} :
+\[
+\hat V_t \;=\; \langle \hat H_{t-1}, \hat S_t\rangle - \hat C_t.
+\]
+Or $\hat V_t=\langle \hat H_t,\hat S_t\rangle = \hat H_t^0\,\hat S_t^0 + \sum_{k=1}^d \hat H_t^k\,\hat S_t^k$,
+si bien que
+\[
+\hat H_t^0\,\hat S_t^0 \;+\; \sum_{k=1}^d \hat H_t^k\,\hat S_t^k
+\;=\; \langle \hat H_{t-1}, \hat S_t\rangle \;-\; \hat C_t.
+\]
+En isolant $\hat H_t^0$, on obtient la formule annoncée :
+\[
+\hat H_t^0 \;=\; \frac{-\hat C_t + \langle \hat H_{t-1}, \hat S_t\rangle - \sum_{k=1}^d \hat H_t^k\,\hat S_t^k}{\hat S_t^0},
+\qquad t=1,\ldots,T.
+\]
+
+\smallskip
+\noindent\textbf{Conclusion (caractérisation).}
+Les identités ci-dessus montrent que, une fois fixés
+$\hat V_0$, le processus de consommation $(\hat C_t)$ et les composantes risquées
+$(\hat H_t^1,\ldots,\hat H_t^d)$ pour chaque $t$, la composante sans risque $\hat H_t^0$
+est entièrement déterminée pour $t=0$ puis récursivement pour $t\ge 1$.
+Ainsi, le triplet $(\hat V_0,(\hat C_t),(\hat H_t))$ caractérise complètement la stratégie financière.
+\end{proof}
+
+\begin{corollaire}
+Une stratégie financière auto-financée peut être caractérisée par $(\hat V_0, (\hat H_t)_{t\in\{0,\ldots,T\}})$.
+\end{corollaire}
+
+\begin{definition}[Valeurs actualisées]
+Pour tout $k\in\{0,\ldots,d\}$, on définit les \textbf{valeurs actualisées} par :
+\[
+S_t^k = \frac{\hat S_t^k}{\hat S_t^0}, \qquad V_t = \frac{\hat V_t}{\hat S_t^0}.
+\]
+Ainsi, $S_t^0 \equiv 1$ et $S_t = (S_t^1,\ldots,S_t^d)$ représente le vecteur des actifs risqués uniquement.
+\end{definition}
+
+\begin{lemme}
+
+\emph{Une stratégie financière est auto-financée}
+\[
+\Longleftrightarrow\;
+\forall\, t \in \{1,\ldots,T\},\quad
+V_t = V_0 + \sum_{k=0}^{t-1} \langle H_k,\, S_{k+1} - S_k \rangle.
+\]
+\end{lemme}
+
+
+
+\begin{proof}
+Par définition, pour tout $t\in\{0,\ldots,T\}$ :
+\[
+\hat V_t = \hat H_t^0 \hat S_t^0 + \sum_{k=1}^d \hat H_t^k \hat S_t^k = \langle \hat H_t, \hat S_t \rangle.
+\]
+
+La condition d’auto-financement donne :
+\[
+\hat V_t = \hat H_{t-1}^0 \hat S_t^0 + \sum_{k=1}^d \hat H_{t-1}^k \hat S_t^k = \hat H_{t-1}^0 \hat S_t^0 + \langle \hat H_{t-1}, \hat S_t \rangle.
+\]
+Ainsi,
+\[
+V_t = V_{t-1} + \langle H_{t-1}, S_t - S_{t-1} \rangle,
+\]
+et par récurrence :
+\[
+V_t = V_0 + \sum_{k=0}^{t-1} \langle H_k, S_{k+1} - S_k \rangle.
+\]
+\end{proof}
+
+\begin{remarque}
+La variation de la valeur du portefeuille est entièrement imputable à la variation des prix des actifs lorsque la stratégie est auto-financée (c’est-à-dire sans consommation).
+\end{remarque}
+
+\begin{remarque}
+On note :
+\[
+(H \cdot S)_t = \sum_{k=0}^{t-1} \langle H_k, S_{k+1} - S_k \rangle,
+\]
+ce qui correspond à l’intégrale stochastique discrète du processus $H$ par rapport à $S$.
+\end{remarque}
+
+
+\subsection{Opportunités d’arbitrage}
+
+\begin{definition}[Arbitrage opportunity]
+Une stratégie auto-financée $(\hat H_t)_{t\in[0,T]}$ est une \emph{opportunité d’arbitrage} (A.O. ci-après) si
+\[
+\hat V_0 = 0, 
+\quad \hat V_T \ge 0 \ \text{P-a.s.}, 
+\quad \text{et} \quad P(\hat V_T > 0) > 0.
+\]
+\end{definition}
+
+\begin{remarques}
+\item[(a)] Dans la définition précédente, la condition $(\star)$ reste inchangée si la probabilité $P$ est remplacée par une probabilité $Q$ telle que $Q \sim P$.
+
+\item[(b)] Les conditions suivantes sont équivalentes :
+\[
+(\star)
+\;\Longleftrightarrow\;
+V_0 = 0, \; V_T \ge 0 \text{ P-a.s. et } P(V_T > 0) > 0
+\]
+\[
+\Longleftrightarrow\;
+V_0 = 0, \; (H \cdot S)_T \ge 0 \text{ P-a.s. et } P((H \cdot S)_T > 0) > 0
+\]
+\[
+\Longleftrightarrow\;
+V_0 = 0, \; V_T \ge 0 \text{ P-a.s. et } \E_P[V_T] > 0.
+\]
+\end{remarques}
+
+\begin{definition}[Créance contingente]
+\begin{enumerate}[label=(\alph*)]
+\item Une créance contingente $\hat U$ est une variable aléatoire mesurable par rapport à $\mathcal{F}_T$.  
+Dans ce cas, on définit sa valeur actualisée par
+\[
+U = \frac{\hat U}{\hat S_T^0}.
+\]
+
+\item Une créance contingente $\hat U$ est dite \emph{réplicable} (resp. \emph{sur-réplicable}) au prix $a$ s’il existe un portefeuille auto-financé $(\hat H_t)_{t\in[0,T]}$ tel que
+\[
+\hat V_0 = a \quad \text{et} \quad \hat V_T = \hat U \; (\text{resp. } \hat V_T \ge \hat U).
+\]
+On note alors
+\[
+K_a = \bigl\{\, a + (H \cdot S)_T \;|\; H \in \mathcal{H}^d \,\bigr\},
+\]
+où $\mathcal{H}^d$ est l’ensemble des processus stochastiques adaptés à valeurs dans $\mathbb{R}^d$, et
+\[
+\mathcal{C}_a = \bigl\{\, U \in L^\infty(\mathcal{F}_T) \;|\; \exists g \in K_a,\, g \ge U \,\bigr\}.
+\]
+\end{enumerate}
+On a toujours $K_a \subset \mathcal{C}_a$.
+\end{definition}
+
+\begin{remarques}
+\item[(a)] On note $\mathcal{C} = \mathcal{C}_0$ et $K = K_0$. Ainsi, $\mathcal{C}_a = a + \mathcal{C}$ et $K_a = a + K$.
+
+\item[(b)] $K$ est un espace vectoriel (donc convexe et fermé en dimension finie).
+
+\item[(c)] $\mathcal{C}$ est un cône convexe contenant
+\[
+L_-^\infty(\Omega, \mathcal{F}_T, P) = \{\, X \in L^\infty \mid X \le 0 \text{ P-a.s.} \}.
+\]
+\end{remarques}
+
+\begin{definition}[Hypothèse de non-arbitrage (NA)]
+On dit que l’hypothèse de \emph{non-arbitrage} (NA ci-après) est vérifiée s’il n’existe pas d’opportunité d’arbitrage, c’est-à-dire :
+\[
+\text{si } V_0 = 0, \; V_T \ge 0 \text{ P-a.s. } \Rightarrow P(V_T = 0) = 1.
+\]
+\end{definition}
+
+\begin{lemme}
+On a les équivalences suivantes :
+\[
+NA \;\Longleftrightarrow\; K \cap L_+^0(\Omega, \mathcal{F}_T, P) = \{0\}
+\;\Longleftrightarrow\;
+\mathcal{C} \cap L_+^0(\Omega, \mathcal{F}_T, P) = \{0\}.
+\]
+\end{lemme}
+
+\begin{definition}[Arbitrage local]
+Soit $t \in \{1, \dots, T\}$.  
+Un \emph{arbitrage local en $t$} est une variable aléatoire $\xi$ mesurable par rapport à $\mathcal{F}_{t-1}$, à valeurs dans $\mathbb{R}^d$, telle que :
+\[
+\langle \xi, S_t - S_{t-1} \rangle \ge 0 \text{ P-a.s.}, 
+\quad \text{et} \quad P\bigl( \langle \xi, S_t - S_{t-1} \rangle > 0 \bigr) > 0.
+\]
+Le marché satisfait la condition $NA(t)$ s’il n’existe aucun arbitrage local en $t$.
+\end{definition}
+
+\begin{lemme}
+\[
+NA \;\Longleftrightarrow\; NA(t) \quad \forall t \in \{1, \dots, T\}.
+\]
+\end{lemme}
+
+\begin{proof}[Preuve du lemme : $NA \Longleftrightarrow NA(t)\ \forall t$]
+\subsection*{Sens $\Rightarrow$ :}
+Supposons que l’hypothèse de non-arbitrage globale (NA) soit satisfaite.  
+S’il existait un arbitrage local en un certain $t \in \{1,\ldots,T\}$, alors on pourrait construire une stratégie auto-financée $(H_s)_{s\in[0,T]}$ telle que
+\[
+V_0 = 0, \qquad 
+V_T = \langle \xi, S_t - S_{t-1} \rangle \ge 0 \text{ p.s.}, \qquad 
+\mathbb{P}(V_T > 0) > 0.
+\]
+Cette stratégie constituerait une opportunité d’arbitrage globale, ce qui contredirait (NA).  
+Ainsi, si (NA) est vraie, aucun arbitrage local ne peut exister :
+\[
+NA \;\Rightarrow\; NA(t), \quad \forall t\in\{1,\ldots,T\}.
+\]
+
+\subsection*{Sens $\Leftarrow$ :}
+On montre la réciproque par récurrence sur le nombre de périodes $T$ du marché.
+
+\subsubsection*{Cas de base}
+Pour $T=1$, le résultat est évident : un arbitrage global sur une seule période est exactement un arbitrage local.
+
+\subsubsection*{Hypothèse de récurrence}
+Supposons le résultat vrai pour un marché de maturité $T-1$, c’est-à-dire :
+\[
+\text{dans un marché à $T-1$ périodes,} \qquad
+NA \;\Leftarrow\; NA(t), \quad \forall t \in \{1,\ldots,T-1\}.
+\]
+
+\subsubsection*{Étape de récurrence}
+Considérons un marché à $T$ périodes et raisonnons par contraposée.  
+Soit $(\hat H_t)_{t=0}^T$ une opportunité d’arbitrage (A.O.) sur $[0,T]$.  
+On a alors :
+\[
+V_T = V_{T-1} + \langle H_{T-1}, S_T - S_{T-1} \rangle, 
+\qquad V_T \ge 0,\quad \mathbb{P}(V_T > 0) > 0.
+\]
+Introduisons l’ensemble et la variable aléatoire :
+\[
+A = \{ V_{T-1} < 0 \} \in \mathcal{F}_{T-1},
+\qquad
+\xi = H_{T-1}\mathbf{1}_A \quad (\mathcal{F}_{T-1}\text{-mesurable}).
+\]
+Alors :
+\[
+\mathbf{1}_A V_T
+= \mathbf{1}_A V_{T-1}
++ \big\langle \mathbf{1}_A H_{T-1},\, S_T - S_{T-1} \big\rangle
+\ge 0.
+\]
+
+\textbf{Cas 1 :} Si $\mathbb{P}(A) > 0$, alors $\xi$ définit un arbitrage local car
+\[
+\langle \xi, S_T - S_{T-1} \rangle \ge 0 \text{ p.s.}, 
+\qquad 
+\mathbb{P}(\langle \xi, S_T - S_{T-1} \rangle > 0) \ge \mathbb{P}(A) > 0.
+\]
+
+\textbf{Cas 2 :} Si $\mathbb{P}(A) = 0$, on a alors $V_{T-1} \ge 0$ p.s.  
+Deux sous-cas se présentent :
+\[
+\begin{cases}
+(1) & V_{T-1} = 0\ \text{p.s.} 
+\quad \Rightarrow\ H_{T-1}\ \text{est un arbitrage local en } T, \\[0.5em]
+(2) & \mathbb{P}(V_{T-1}>0) > 0 
+\quad \Rightarrow\ (H_t)_{t\le T-1}\ \text{est une A.O. sur } [0,T-1].
+\end{cases}
+\]
+Dans le deuxième sous-cas, l’hypothèse de récurrence s’applique : il existe un arbitrage local 
+en un certain $t \in \{1,\ldots,T-1\}$.
+
+Ainsi, dans tous les cas, une A.O. globale sur $[0,T]$ implique l’existence d’un arbitrage local.  
+On en déduit :
+\[
+NA(t)\ \forall t \;\Rightarrow\; NA.
+\]
+
+\textbf{Conclusion :} les deux sens sont donc établis, et on a bien
+\[
+NA \;\Longleftrightarrow\; NA(t), \quad \forall t\in\{1,\ldots,T\}.
+\]
+\end{proof}
+
+\clearpage
+\section{Théorème fondamental de l’arbitrage (FTAP)}
+Fundamental Theorem of Asset Pricing
+
+\subsection{Référence}
+\textbf{Harrison--Pliska (1981)}
+
+\begin{theoreme}[Théorème fondamental de la tarification des actifs]
+\[
+NA \Longleftrightarrow \mathcal{M}^e(S) \neq \varnothing,
+\]
+où
+\[
+\mathcal{M}^e(S)
+=\Bigl\{\, Q : \mathcal{F} \to [0,1] \ \big|\ Q \text{ est une probabilité équivalente à } P,\ 
+(S_t)_{t=0,\dots,T} \text{ (en valeurs actualisées, donc } S^0 \equiv 1)
+\text{ est une martingale sous } Q \Bigr\}.
+\]
+\end{theoreme}
+
+\subsection{Définition et propriétés de l’ensemble $\Delta$}
+
+\begin{definition}
+On définit :
+\[
+\Delta = \Bigl\{\, Y \in L_+^0(\Omega, \mathcal{J}, P) \ \big|\ \mathbb{E}_P[Y] = 1 \Bigr\}.
+\]
+\end{definition}
+
+\begin{lemme}
+L’ensemble $\Delta$ est convexe et compact.
+\end{lemme}
+
+\begin{proof}
+La convexité est immédiate.
+
+On peut écrire :
+\[
+\Delta = L_+^0 \cap \varphi^{-1}(1),
+\]
+où $\varphi : Y \mapsto \mathbb{E}_P[Y]$.
+
+Sur un espace probabilisable fini, $\varphi$ est continue et $\varphi^{-1}(1)$ est fermé.  
+Ainsi $\Delta$ est fermé.
+
+Pour montrer la compacité, il suffit de prouver que $\Delta$ est borné (dans un espace de dimension finie).  
+Si $Y \in \Delta$, on a $Y \ge 0$ et :
+\[
+\mathbb{E}_P[Y] = \sum_{\omega \in \Omega} Y(\omega) P(\omega) = 1.
+\]
+D’où, pour tout $\omega \in \Omega$ :
+\[
+0 \le Y(\omega) \le \frac{1}{P(\omega)} \le \max_{\omega \in \Omega} \frac{1}{P(\omega)} < +\infty.
+\]
+Ainsi $\Delta$ est borné et fermé, donc compact.
+\end{proof}
+
+\subsection{Lien entre absence d’arbitrage et l’ensemble $\Delta$}
+
+\begin{lemme}
+\[
+NA \Longleftrightarrow K \cap \Delta = \varnothing.
+\]
+\end{lemme}
+
+\begin{proof}
+On sait que :
+\[
+NA \Longleftrightarrow K \cap L_+^0 = \{0\}.
+\]
+On doit donc montrer que $K \cap L_+^0 = \{0\}$ équivaut à $K \cap \Delta = \varnothing$.
+
+\medskip
+\noindent
+($\Rightarrow$)  
+Si $K \cap L_+^0 = \{0\}$, alors nécessairement $K \cap \Delta = \varnothing$.
+
+\medskip
+\noindent
+($\Leftarrow$)  
+Par contraposition, supposons qu’il existe $g \in K \cap L_+^0$ avec $g \neq 0$.  
+On définit alors :
+\[
+Y = \frac{g}{\mathbb{E}_P[g]}.
+\]
+On a bien $\mathbb{E}_P[Y] = 1$ et $Y \ge 0$, donc $Y \in \Delta$.  
+Comme $Y \in K$ également (car $K$ est un espace vectoriel et $Y$ est un element de $K$ multiplié par un scalaire)  , cela contredit $K \cap \Delta = \varnothing$.  
+Ainsi, les deux conditions sont équivalentes.
+\end{proof}
+
+\subsection{Espaces vectoriels et fonctionnelles linéaires continues}
+
+\paragraph{Notations.}
+Si $E$ et $F$ sont des espaces vectoriels, on note :
+\[
+\mathcal{L}_c(E,F)
+\]
+l’ensemble des applications linéaires continues de $E$ dans $F$.
+
+\medskip
+\noindent
+On rappelle que pour tout espace vectoriel $E$, 
+\[
+\dim(E) = \dim(\ker(\Phi)) + \operatorname{rang}(\Phi).
+\]
+Ainsi, si $\Phi \in \mathcal{L}_c(E,F)$ est non nulle, alors $\operatorname{rang}(\Phi)=1$, et par conséquent :
+\[
+\dim(\ker(\Phi)) = \dim(E) - 1.
+\]
+Le noyau de $\Phi$ est donc un \textbf{hyperplan} de $E$.
+
+\medskip
+\noindent
+Dans notre cadre, si $E = L^0(\Omega, \mathcal{J}, P)$ et $F = \mathbb{R}$, alors $E \simeq \mathbb{R}^{|\Omega|}$ (puisque $\Omega$ est fini).  
+Tout élément $\Phi \in \mathcal{L}_c(E,F)$ peut s’exprimer à l’aide des valeurs prises sur les fonctions indicatrices.
+
+Pour tout $X \in L^0(\Omega, \mathcal{J}, P)$, on a :
+\[
+X(\omega) = \sum_{\omega' \in \Omega} X(\omega') \mathbf{1}_{\{\omega'\}}(\omega),
+\qquad \text{donc} \qquad
+X = \sum_{\omega' \in \Omega} X(\omega') \mathbf{1}_{\{\omega'\}}.
+\]
+Ainsi, pour toute fonctionnelle linéaire continue $\Phi$, on peut écrire :
+\[
+\Phi(X) = \sum_{\omega' \in \Omega} X(\omega') \, \Phi(\mathbf{1}_{\{\omega'\}}).
+\]
+
+En particulier, si l’on écrit :
+\[
+Z(\omega) = \frac{\Phi(\mathbf{1}_{\{\omega\}})}{P(\omega)},
+\]
+alors
+\[
+\Phi(X) = \sum_{\omega' \in \Omega} X(\omega') \frac{\Phi(\mathbf{1}_{\{\omega'\}})}{P(\omega')} P(\omega')
+= \mathbb{E}_P[X Z].
+\]
+Ainsi, toute fonctionnelle linéaire continue sur $L^0$ peut être représentée comme une \textbf{espérance pondérée}.
+
+
+\subsection{Lemme de séparation}
+
+\begin{theoreme}[Théorème de séparation]
+Dans un espace de Banach, si $A$ et $B$ sont deux ensembles convexes, fermés et disjoints, l’un d’eux étant compact,  
+alors il existe $\Phi \in \mathcal{L}_c(\text{Banach}, \mathbb{R})$ et $\alpha \in \mathbb{R}$ tels que :
+\[
+\Phi(a) < \alpha,\ \forall a \in A, \qquad \Phi(b) > \alpha,\ \forall b \in B.
+\]
+Dans notre cas, on applique ce théorème avec $A = K$ et $B = \Delta$.
+\end{theoreme}
+
+\begin{lemme}[Lemme de séparation] \label{lem:6}
+Si $NA$ est vérifié, alors il existe $\Phi \in \mathcal{L}_c(L^0(\Omega, \mathcal{J}, P), \mathbb{R})$ et $\alpha \in \mathbb{R}$ tels que :
+\[
+\forall k \in K,\ \Phi(k) < \alpha, \qquad \forall y \in \Delta,\ \Phi(y) > \alpha.
+\]
+\end{lemme}
+
+\begin{remarque}[Remarques clé]
+\item C'est le théorème de séparation car on peut séparer A et B avec un Hyperplan affine
+\item Comme $K$ est un sous-espace vectoriel, si $\mathbb{E}_P[Zk] \neq 0$ pour un $k \in K$,  
+alors pour $t \to \pm\infty$, on aurait $tk \in K$ et :
+\[
+\mathbb{E}_P[Z(tk)] = t \, \mathbb{E}_P[Zk],
+\]
+ce qui violerait la borne stricte $\Phi(k) < \alpha$.  
+Ainsi, nécessairement :
+\[
+\mathbb{E}_P[Zk] = 0,\quad \forall k \in K.
+\]
+\end{remarque}
+
+
+\begin{lemme}\label{lem:7}
+Sous l'hypothèse de Non-Arbitrage (NA), il existe
+\[
+ Z\in L^0(\Omega,\mathcal{J},P)\simeq \RR^{|\Omega|}
+\]
+tel que
+\[
+\forall k\in K,\quad \E_P[Zk]=0
+\qquad\text{et}\qquad
+\forall \omega\in\Omega,\ Z(\omega)>0 .
+\]
+\end{lemme}
+
+\begin{proof}[Preuve du lemme]
+En utilisant le Lemme  et la remarque précédente, il existe
+\[
+ Z\in L^0(\Omega,\mathcal{J},P)\ \ (\text{isomorphe à } \RR^{|\Omega|})
+ \qquad\text{et}\qquad
+ \alpha\in\RR
+\]
+tels que
+\[
+\forall k\in K,\quad \E_P[Zk]<\alpha
+\qquad\text{et}\qquad
+\forall Y\in\Delta,\ \E_P[YZ]>\alpha .
+\]
+En prenant $k=0$ on déduit $\alpha>0$.
+
+Définissons alors la fonctionnelle linéaire
+\[
+\varphi:K\longrightarrow\RR,\qquad
+k\longmapsto \E_P[Zk] .
+\]
+C’est une application linéaire définie sur l’espace vectoriel $K$ et elle est bornée.
+Par la séparation, on a forcément $\varphi\equiv 0$, i.e.
+\[
+\forall k\in K,\qquad \E_P[Zk]=0.
+\]
+
+Enfin, pour $\omega_0\in\Omega$, on pose
+\[
+Y=\frac{\mathbbm{1}_{\{\omega_0\}}}{P(\omega_0)}\in\Delta.
+\]
+Alors
+\[
+\E_P[YZ]>\alpha>0
+\qquad\Longrightarrow\qquad
+Z(\omega_0)=\E_P[YZ]>0 .
+\]
+Comme $\omega_0$ est arbitraire, on obtient $Z(\omega)>0$ pour tout $\omega\in\Omega$.
+\end{proof}
+
+\begin{corollaire}\label{cor:Q}
+NA $\Rightarrow$ Il existe une probabilité $Q\sim P$ telle que
+\[
+\forall k\in K,\qquad \E_Q[k]=0 .
+\]
+\end{corollaire}
+
+\begin{proof}[Preuve du corollaire \ref{cor:Q}]
+Soit $Z$ donné par le Lemme 7 et posons
+\[
+\widetilde Z=\frac{Z}{\E_P[Z]},
+\qquad
+Q(\omega)=\widetilde Z(\omega)\,P(\omega).
+\]
+Comme $Z\ge0$ et $\E_P[\widetilde Z]=1$, $Q$ est une probabilité et $Q\sim P$.
+De plus, pour tout $k\in K$,
+\[
+\E_Q[k]=\E_P[\widetilde Z\,k]
+=\frac{1}{\E_P[Z]}\,\E_P[Zk]=0 .
+\]
+\end{proof}
+
+\begin{lemme}\label{lem:8}
+NA $\Rightarrow\ \mathcal{M}^e(S)\neq\varnothing$. 
+\end{lemme}
+
+\begin{proof}[Preuve du lemme \ref{lem:8}]
+Soit $Q$ comme dans le Corollaire \ref{cor:Q}. On montre que $S$ est une martingale sous $Q$.
+
+Par définition, pour tout $j\in\{1,\dots,d\}$, tout $t\in\{0,\dots,T-1\}$ et tout
+$A\in\mathcal{J}_t$,
+\[
+\E_Q\!\big[\mathbbm{1}_A(S_{t+1}^j-S_t^j)\big]=0 .
+\]
+Considérons le processus adapté $H=(H_u)_{u=0,\dots,T-1}$, défini par
+\[
+H_u^k=
+\begin{cases}
+\mathbbm{1}_A,& \text{si } u=t,\ k=j,\\[2pt]
+0,& \text{sinon}.
+\end{cases}
+\]
+Le processus $(H_u)_{u}$ est adapté (car $A\in\mathcal{J}_t$). Alors $(H\cdot S)_T\in K$ et
+\[
+\E_Q[(H\cdot S)_T]=0 .
+\]
+Or,
+\[
+(H\cdot S)_T
+=\sum_{u=0}^{T-1}\langle H_u,S_{u+1}-S_u\rangle
+=\langle H_t,S_{t+1}-S_t\rangle
+=\mathbbm{1}_A\,(S_{t+1}^j-S_t^j). 
+\]
+On obtient bien $\E_Q\!\big[\mathbbm{1}_A(S_{t+1}^j-S_t^j)\big]=0$, ce qui prouve que $S$ est une martingale sous $Q$.
+Donc $Q\in\mathcal{M}^e(S)$ et $\mathcal{M}^e(S)\neq\varnothing$.
+\end{proof}
+
+\begin{lemme}\label{lem:9}
+Si $Q\in\mathcal{M}^e(S)$, alors pour toute stratégie $H\in\mathcal{H}^d$,
+le processus $\big((H\cdot S)_t\big)_{t=0,\dots,T}$ est une martingale sous $Q$.
+\end{lemme}
+
+\begin{proof}[Preuve du lemme \ref{lem:9}]
+On sait que
+\[
+(H\cdot S)_{t+1}=(H\cdot S)_t+\big\langle H_t,\,S_{t+1}-S_t\big\rangle .
+\]
+En prenant l’espérance conditionnelle par rapport à $\mathcal{J}_t$,
+\[
+\E_Q\!\big[(H\cdot S)_{t+1}\mid\mathcal{J}_t\big]
+=(H\cdot S)_t+\Big\langle H_t,\ \E_Q\!\big[S_{t+1}-S_t\mid\mathcal{J}_t\big]\Big\rangle .
+\]
+Sous $Q$, $(S_t)$ est une martingale, donc $\E_Q[S_{t+1}-S_t\mid\mathcal{J}_t]=0$ et ainsi
+\[
+\E_Q\!\big[(H\cdot S)_{t+1}\mid\mathcal{J}_t\big]=(H\cdot S)_t .
+\]
+\end{proof}
+
+\begin{theoreme}[Théorème fondamental de l’arbitrage — «~Thm 1~»]
+\[
+NA\ \Longleftrightarrow\ \mathcal{M}^e(S)\neq\varnothing .
+\]
+\end{theoreme}
+
+\begin{proof}
+\emph{$\Rightarrow$} : donné par les Lemm(es) \ref{lem:8} et \ref{lem:7} (via le Corollaire \ref{cor:Q}).
+
+\smallskip
+\emph{$\Leftarrow$} : soit $Q\in\mathcal{M}^e(S)$ et $g\in K\cap L_+^0(\Omega,\mathcal{J},P)$.
+Comme $g\in K$, il existe une stratégie auto-financée telle que $V_0=0$ et
+\[
+V_T=(H\cdot S)_T=g .
+\]
+D’après le Lemme \ref{lem:9}, $(H\cdot S)_t$ est une martingale sous $Q$, donc
+\[
+\E_Q[V_T]=\E_Q[(H\cdot S)_T]=0 .
+\]
+Or $g=V_T\ge0$, donc $g=0$ $Q$-p.s., et comme $Q\sim P$, on a aussi $g=0$ $P$-p.s.
+Il s ensuit que $K\cap L_+^0=\{0\}$, ce qui est exactement l’hypothèse $NA$.
+\end{proof}
+
+
+
+
+
+\clearpage
+
+\section{Marchés complets}
+
+\begin{definition}
+Le marché est \emph{complet} si toute créance contingente bornée est réplicable, c’est-à-dire :
+\[
+\forall \hat U \in L^\infty(\Omega,\mathcal{J}_T,P),\ \exists a\in\RR,\ \exists H\in\mathcal{H}^d
+\text{ tels que } U = a + (H\cdot S)_T.
+\]
+\end{definition}
+
+\begin{remarque}
+Sous (NA), si une créance $\hat U$ est réplicable au prix $a$, alors $a$ et la trajectoire $(H\cdot S)_t$ sont uniques, et :
+\[
+\forall Q\in\mathcal{M}^e(S),\quad
+a = \E_Q[U], \qquad a + (H\cdot S)_t = \E_Q[U \mid \mathcal{J}_t].
+\]
+\end{remarque}
+
+\begin{proof}[Preuve de la remarque]
+\textbf{Unicité du prix $a$.}  
+Supposons que $U=a_1+(H^1\cdot S)_T=a_2+(H^2\cdot S)_T$ avec $a_1>a_2$.  
+Alors
+\[
+\big((H^1 - H^2)\cdot S\big)_T = a_2 - a_1 < 0,
+\]
+et la stratégie inverse engendre un gain certain positif — une opportunité d’arbitrage, contradiction.  
+Donc $a_1=a_2$.
+
+\smallskip
+\textbf{Unicité de la stratégie.}  
+Supposons $U=a+(H^1\cdot S)_T=a+(H^2\cdot S)_T$ mais $(H^1\cdot S)\neq(H^2\cdot S)$.  
+Il existe alors $t$ et un ensemble $A\in\mathcal{J}_t$ tels que
+\[
+A = \{(H^1\cdot S)_t > (H^2\cdot S)_t\},\quad P(A)>0.
+\]
+Définissons la stratégie $H = (H^1-H^2)\indic_A \indic_{[t,T]}$.  
+Alors $(H\cdot S)_T = \indic_A((H^1-H^2)\cdot S)_T - \indic_A((H^1-H^2)\cdot S)_t \ge 0$ avec probabilité strictement positive, donc arbitrage. Contradiction.
+
+\smallskip
+\textbf{Relations d’espérance sous $Q$.}  
+D’après le lemme précédent, si $Q\in\mathcal{M}^e(S)$, alors $(H\cdot S)_t$ est une martingale sous $Q$, d’où :
+\[
+a = \E_Q[U],\qquad a + (H\cdot S)_t = \E_Q[U\mid\mathcal{J}_t].
+\]
+\end{proof}
+
+\begin{theoreme}[Caractérisation des marchés complets]
+\label{thm:complet_singleton}
+Sous (NA), le marché est complet si et seulement si l’ensemble des mesures de martingale équivalentes est réduit à un singleton :
+\[
+\text{Complet} \ \Longleftrightarrow\ \mathcal{M}^e(S)=\{Q\}.
+\]
+\end{theoreme}
+
+\begin{lemme}\label{lem:10}
+\label{lem:UinK_iff_EQ0}
+Soit $U\in L^\infty(\Omega,\mathcal{J}_T,P)$. Sous (NA),
+\[
+U\in K \quad \Longleftrightarrow \quad \forall Q\in\mathcal{M}^e(S),\ \E_Q[U]=0.
+\]
+\end{lemme}
+
+\begin{proof}
+\emph{Sens $\Rightarrow$.} Si $U\in K$, il existe $H\in\mathcal{H}^d$ tel que $U=(H\cdot S)_T$. Pour tout $Q\in\mathcal{M}^e(S)$, le lemme précédent montre que $((H\cdot S)_t)_{t=0..T}$ est une martingale sous $Q$, donc
+\[
+\E_Q[U]=\E_Q[(H\cdot S)_T]=\E_Q[(H\cdot S)_0]=0.
+\]
+
+\smallskip
+\emph{Sens $\Leftarrow$.} Supposons $\forall Q\in\mathcal{M}^e(S)$, $\E_Q[U]=0$ mais $U\notin K$.  
+Alors $\{U\}$ (convexe et compact) et $K$ (convexe et fermé dans l’espace fini-dimensionnel) sont disjoints. Par le théorème de séparation convexe, il existe une forme linéaire $\lambda\in (L^\infty)^*\simeq L^1$ (puisque $\Omega$ est fini) et $\alpha\in\RR$ tels que
+\[
+\langle \lambda,U\rangle>\alpha \quad\text{et}\quad \forall k\in K,\ \langle \lambda,k\rangle<\alpha.
+\]
+En prenant $k=0$, on obtient $\alpha>0$. Comme $K$ est un sous-espace vectoriel, la borne supérieure $\alpha>0$ force en fait $\langle\lambda,k\rangle=0$ pour tout $k\in K$ (sinon on contredirait la séparation en testant $tk$ avec $t\to\pm\infty$). Ainsi,
+\[
+\langle \lambda,U\rangle>0
+\quad\text{et}\quad
+\forall k\in K,\ \langle \lambda,k\rangle=0.
+\]
+Sur espace fini, on identifie $\lambda$ à une fonction $\lambda:\Omega\to\RR$.
+
+Soit $Q\in\mathcal{M}^e(S)$ (non vide sous NA). Comme $Q\sim P$ et $\Omega$ est fini, $\min_{\omega}Q(\omega)>0$. Choisissons $\varepsilon>0$ assez petit pour que
+\[
+\widetilde Q(\omega):=Q(\omega)+\varepsilon\,\lambda(\omega)>0,\quad \forall \omega\in\Omega.
+\]
+Posons ensuite la probabilité normalisée
+\[
+\bar Q(\omega)=\frac{\widetilde Q(\omega)}{\sum_{\omega'} \widetilde Q(\omega')}.
+\]
+Pour tout $k\in K$,
+\[
+\E_{\bar Q}[k]
+=\frac{\E_Q[k]+\varepsilon \sum_{\omega}\lambda(\omega)k(\omega)}{\sum_{\omega'} \widetilde Q(\omega')}
+=\frac{0+\varepsilon\cdot 0}{\sum_{\omega'} \widetilde Q(\omega')}=0,
+\]
+donc $\bar Q\in\mathcal{M}^e(S)$ (même argument que dans la preuve de l’existence de mesures de martingale). En revanche,
+\[
+\E_{\bar Q}[U]
+=\frac{\E_Q[U]+\varepsilon\sum_{\omega}\lambda(\omega)U(\omega)}{\sum_{\omega'} \widetilde Q(\omega')}
+=\frac{0+\varepsilon\,\langle\lambda,U\rangle}{\sum_{\omega'} \widetilde Q(\omega')}>0,
+\]
+ce qui contredit l’hypothèse $\E_Q[U]=0$ pour toute $Q\in\mathcal{M}^e(S)$. Donc $U\in K$.
+\end{proof}
+
+\begin{proof}[Preuve du Théorème~\ref{thm:complet_singleton}]
+\emph{Sens $\Rightarrow$.} Supposons le marché complet et prenons $Q_1,Q_2\in\mathcal{M}^e(S)$.  
+Pour tout $A\in\mathcal{J}_T$, la variable indicatrice $\indic_A$ est une créance bornée et (par complétude) réplicable : il existe $a\in\RR$ et $H$ tels que
+\[
+\indic_A = a + (H\cdot S)_T.
+\]
+En prenant l’espérance sous $Q_i$ et en utilisant que $\E_{Q_i}[(H\cdot S)_T]=0$, on obtient
+\[
+Q_i(A)=\E_{Q_i}[\indic_A]=a,\qquad i=1,2.
+\]
+Donc $Q_1(A)=Q_2(A)$ pour tout $A\in\mathcal{J}_T$, d’où $Q_1=Q_2$ et $\mathcal{M}^e(S)$ est un singleton.
+
+
+
+\smallskip
+\emph{Sens $\Leftarrow$.} Supposons $\mathcal{M}^e(S)=\{Q\}$.
+Soit $U\in L^\infty(\Omega,\mathcal{J}_T,P)$ et posons $a=\E_Q[U]$. Alors $\E_Q[U-a]=0$, et par le \ref{lem:UinK_iff_EQ0} on a $U-a\in K$. Il existe donc $H$ tel que
+\[
+U = a + (H\cdot S)_T,
+\]
+c’est-à-dire que $U$ est réplicable. Comme ceci vaut pour toute créance bornée, le marché est complet.
+
+\end{proof}
+
+
+\subsection{Prix par absence d’arbitrage (Kreps, 1981) : approche statique}
+
+Soit $U\in L^\infty(\Omega,\mathcal{J}_T,P)$ une créance (on travaille aux valeurs actualisées).  
+On étend le marché en ajoutant un actif synthétique $U$ : à $t=0$, il peut être acheté/vendu au prix $a\in\RR$, et il verse $U$ à $T$ (pas d’intermédiaire).
+
+Une stratégie étendue s’écrit $(\theta,\bar H)$ où $\theta\in\RR$ est la position sur l’actif $U$ et $\bar H\in\mathcal{H}^{d}$ est la stratégie sur les $d$ actifs risqués.  
+Si $\bar H$ est auto-financée, alors $(\theta,\bar H)$ est auto-financée et
+\[
+V_T = V_0 + \theta\,(U-a) + (H\cdot S)_T.
+\]
+On définit
+\[
+K_{a,U} := \{\ \theta\,(U-a) + k \ :\ \theta\in\RR,\ k\in K\ \}
+= \RR\,(U-a)+K,
+\]
+l’ensemble des gains atteignables à coût initial nul dans le marché étendu.
+
+\begin{definition}
+Un réel $a$ est un \emph{prix sans arbitrage} pour $U$ si le marché étendu satisfait (NA), i.e.
+\[
+K_{a,U}\cap L_+^0(\Omega,\mathcal{J}_T,P)=\{0\}.
+\]
+\end{definition}
+
+\begin{remarque}
+Du \emph{FTAP} et de la caractérisation $Q\in\mathcal{M}^e(S)\iff \forall k\in K,\ \E_Q[k]=0$, on déduit :
+\[
+a \text{ est sans arbitrage } \ \Longleftrightarrow\ \exists Q\in\mathcal{M}^e(S)\ \text{ tel que }\ \E_Q[U-a]=0
+\ \Longleftrightarrow\ \exists Q\in\mathcal{M}^e(S)\ \text{ avec } a=\E_Q[U].
+\]
+\end{remarque}
+
+\begin{theoreme}[Enveloppe des prix sans arbitrage]
+\label{thm:intervalle_prix_NA}
+Sous (NA), l’ensemble des prix sans arbitrage pour $U\in L^\infty$ est l’intervalle ouvert (non vide et borné)
+\[
+\big(\, \inf_{Q\in\mathcal{M}^e(S)} \E_Q[U]\ ,\ \sup_{Q\in\mathcal{M}^e(S)} \E_Q[U] \,\big),
+\]
+où les bornes sont données par les valeurs extrêmes de $\E_Q[U]$ lorsque $Q$ parcourt $\mathcal{M}^e(S)$.
+En particulier, si le marché est complet, cet ensemble se réduit à l’unique valeur $a=\E_Q[U]$, où $Q$ est l’unique mesure de martingale équivalente.
+\end{theoreme}
+
+\begin{proof}[Idée de preuve]
+($\subset$) Si $a$ est sans arbitrage, il existe $Q\in\mathcal{M}^e(S)$ avec $a=\E_Q[U]$ (remarque précédente).  
+($\supset$) Si $a=\E_Q[U]$ pour un $Q\in\mathcal{M}^e(S)$, alors pour tout $k'\in K_{a,U}$,
+\[
+\E_Q[k'] = \E_Q[\theta(U-a)+k]= \theta\,\E_Q[U-a]+\E_Q[k]=0,
+\]
+donc le marché étendu vérifie (NA) par le FTAP.  
+La borne inférieure/supérieure résulte de la compacité de $\mathcal{M}^e(S)$ sur espace fini.
+\end{proof}
+
+
+
+%Course6%
+\begin{remarque}\label{rq:UinK_implique_0}
+Si $U\in K$, alors pour toute mesure de martingale équivalente $Q\in\mathcal{M}^e(S)$ on a
+\[
+\E_Q[U]=0.
+\]
+En particulier, l’ensemble des prix sans arbitrage possibles pour $U$ est réduit à $\{0\}$.
+\end{remarque}
+
+\begin{definition}[Bornes d’absence d’arbitrage]
+Pour $U\in L^\infty(\Omega,\mathcal{J}_T,P)$, on définit
+\[
+\bar\Pi(U)=\sup\{\E_Q[U]\ :\ Q\in\mathcal{M}^e(S)\}, \qquad
+\underline{\Pi}(U)=\inf\{\E_Q[U]\ :\ Q\in\mathcal{M}^e(S)\}.
+\]
+\end{definition}
+
+\begin{lemme}\label{lem:replicabilite_intervalle_prix}
+Sous (NA) et pour une créance $U\in L^\infty$ :
+\begin{enumerate}
+\item[(a)] Si $\bar\Pi(U)=\underline{\Pi}(U)$, alors $U$ est réplicable au prix unique
+\[
+\Pi(U)=\bar\Pi(U)=\underline{\Pi}(U),
+\]
+et l’ensemble des prix sans arbitrage est le singleton $\{\Pi(U)\}$.
+\item[(b)] Si $\bar\Pi(U)>\underline{\Pi}(U)$, alors $U$ n’est pas réplicable et
+l’ensemble des prix sans arbitrage est l’intervalle ouvert
+\[
+\big(\,\underline{\Pi}(U),\,\bar\Pi(U)\,\big).
+\]
+\end{enumerate}
+\end{lemme}
+
+\begin{proof}
+(a) L’ensemble $\{\E_Q[U]:Q\in\mathcal{M}^e(S)\}$ est non vide (FTAP) et compact (espace fini).
+S’il se réduit à un point $m$, posons $f=U-m$. Alors $\E_Q[f]=0$ pour tout $Q\in\mathcal{M}^e(S)$,
+
+Donc $U=m+f$ est réplicable au prix $m=\bar\Pi(U)=\underline{\Pi}(U)$ et ce prix est unique
+(\emph{cf.} remarque d’unicité plus haut).
+
+(b) Si $U$ était réplicable, il existerait $a$ tel que $\E_Q[U]=a$ pour tout $Q\in\mathcal{M}^e(S)$,
+ce qui forcerait $\bar\Pi(U)=\underline{\Pi}(U)=a$, contradiction. Donc $U$ n’est pas réplicable.
+
+Par ailleurs, l’image du convexe $\mathcal{M}^e(S)$ par l’application affine $Q\mapsto \E_Q[U]$
+est un intervalle de $\RR$ ; on sait déjà qu’il est contenu dans $[\underline{\Pi}(U),\bar\Pi(U)]$,
+et qu’il n’est pas réduit à un point. Il reste à voir que les extrémités ne sont pas atteintes par un prix
+sans arbitrage dans le marché \emph{étendu}.
+
+Supposons par exemple qu’il existe $Q^\star\in\mathcal{M}^e(S)$ tel que
+$\E_{Q^\star}[U]=\bar\Pi(U)$. Par compacité, on peut trouver $\tilde Q\in\mathcal{M}^e(S)$
+avec $\E_{\tilde Q}[U]<\E_{Q^\star}[U]$. Pour $\varepsilon>0$ petit, définissons
+$Q_\varepsilon \propto Q^\star+\varepsilon(Q^\star-\tilde Q)$ ; pour $\varepsilon$ assez petit,
+$Q_\varepsilon\in\mathcal{M}^e(S)$ (même argument que dans la preuve d’existence des EMM),
+et
+\[
+\E_{Q_\varepsilon}[U]
+=\frac{\E_{Q^\star}[U]+\varepsilon\big(\E_{Q^\star}[U]-\E_{\tilde Q}[U]\big)}
+      {\sum_\omega \big(Q^\star(\omega)+\varepsilon(Q^\star-\tilde Q)(\omega)\big)}
+>\E_{Q^\star}[U],
+\]
+contradiction avec la définition de $\bar\Pi(U)$. Un raisonnement identique vaut pour $\underline{\Pi}(U)$.
+On en déduit que l’ensemble des prix sans arbitrage est exactement l’intervalle ouvert
+$\big(\underline{\Pi}(U),\bar\Pi(U)\big)$.
+\end{proof}
+
+\subsection{Approche dynamique : processus de prix sans arbitrage}
+
+\begin{definition}\label{def:processus_prix_NA}
+Un processus $(A_t)_{t=0..T}$ est un \emph{processus de prix sans arbitrage} pour une créance $U$
+si $A_T=U$ et si le marché élargi à $(S^1,\dots,S^d,A)$ (toujours en valeurs actualisées)
+vérifie (NA).
+\end{definition}
+
+\begin{lemme}\label{lem:prix_dynamique_EQ}
+Si le marché initial $(S^1,\dots,S^d)$ vérifie (NA), alors $(A_t)$ est un processus de prix
+sans arbitrage pour $U$ si et seulement si il existe $Q\in\mathcal{M}^e(S)$ tel que
+\[
+A_t=\E_Q[U\mid \mathcal{J}_t],\qquad t=0,\dots,T.
+\]
+\end{lemme}
+
+\begin{proof}
+C’est une application directe de la \ref{def:processus_prix_NA} et du FTAP :
+dans le marché élargi, (NA) $\Leftrightarrow$ existence d’une $Q$ sous laquelle tous les actifs
+actualisés (y compris $A$) sont des martingales, donc $A_t=\E_Q[A_T\mid\mathcal{J}_t]=\E_Q[U\mid\mathcal{J}_t]$.
+La réciproque est immédiate.
+\end{proof}
+
+\begin{lemme}\label{lem:unicite_processus_si_replicable}
+Supposons (NA) et $U$ réplicable. Alors :
+\begin{enumerate}
+\item[(i)] Le processus de prix sans arbitrage pour $U$ est unique.
+\item[(ii)] Pour tout $Q\in\mathcal{M}^e(S)$, on a $A_t=\E_Q[U\mid\mathcal{J}_t]$.
+\item[(iii)] Un processus $(H_t)$ est de réplication pour $U$ si et seulement si
+\[
+A_0=\bar\Pi(U)\quad\text{et}\quad A_t=\bar\Pi(U)+(H\cdot S)_t,\ \ t=0,\dots,T.
+\]
+\end{enumerate}
+\end{lemme}
+
+\begin{proof}
+Si $U=\bar\Pi(U)+(H\cdot S)_T$ est réplicable, alors pour tout $Q\in\mathcal{M}^e(S)$,
+\[
+A_t:=\E_Q[U\mid\mathcal{J}_t]=\bar\Pi(U)+\E_Q[(H\cdot S)_T\mid\mathcal{J}_t]
+=\bar\Pi(U)+(H\cdot S)_t,
+\]
+puisque $(H\cdot S)$ est une martingale sous $Q$. Cette expression ne dépend ni du choix
+de $Q$ ni d’un autre processus $A$, d’où (i) et (ii). Le point (iii) est l’équivalence directe :
+$A_T=U$ si et seulement si $A_t=\bar\Pi(U)+(H\cdot S)_t$ pour tout $t$ (propriété de martingale).
+\end{proof}
+
+\subsection{Sur-réplication et borne de super-couverture}
+
+\begin{definition}
+On dit que $U$ est \emph{sur-réplicable} au prix $a\in\RR$ s’il existe $H\in\mathcal{H}^d$ tel que
+\[
+a + (H\cdot S)_T \ge U\ \ \text{$P$-p.s.}
+\]
+On pose
+\[
+A(U)=\big\{\, a\in\RR\ :\ \exists H\in\mathcal{H}^d,\ a+(H\cdot S)_T\ge U \,\big\},
+\qquad
+\alpha := \inf A(U).
+\]
+\end{definition}
+
+\begin{theoreme}\label{thm:superhedging_equals_upper_envelope}
+Sous (NA), on a $A(U)=[\alpha,+\infty)$ et
+\[
+\alpha=\bar\Pi(U)=\sup_{Q\in\mathcal{M}^e(S)} \E_Q[U].
+\]
+\end{theoreme}
+
+%end course 6%
+%course 7%
+\begin{proof}
+La preuve se décompose en trois étapes.
+\begin{enumerate}
+    \item \textbf{Structure de $A(U)$ :} Si $a \in A(U)$ et $b > a$, alors $b \in A(U)$. Donc $A(U)$ est un intervalle de la forme $]\alpha, +\infty[$ ou $[\alpha, +\infty[$. Pour montrer que la borne est incluse, il faut prouver que $A(U)$ est un ensemble fermé.
+    
+    On a $a \in A(U) \iff \exists k \in K, \exists l \in L_+^0$ tel que $a = U+k+l$.
+    Ainsi, $A(U) = \phi^{-1}(U+K+L_+^0)$ où $\phi: \RR \to \RR^{|\Omega|}$ est l'application $x \mapsto (x, x, \dots, x)$.
+    $A(U)$ est fermé si $K+L_+^0$ est fermé.
+    
+    Soit $(f_m)_{m \in \mathbb{N}}$ une suite dans $K+L_+^0$ qui converge vers $f \in \RR^{|\Omega|}$. On veut montrer que $f \in K+L_+^0$.
+    Pour chaque $m$, $f_m = k_m + l_m$ avec $k_m \in K$ et $l_m \in L_+^0$.
+    
+    Pour toute $Q \in \mathcal{M}^e(S)$, on a $\E_Q[f_m] \to \E_Q[f]$. La suite $(\E_Q[f_m])$ est donc bornée : $\exists M \in \RR, |\E_Q[f_m]| \leq M$.
+    Or, $\E_Q[f_m] = \E_Q[k_m] + \E_Q[l_m] = 0 + \E_Q[l_m] = \sum_{\omega \in \Omega} l_m(\omega)Q(\omega) \geq 0$.
+    On a donc $0 \leq \sum_{\omega} l_m(\omega)Q(\omega) \leq M$.
+    Puisque $l_m(\omega) \geq 0$ et $Q(\omega)>0$, ceci implique que pour tout $\omega$, $0 \leq l_m(\omega) \leq \frac{M}{\inf_\omega Q(\omega)}$.
+    La suite $(l_m)$ est bornée dans $\RR^{|\Omega|}$. Par le théorème de Bolzano-Weierstrass, on peut extraire une sous-suite $(l_{\phi(m)})$ qui converge vers $l \in \RR^{|\Omega|}$. Comme $L_+^0$ est fermé, on a $l \in L_+^0$.
+    
+    Considérons la suite $k_{\phi(m)} = f_{\phi(m)} - l_{\phi(m)}$. Puisque $f_{\phi(m)} \to f$ et $l_{\phi(m)} \to l$, on a $k_{\phi(m)} \to f-l$.
+    Comme $K$ est fermé, $f-l \in K$.
+    Finalement, $f = (f-l) + l$, avec $f-l \in K$ et $l \in L_+^0$. Donc $f \in K+L_+^0$, et $K+L_+^0$ est fermé.
+    
+    \item \textbf{Première inégalité : $\alpha \geq \bar\Pi(U)$.}
+    Soit $a \in A(U)$. Il existe $H$ tel que $a + (H \cdot S)_T \geq U$.
+    Soit $k = (H \cdot S)_T \in K$. On a $a+k \geq U$.
+    Pour toute $Q \in \mathcal{M}^e(S)$, en prenant l'espérance :
+    \[
+    \E_Q[a+k] \geq \E_Q[U] \implies a + \E_Q[k] \geq \E_Q[U]
+    \]
+    Puisque $\E_Q[k]=0$, on obtient $a \geq \E_Q[U]$. Ceci étant vrai pour toute $Q \in \mathcal{M}^e(S)$, on a :
+    \[
+    a \geq \sup_{Q \in \mathcal{M}^e(S)} \E_Q[U] = \bar\Pi(U).
+    \]
+    Ceci est vrai pour tout $a \in A(U)$. En prenant l'infimum sur $a$, on conclut :
+    \[
+    \alpha = \inf_{a \in A(U)} a \geq \bar\Pi(U).
+    \]
+    
+    \item \textbf{Seconde inégalité : $\alpha \leq \bar\Pi(U)$.}
+    On procède par l'absurde. Supposons que $\alpha > \bar\Pi(U)$.
+    Alors il existe un réel $a$ tel que $\bar\Pi(U) < a < \alpha$.
+    Puisque $a < \alpha$, $a \notin A(U)$. Par définition de $A(U)$, cela signifie que pour toute stratégie $H \in \mathcal{H}^d$, on n'a pas $a+(H \cdot S)_T \geq U$.
+    Ceci est équivalent à dire que l'ensemble $\{a - U + k \mid k \in K\}$ est disjoint de $L_+^0$.
+    \[
+    (a-U+K) \cap L_+^0 = \emptyset
+    \]
+    Les ensembles $a-U+K$ et $L_+^0$ sont des ensembles convexes et fermés. Par le théorème de séparation des convexes en dimension finie, il existe un hyperplan qui les sépare. C'est-à-dire qu'il existe un vecteur $\lambda \in \RR^{|\Omega|}$, $\lambda \neq 0$, et un réel $\beta$ tels que :
+    \begin{itemize}
+        \item $\forall x \in a-U+K, \sca{x, \lambda} \leq \beta$
+        \item $\forall \delta \in L_+^0, \sca{\delta, \lambda} \geq \beta$
+    \end{itemize}
+    De la seconde inéquation, en prenant $\delta = 0$, on obtient $\beta \leq 0$. En prenant $\delta_m = (0, \dots, m, \dots, 0)$, on montre que toutes les composantes de $\lambda$ doivent être non-négatives ($\lambda(\omega) \geq 0$).
+    De la première inéquation, on a $\sca{a-U,\lambda} + \sca{k, \lambda} \leq \beta$ pour tout $k \in K$. Puisque $K$ est un sous-espace vectoriel, si $\sca{k, \lambda}$ n'était pas nul, on pourrait le rendre arbitrairement grand ou petit, ce qui contredirait l'inégalité. Donc, $\sca{k, \lambda} = 0$ pour tout $k \in K$.
+    
+    On a donc $\lambda \ge 0$, $\lambda \neq 0$ et $\sca{k, \lambda} = 0$ pour tout $k \in K$. On peut normaliser $\lambda$ pour en faire une probabilité $Q = \frac{\lambda}{\sum_\omega \lambda(\omega)}$.
+    La condition $\sca{k, \lambda}=0$ implique que $\E_Q[k]=0$ pour tout $k \in K$, donc $Q$ est une mesure martingale (pas nécessairement équivalente à $P$).
+    La condition de séparation devient $\sca{a-U, \lambda} \leq \beta \leq 0$, ce qui implique $\E_Q[a-U] \leq 0$, soit $a \leq \E_Q[U]$.
+    
+    Si $Q$ était dans $\mathcal{M}^e(S)$, on aurait $a \leq \E_Q[U] \leq \bar\Pi(U)$, ce qui contredit notre hypothèse $a > \bar\Pi(U)$.
+    Si $Q$ n'est pas équivalente à $P$, on peut construire une mesure $Q_\varepsilon = \varepsilon \tilde{Q} + (1-\varepsilon)Q$ où $\tilde{Q} \in \mathcal{M}^e(S)$. Pour $\varepsilon>0$ assez petit, $Q_\varepsilon$ est une mesure de probabilité martingale (pas forcément équivalente). On a alors
+    \[
+    \E_{Q_\varepsilon}[U] = \varepsilon \E_{\tilde{Q}}[U] + (1-\varepsilon) \E_Q[U] \geq \varepsilon \E_{\tilde{Q}}[U] + (1-\varepsilon)a
+    \]
+    En passant à la limite quand $\varepsilon \to 0$, on obtient $\lim \E_{Q_\varepsilon}[U] \geq a$.
+    On peut montrer que cette limite est inférieure à $\bar\Pi(U)$, ce qui donne $\bar\Pi(U) \geq a$, une contradiction.
+    
+    Donc l'hypothèse $\alpha > \bar\Pi(U)$ est fausse. On a bien $\alpha \leq \bar\Pi(U)$.
+    Avec l'inégalité précédente, on conclut $\alpha = \bar\Pi(U)$.
+\end{enumerate}
+\end{proof}
+
+
+\section{Exemples de modèles à une période}
+
+\subsection{Le modèle binomial}
+On se place dans un marché à une période $T=1$ avec un univers $\Omega = \{\omega_u, \omega_d\}$. La probabilité historique est $P(\omega_u)=p > 0$ et $P(\omega_d)=1-p$.
+\begin{itemize}
+    \item Un actif sans risque dont le prix actualisé est constant : $S_0^0 = 1, S_1^0 = e^r$. Le taux d'intérêt est $r > 0$.
+    \item Un actif risqué avec un prix initial $S_0^1=s$ et des prix finaux $S_1^1(\omega_u) = su$ et $S_1^1(\omega_d) = sd$, avec $u > d$.
+\end{itemize}
+
+\begin{proposition}
+L'hypothèse de non-arbitrage (NA) est satisfaite si et seulement si $d < e^r < u$.
+Dans ce cas, il existe une unique mesure de probabilité martingale équivalente $Q \in \mathcal{M}^e(S)$, définie par :
+\begin{align*}
+    q = Q(\omega_u) = \frac{e^r - d}{u - d} \\
+    1-q = Q(\omega_d) = \frac{u - e^r}{u - d}
+\end{align*}
+Puisque $\mathcal{M}^e(S)$ est un singleton, le marché est complet.
+\end{proposition}
+
+\begin{proof}
+(NA) $\iff \mathcal{M}^e(S) \neq \emptyset$. On cherche $Q$ équivalente à $P$ telle que $E_Q[\hat{S}_1^1] = \hat{S}_0^1$, où $\hat{S}$ est le prix actualisé.
+\[
+E_Q\left[\frac{S_1^1}{S_1^0}\right] = \frac{S_0^1}{S_0^0} \iff q \frac{su}{e^r} + (1-q) \frac{sd}{e^r} = s
+\]
+En simplifiant par $s$ et en multipliant par $e^r$, on obtient :
+\[
+q u + (1-q) d = e^r \iff q(u-d) = e^r - d
+\]
+Cette équation a une solution unique $q = \frac{e^r - d}{u - d}$. Les conditions d'équivalence $q>0$ et $1-q>0$ sont équivalentes à $e^r-d>0$ et $u-e^r>0$, soit $d < e^r < u$.
+\end{proof}
+
+\subsubsection{Prix et couverture d'un actif contingent}
+Considérons un actif contingent $\hat{B}$ dont le payoff à l'échéance est $\hat{B}(\omega_u) = \hat{B}_u$ et $\hat{B}(\omega_d) = \hat{B}_d$.
+Le marché étant complet, il existe un prix unique sans arbitrage $A_0$ et un portefeuille de réplication unique $(H_0^0, H_0^1)$.
+
+\paragraph{Prix sans arbitrage :}
+Le prix est donné par l'espérance du payoff actualisé sous la mesure martingale $Q$ :
+\[
+A_0 = E_Q\left[\frac{\hat{B}}{e^r}\right] = \frac{1}{e^r} \left( q \hat{B}_u + (1-q) \hat{B}_d \right) \quad \text{avec} \quad q = \frac{e^r - d}{u - d}.
+\]
+
+\paragraph{Portefeuille de couverture :}
+Le portefeuille $(H_0^0, H_0^1)$ doit satisfaire $A_0 = H_0^0 S_0^0 + H_0^1 S_0^1 = H_0^0 + H_0^1 s$.
+La valeur du portefeuille à l'instant $T=1$ doit répliquer le payoff :
+\[
+H_0^0 S_1^0 + H_0^1 S_1^1 = \hat{B}
+\]
+Ceci conduit au système d'équations :
+\[
+\begin{cases}
+    H_0^0 e^r + H_0^1 su = \hat{B}_u \\
+    H_0^0 e^r + H_0^1 sd = \hat{B}_d
+\end{cases}
+\]
+La soustraction des deux lignes donne $H_0^1 s(u-d) = \hat{B}_u - \hat{B}_d$. On en déduit la quantité d'actif risqué à détenir (appelée le "Delta") :
+\[
+H_0^1 = \frac{\hat{B}_u - \hat{B}_d}{s(u-d)}
+\]
+Et la quantité d'actif sans risque :
+\[
+H_0^0 = A_0 - H_0^1 s
+\]
+Dans le modèle binomial avec $d < e^r < u$, je peux pricer et couvrir explicitement n'importe quel actif contingent.
+
+\subsection{Le modèle trinomial}
+On étend le modèle précédent à un univers à trois états $\Omega = \{\omega_u, \omega_m, \omega_d\}$. Les prix finaux de l'actif risqué sont $su, sm, sd$ avec $u > m > d$.
+
+\begin{proposition}
+L'hypothèse de non-arbitrage (NA) est satisfaite si et seulement si $d < e^r < u$.
+\end{proposition}
+
+\begin{proof}
+(NA) $\iff \mathcal{M}^e(S) \neq \emptyset$. On cherche une probabilité $Q=(q_1, q_2, q_3)$ avec $q_i = Q(\omega_i) > 0$ telle que :
+\begin{align*}
+    q_1 + q_2 + q_3 &= 1 \quad (P_1) \text{ (condition de probabilité)} \\
+    q_1 u + q_2 m + q_3 d &= e^r \quad (P_2) \text{ (condition de martingale)}
+\end{align*}
+Géométriquement, l'ensemble des probabilités $(q_1, q_2, q_3)$ avec $q_i>0$ et $\sum q_i=1$ est l'intérieur du simplexe (plan $P_1$) dans le premier octant de $\mathbb{R}^3$. La condition de martingale définit un plan $(P_2)$. L'ensemble $\mathcal{M}^e(S)$ est l'intersection de l'intérieur de ce simplexe avec ce plan. \\
+Cette intersection est non vide si et seulement si le plan $(P_2)$ traverse le simplexe, ce qui se traduit par la condition que la valeur $e^r$ doit être comprise entre la plus petite et la plus grande valeur possible du portefeuille $q_1 u + q_2 m + q_3 d$, soit $d < e^r < u$.
+\end{proof}
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[scale=2.5, axis/.style={->, thick}]
+    % Axes
+    \draw[axis] (0,0,0) -- (1.5,0,0) node[anchor=north east]{$q_1$};
+    \draw[axis] (0,0,0) -- (0,1.5,0) node[anchor=north west]{$q_2$};
+    \draw[axis] (0,0,0) -- (0,0,1.5) node[anchor=south]{$q_3$};
+    % Simplex (P1)
+    \coordinate (A) at (1,0,0);
+    \coordinate (B) at (0,1,0);
+    \coordinate (C) at (0,0,1);
+    \draw[red, thick, fill=red!10, opacity=0.7] (A) -- (B) -- (C) -- cycle;
+    \node[red, above right] at (0.3,0.4,0.3) {Simplex ($P_1$)};
+    % Plan (P2) et intersection M^e(S)
+    % On définit les points extrêmes de l'intersection
+    \coordinate (P1_bar) at (0.2, 0, 0.8); % P_1 = (q_1, 0, q_3)
+    \coordinate (P2_bar) at (0, 0.7, 0.3); % P_2 = (0, q_2, q_3)
+    \draw[blue, thick, fill=blue!20, opacity=0.6] (0.8,0.6,-0.1) -- (-0.2, -0.1, 1.2) -- (-0.1, 1.2, -0.2) -- cycle;
+    \node[blue, below] at (0.3, 0.7, 0) {Plan ($P_2$)};
+    % Segment d'intersection
+    \draw[green!50!black, ultra thick] (P1_bar) -- (P2_bar);
+    \node[green!50!black, above] at (0.1, 0.4, 0.5) {$\mathcal{M}^e(S)$};
+    \node[below] at (P1_bar) {$\bar{P}_1$};
+    \node[above] at (P2_bar) {$\bar{P}_2$};
+\end{tikzpicture}
+\caption{Représentation géométrique de $\mathcal{M}^e(S)$ comme l'intersection du simplexe des probabilités et du plan de la condition martingale.}
+\end{figure}
+
+Contrairement au modèle binomial, il y a une infinité de mesures martingales possibles (l'intersection est un segment de droite). Le marché est donc **incomplet**.
+
+\subsubsection{Prix des actifs contingents}
+Pour un actif contingent $\hat{B}$ avec des payoffs $(\hat{B}_u, \hat{B}_m, \hat{B}_d)$, l'ensemble des prix sans arbitrage est l'intervalle ouvert $]\underline{\Pi}(\hat{B}), \overline{\Pi}(\hat{B})[$, où :
+\begin{itemize}
+    \item $\underline{\Pi}(\hat{B}) = \inf_{Q \in \mathcal{M}^e(S)} E_Q[\hat{B}/e^r]$
+    \item $\overline{\Pi}(\hat{B}) = \sup_{Q \in \mathcal{M}^e(S)} E_Q[\hat{B}/e^r]$
+\end{itemize}
+L'application $Q \mapsto E_Q[\cdot]$ étant linéaire et l'ensemble $\mathcal{M}^e(S)$ étant convexe (un segment), le supremum et l'infimum sont atteints aux points extrêmes du segment. Ces points extrêmes, notés $\bar{P}_1$ et $\bar{P}_2$, correspondent aux cas où l'un des états a une probabilité nulle.
+
+Deux cas se présentent en fonction de la position de $m$ par rapport à $e^r$ :
+\begin{enumerate}
+    \item Si $m \ge e^r$ : Les points extrêmes sont $\bar{P}_1$ (intersection avec $q_2=0$) et $\bar{P}_2$ (intersection avec $q_1=0$).
+        \begin{itemize}
+            \item $\bar{P}_1 = (\frac{e^r-d}{u-d}, 0, \frac{u-e^r}{u-d})$
+            \item $\bar{P}_2 = (0, \frac{e^r-d}{m-d}, \frac{m-e^r}{m-d})$
+        \end{itemize}
+    \item Si $m < e^r$ : Les points extrêmes sont $\bar{P}_1$ (intersection avec $q_2=0$) et $\bar{P}_2$ (intersection avec $q_3=0$).
+        \begin{itemize}
+            \item $\bar{P}_1 = (\frac{e^r-d}{u-d}, 0, \frac{u-e^r}{u-d})$
+            \item $\bar{P}_2 = (\frac{e^r-m}{u-m}, \frac{u-e^r}{u-m}, 0)$
+        \end{itemize}
+\end{enumerate}
+
+\begin{exemple}[Option d'achat européenne]
+Considérons une option d'achat (call) de strike $K$ sur l'actif risqué, de sorte que le payoff actualisé soit $\hat{B} = (S_1^1 - K)^+/e^r$. Supposons $su > K > sm$ et $sd < K$. Les payoffs sont :
+\[
+\hat{B}(\omega_u) = \frac{su-K}{e^r}, \quad \hat{B}(\omega_m) = 0, \quad \hat{B}(\omega_d) = 0
+\]
+Les bornes de prix sont alors :
+\begin{itemize}
+    \item $\overline{\Pi}(\hat{B}) = \max(E_{\bar{P}_1}[\hat{B}/e^r], E_{\bar{P}_2}[\hat{B}/e^r])$.
+    Comme $u$ est le seul état où le payoff est non-nul, le sup est atteint pour la probabilité qui maximise $q_1$. C'est $\bar{P}_1$ si $m < e^r$ ou $\bar{P}_2$ si $m > e^r$ (selon les valeurs).
+    Supposons $m < e^r$. Le max de $q_1$ est en $\bar{P}_2$.
+    $\overline{\Pi}(\hat{B}) = E_{\bar{P}_2}[\hat{B}/e^r] = \frac{e^r-m}{u-m} \cdot \frac{su-K}{e^r}$.
+    \item $\underline{\Pi}(\hat{B}) = \min(E_{\bar{P}_1}[\hat{B}/e^r], E_{\bar{P}_2}[\hat{B}/e^r])$.
+    Le min est en $\bar{P}_1$.
+    $\underline{\Pi}(\hat{B}) = E_{\bar{P}_1}[\hat{B}/e^r] = \frac{e^r-d}{u-d} \cdot \frac{su-K}{e^r}$.
+\end{itemize}
+\end{exemple}
+
+\subsubsection*{Exercices Numériques (à faire à la maison)}
+\begin{enumerate}
+    \item Pour $r=0, u=1.2, m=1, d=0.8$ et un actif contingent $\hat{B} = (\hat{S}_1^1 - 0.9)^+$.
+    Montrer que l'intervalle des prix sans arbitrage $]\underline{\Pi}(\hat{B}), \overline{\Pi}(\hat{B})[$ est $]0.1, 0.15[$.
+    
+    \item Prouver qu'un portefeuille de sur-réplication optimal (pour atteindre $\overline{\Pi}(\hat{B})$) est donné par $H_0^1 = 0.75$ et $H_0^0 = -0.6$.
+\end{enumerate}
+
+%end course 7%
+%course 8%
+
+
+\section{Modèle binomial multi-périodes ($T=3$)}
+
+Considérons un modèle binomial à $T=3$ périodes.  
+La filtration est donnée par $(\mathcal{J}_t)_{t=0,\dots,3}$ avec :
+\[
+\mathcal{J}_0=\{\emptyset,\Omega\},\quad
+\mathcal{J}_1=\sigma(A_1,A_2),\quad
+\mathcal{J}_2=\sigma(B_1,B_2,B_3,B_4),\quad
+\mathcal{J}_3=\mathcal{P}(\Omega),
+\]
+où
+\begin{itemize}
+    \item $A_1 = \{\omega \in \Omega : \omega_1 = u\}$,
+    \item $A_2 = \{\omega \in \Omega : \omega_1 = d\}$,
+    \item $B_1 = \{\omega : \omega_1 = u,\ \omega_2 = u\}$,
+    \item $B_2 = \{\omega : \omega_1 = u,\ \omega_2 = d\}$,
+    \item $B_3 = \{\omega : \omega_1 = d,\ \omega_2 = u\}$,
+    \item $B_4 = \{\omega : \omega_1 = d,\ \omega_2 = d\}$.
+\end{itemize}
+
+On considère un actif sans risque (obligation) de prix $S_t^0 = e^{rt}$  
+et un actif risqué (action) de prix $S_t^1$.
+
+L’évolution du prix de l’action peut être représentée par un arbre binaire :
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[
+ node distance=35mm and 26mm,
+ every node/.style={font=\small},
+ arrow/.style={draw, -Stealth, thick},
+ prob/.style={font=\scriptsize, midway, fill=white, inner sep=1pt}
+]
+
+% Période 0
+\node (S0) {$S_0$};
+
+% Période 1
+\node[above right=10mm and 15mm of S0] (S1u) {$S_1(u)=Su$};
+\node[below right=10mm and 15mm of S0] (S1d) {$S_1(d)=Sd$};
+
+% Période 2
+\node[above right=10mm and 15mm of S1u] (S2uu) {$S_2(uu)=Su^2$};
+\node[below right=10mm and 15mm of S1u] (S2ud) {$S_2(ud)=Sud$};
+\node[below right=10mm and 15mm of S1d] (S2dd) {$S_2(dd)=Sd^2$};
+
+% Période 3 - seulement 6 états distincts
+\node[above right=8mm and 15mm of S2uu] (S3uuu) {$S_3(uuu)=Su^3$};
+\node[below right=8mm and 15mm of S2uu] (S3uud) {$S_3(uud)=Su^2d$};
+\node[below right=8mm and 15mm of S2ud] (S3ud) {$S_3(udu,udd,dud)=Sud^2$};
+\node[below right=8mm and 15mm of S2dd] (S3ddd) {$S_3(ddd)=Sd^3$};
+
+% Période 0 -> 1
+\draw[arrow] (S0) -- node[prob, above, yshift=2pt] {$q$} (S1u);
+\draw[arrow] (S0) -- node[prob, below, yshift=-2pt] {$1-q$} (S1d);
+
+% Période 1 -> 2
+\draw[arrow] (S1u) -- node[prob, above, yshift=2pt] {$q$} (S2uu);
+\draw[arrow] (S1u) -- node[prob, below, yshift=-2pt] {$1-q$} (S2ud);
+\draw[arrow] (S1d) -- node[prob, above, yshift=2pt] {$q$} (S2ud);
+\draw[arrow] (S1d) -- node[prob, below, yshift=-2pt] {$1-q$} (S2dd);
+
+% Période 2 -> 3
+\draw[arrow] (S2uu) -- node[prob, above, yshift=2pt] {$q$} (S3uuu);
+\draw[arrow] (S2uu) -- node[prob, below, yshift=-2pt] {$1-q$} (S3uud);
+\draw[arrow] (S2ud) -- node[prob, above, yshift=2pt] {$q$} (S3uud);
+\draw[arrow] (S2ud) -- node[prob, below, yshift=-2pt] {$1-q$} (S3ud);
+\draw[arrow] (S2dd) -- node[prob, above, yshift=2pt] {$q$} (S3ud);
+\draw[arrow] (S2dd) -- node[prob, below, yshift=-2pt] {$1-q$} (S3ddd);
+
+\end{tikzpicture}
+
+\caption{Évolution du prix de l’action dans un modèle binomial à 3 périodes.}
+\end{figure}
+
+\section{Absence d’arbitrage et mesure risque-neutre}
+
+La condition de non-arbitrage (NA) dans le modèle à $T=3$ équivaut à sa validité dans chaque sous-modèle à une période.  
+Dans le cas binomial, elle s’écrit :
+\[
+d < e^r < u.
+\]
+
+L’existence d’une mesure de martingale équivalente (EMM) $Q$ est équivalente à (NA).  
+Sous $Q$, le prix actualisé de l’action est une martingale :
+\[
+\E_Q[\hat{S}_{t+1} \mid \mathcal{J}_t] = \hat{S}_t,
+\]
+où $\hat{S}_t = S_t / S_t^0 = e^{-rt} S_t$.
+
+Pour tout nœud $(\omega_1, \dots, \omega_t)$, on a :
+\[
+e^{-rt} S_t(\omega_1, \dots, \omega_t)
+= \E_Q[e^{-r(t+1)} S_{t+1} \mid \mathcal{J}_t],
+\]
+soit encore :
+\[
+S_t = e^{-r} \left[ S_{t+1}(u)\, Q_{(\omega_1,\dots,\omega_t)}(u)
++ S_{t+1}(d)\, Q_{(\omega_1,\dots,\omega_t)}(d) \right].
+\]
+
+Résolvons pour un nœud particulier, par exemple $t=2$ après deux hausses :
+\[
+S_2(uu) = e^{-r} \big[S_3(uuu)\, q_{uu} + S_3(uud)\,(1-q_{uu})\big],
+\]
+soit
+\[
+S u^2 = e^{-r} \big[S u^3 q_{uu} + S u^2 d (1-q_{uu})\big].
+\]
+On obtient alors
+\[
+1 = e^{-r}\,[u q_{uu} + d(1-q_{uu})]
+\quad\Rightarrow\quad
+e^r = d + (u-d) q_{uu},
+\]
+d’où la probabilité risque-neutre :
+\[
+q_{uu} = q = \frac{e^r - d}{u - d}, \qquad
+1-q_{uu} = \frac{u - e^r}{u - d}.
+\]
+Dans ce modèle, les rendements sont indépendants du chemin, donc la probabilité $q$ est la même à chaque nœud.
+
+\section{Valorisation et couverture d’une créance contingente}
+
+Pour valoriser une créance contingente de payoff $B$ à l’échéance $T=3$, on utilise la formule d’évaluation sous la mesure risque-neutre :
+\[
+A_t = \E_Q[B \mid \mathcal{J}_t],
+\]
+où $A_t$ désigne le prix de la créance à la date $t$.
+
+Pour couvrir la créance, on construit un portefeuille auto-financé $(H_t^0,H_t^1)$ tel que sa valeur coïncide avec celle de la créance à chaque date.  
+La composition du portefeuille est donnée par :
+\begin{align*}
+H_t^1 &= \frac{A_{t+1}(u) - A_{t+1}(d)}{S_{t+1}(u) - S_{t+1}(d)}
+\quad &\text{(nombre d’actions détenues)}\\
+H_t^0 &= e^{-r}\,\big(A_{t+1}(u) - H_t^1 S_{t+1}(u)\big)
+\quad &\text{(montant investi dans l’actif sans risque).}
+\end{align*}
+Comme le marché est complet, la mesure $Q$ est unique et toute créance peut être parfaitement répliquée.
+
+\section*{A numerical example: Binomial model}
+
+Parameters: $T=3$, $u=1.1$, $d=0.9$, $r=\log(1+0.05)$, $S_0=20$
+
+\subsection*{Stock Price Tree}
+
+\begin{center}
+\begin{tikzpicture}[
+    grow=right,
+    level distance=4cm,
+    level 1/.style={sibling distance=7cm},
+    level 2/.style={sibling distance=3cm},
+    level 3/.style={sibling distance=2cm},
+    every node/.style={align=center, draw=none},
+    edge from parent/.style={draw, -latex}
+]
+
+\node {20}
+    child {
+        node {22 \\ \textcolor{red}{(20.95)}}
+        child {
+            node {24.2 \\ \textcolor{red}{(21.95)}}
+            child {
+                node {26.62 \\ \textcolor{red}{(23.00)}}
+            }
+            child {
+                node {21.78 \\ \textcolor{red}{(18.81)}}
+            }
+        }
+        child {
+            node {19.8 \\ \textcolor{red}{(17.96)}}
+            child {
+                node {21.78 \\ \textcolor{red}{(18.81)}}
+            }
+            child {
+                node {17.82 \\ \textcolor{red}{(15.39)}}
+            }
+        }
+    }
+    child {
+        node {18 \\ \textcolor{red}{(17.14)}}
+        child {
+            node {19.8 \\ \textcolor{red}{(17.96)}}
+            child {
+                node {21.78 \\ \textcolor{red}{(18.81)}}
+            }
+            child {
+                node {17.82 \\ \textcolor{red}{(15.39)}}
+            }
+        }
+        child {
+            node {16.2 \\ \textcolor{red}{(14.69)}}
+            child {
+                node {17.82 \\ \textcolor{red}{(15.39)}}
+            }
+            child {
+                node {14.58 \\ \textcolor{red}{(12.59)}}
+            }
+        }
+    };
+\end{tikzpicture}
+\end{center}
+
+\vspace{1cm}
+
+\noindent Notation: $\hat{S}_t$ and $\left(\hat{S}_t^1\right)$
+
+\vspace{1cm}
+
+\subsection*{Price of a European Put with $K=20$ and $T=3$}
+
+$$\hat{B} = \left(-\hat{S}_T + K\right)_+ \quad \text{where} \quad \frac{K}{\hat{S}_3} = 17.28$$
+
+\newpage
+
+\subsection*{Risk-Neutral Probabilities}
+
+Here $Q_{(w_1,w_2)}(w_u) = Q_{w_1}(w_u) = Q(w_u) = \frac{3}{4}$
+
+$Q_{(w_1,w_2)}(w_d) = Q_{w_1}(w_d) = Q(w_d) = \frac{1}{4}$
+
+\vspace{0.5cm}
+
+$$B = \left(\frac{K}{e^{3r}} - S_3^1\right)_+ = A_3 = \begin{cases}
+0 \\
+0 \\
+-1.89 \\
+-4.69
+\end{cases}$$
+
+where $e^{3r} = 17.28$
+
+\subsection*{Tree for At}
+
+\begin{center}
+\begin{tikzpicture}[
+    grow=right,
+    level distance=3.5cm,
+    level 1/.style={sibling distance=2.5cm},
+    level 2/.style={sibling distance=1.5cm},
+    every node/.style={circle, draw, minimum size=0.8cm},
+    edge from parent/.style={draw, -latex}
+]
+
+\node {\small $1$}
+    child {
+        node {\small $3$}
+        child {
+            node {\small $6$}
+            child {
+                node[right=0.5cm, draw=none] {$0$}
+            }
+        }
+        child {
+            node {\small $5$}
+            child {
+                node[right=0.5cm, draw=none] {$0$}
+            }
+            child {
+                node[right=0.5cm, draw=none] {$1.89$}
+            }
+        }
+    }
+    child {
+        node {\small $2$}
+        child {
+            node {\small $5$}
+            child {node[right=0.5cm, draw=none] {$0$}}
+            child {node[right=0.5cm, draw=none] {$1.89$}}
+        }
+        child {
+            node {\small $4$}
+            child {
+                node[right=0.5cm, draw=none] {$1.89$}
+            }
+            child {
+                node[right=0.5cm, draw=none] {$4.69$}
+            }
+        }
+    };
+
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\underline{Actualized payoff}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{align*}
+\circled{6} &= 0 \times q + 0(1-q) = 0 \\
+\circled{5} &= 0 \times q + 1.89(1-q) \approx 0.47 \\
+\circled{4} &= 1.89q + 4.69(1-q) \approx 2.58 \\
+\circled{3} &= q\circled{6} + (1-q)\circled{5} \approx 0.12 \\
+\circled{2} &= q\circled{5} + (1-q)\circled{4} \approx 1 \\
+\circled{1} &= q\circled{3} + (1-q)\circled{2} = 0.34
+\end{align*}
+
+\newpage
+
+\subsection*{Tree for $H_t^0$ and $H_t^1$}
+
+\begin{center}
+\begin{tikzpicture}[
+    grow=right,
+    level distance=3.5cm,
+    level 1/.style={sibling distance=3cm},
+    level 2/.style={sibling distance=2cm},
+    every node/.style={circle, draw, minimum size=0.9cm},
+    edge from parent/.style={draw, -latex}
+]
+
+\node[color=teal] {\small $6$}
+    child {
+        node[color=teal] {\small $4$}
+        child {
+            node[color=teal] {\small $1$}
+            child {
+                node[color=red] {\small $6$}
+                child {node[right=0.5cm, draw=none, color=red] {$4$}}
+            }
+        }
+        child {
+            node[color=red] {\small $5$}
+            child {
+                node[color=teal] {\small $2$}
+                child {node[right=0.5cm, draw=none] {}}
+            }
+            child {
+                node[color=teal] {\small $5$}
+                child {node[right=0.5cm, draw=none] {}}
+            }
+        }
+    }
+    child {
+        node[color=red] {\small $5$}
+        child {
+            node[color=teal] {\small $5$}
+            child {
+                node[color=red] {\small $2$}
+                child {node[right=0.5cm, draw=none] {}}
+            }
+            child {
+                node[color=teal] {\small $3$}
+                child {node[right=0.5cm, draw=none] {}}
+            }
+        }
+        child {
+            node[color=red] {\small $5$}
+            child {
+                node[color=teal] {\small $3$}
+                child {node[right=0.5cm, draw=none] {}}
+            }
+            child {
+                node[color=teal] {\small $3$}
+                child {node[right=0.5cm, draw=none] {}}
+            }
+        }
+    };
+
+\end{tikzpicture}
+\end{center}
+
+\subsection*{For example}
+
+\begin{align*}
+\circled{3}\; &=\; H_2^{1}(w_u,w_u)
+\;=\; \frac{A_3(w_u,w_u,w_u) - A_3(w_u,w_u,w_d)}{S_3^{1}(w_u,w_u,w_u) - S_3^{1}(w_u,w_u,w_d)}\\
+&=\; -1 \;\text{(simplifié)}
+\end{align*}
+
+\begin{align*}
+\circled{3}\; &=\; H_2^{0}(w_u,w_u)
+\;=\; A_2(w_u,w_u) - H_2^{1}(w_u,w_u)\, S_2^{1}(w_u,w_u)\\
+&=\; 17.27
+\end{align*}
+
+\subsection*{In the same way}
+
+\begin{minipage}{0.45\textwidth}
+\begin{align*}
+\circled{1} &= 0 \\
+\circled{2} &= 10.35 \\
+\circled{4} &= 2.634 \\
+\circled{5} &= 11.95 \\
+\circled{6} &= 4.44
+\end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\begin{align*}
+\circled{1} &= 0 \\
+\circled{2} &= -0.55 \\
+\circled{4} &= -0.12 \\
+\circled{5} &= -0.64 \\
+\circled{6} &= -0.23
+\end{align*}
+\end{minipage}
+\section{Options américaines}
+
+\subsection{Définition}
+
+Une option américaine est un processus stochastique non négatif $(\hat{X}_t)_{t=0,\dots,T}$ adapté à la filtration $(\mathcal{J}_t)$, que le détenteur peut exercer à tout instant $t\in\{0,\dots,T\}$ pour recevoir le paiement $\hat{X}_t$.
+
+\begin{itemize}
+    \item Option d’achat américaine (call) : $\hat{X}_t = (S_t - K)_+$,
+    \item Option de vente américaine (put) : $\hat{X}_t = (K - S_t)_+$.
+\end{itemize}
+
+Dans un marché complet, on ne peut pas répliquer parfaitement une option américaine par une stratégie statique, car la date d’exercice est aléatoire.
+
+\subsection{Valorisation par récurrence rétrograde}
+
+Soit $(\hat{U}_t)_{t=0,\dots,T}$ le processus de prix d’une option américaine.  
+À maturité : $\hat{U}_T = \hat{X}_T$.  
+À la date $T-1$, le détenteur choisit entre :
+\begin{enumerate}
+    \item exercer et recevoir $\hat{X}_{T-1}$ ;
+    \item ne pas exercer et conserver une option valant
+    $\E_Q[e^{-r}\hat{X}_T \mid \mathcal{J}_{T-1}]$.
+\end{enumerate}
+Ainsi :
+\[
+\hat{U}_{T-1} = \max\!\left(\hat{X}_{T-1},\, \E_Q[e^{-r}\hat{U}_T\mid\mathcal{J}_{T-1}]\right),
+\]
+et, par récurrence, pour tout $t<T$ :
+\[
+\hat{U}_t = \max\!\left(\hat{X}_t,\, \E_Q[e^{-r}\hat{U}_{t+1}\mid\mathcal{J}_t]\right).
+\]
+
+En posant $U_t = e^{-rt}\hat{U}_t$ et $X_t = e^{-rt}\hat{X}_t$ (valeurs actualisées), on obtient :
+\[
+U_t = \max\!\left(X_t,\, \E_Q[U_{t+1}\mid\mathcal{J}_t]\right).
+\]
+
+\paragraph{Proposition 1 :}
+Le processus actualisé $(U_t)$ est la plus petite sur-martingale sous $Q$ dominant le processus $(X_t)$.
+
+\paragraph{Proposition 2 :}
+Si le taux sans risque est non négatif ($S_t^0$ croissant), il n’est jamais optimal d’exercer une option d’achat américaine sur un titre sans dividendes avant l’échéance.
+
+\begin{proof}
+Supposons qu’il soit optimal d’exercer à $t<T$.  
+Alors la valeur d’exercice est supérieure à la valeur de continuation :
+\[
+X_t > \E_Q[U_{t+1}\mid\mathcal{J}_t].
+\]
+Comme $U_{t+1}\ge X_{t+1}$,
+\[
+S_t - K > \E_Q[e^{-r}(S_{t+1}-K)_+\mid\mathcal{J}_t].
+\]
+Sous $Q$, $\E_Q[S_{t+1}\mid\mathcal{J}_t]=e^{r}S_t$, et, par convexité de $(x-K)_+$,
+\[
+\E_Q[e^{-r}(S_{t+1}-K)_+\mid\mathcal{J}_t]
+\ge e^{-r}(e^{r}S_t - K)_+ = S_t - e^{-r}K.
+\]
+L’inégalité d’exercice anticipé impliquerait alors
+$S_t - K > S_t - e^{-r}K$, soit $K < e^{-r}K$, impossible si $r\ge0$.  
+Ainsi, l’exercice anticipé d’un call sans dividendes n’est jamais optimal.
+\end{proof}
+
+\section{Temps d’arrêt et options américaines}
+
+\begin{definition}[Temps d’arrêt]
+Une variable aléatoire $\tau : \Omega \to \{0,\dots,T\}$ est un \emph{temps d’arrêt} si,
+pour tout $t$, l’événement $\{\tau = t\}$ appartient à $\mathcal{J}_t$.
+\end{definition}
+
+Exercer une option américaine revient à choisir un temps d’arrêt $\tau$.  
+Le gain obtenu est $X_\tau$.  
+La valeur de l’option à la date $t$ s’écrit :
+\[
+U_t = \sup_{\tau\in\mathcal{T}_t} \E_Q[X_\tau\mid\mathcal{J}_t],
+\]
+où $\mathcal{T}_t$ désigne l’ensemble des temps d’arrêt à valeurs dans $\{t,\dots,T\}$.
+\end{document}
+

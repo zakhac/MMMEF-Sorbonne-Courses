@@ -1,0 +1,258 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+\usepackage{geometry}
+\geometry{margin=2cm}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% Définition des couleurs
+\definecolor{myblue}{RGB}{20, 100, 200}
+\definecolor{myred}{RGB}{200, 20, 20}
+\definecolor{mygreen}{RGB}{20, 150, 20}
+
+\title{\textbf{Fiche de Synthèse Avancée : Théorie des Jeux}}
+\author{Préparation Examen - Philippe Bich}
+\date{Année Universitaire 2025-2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{tcolorbox}[colback=red!5,colframe=myred,title=\textbf{Conseils Stratégiques \& Dangers (À lire en premier !)}]
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Type de Jeu :} Identifiez immédiatement si le jeu est à \textbf{Somme Nulle} ($\sum u_i = 0$) ou non. Les théorèmes (Sion vs Glicksberg) et méthodes (Minimax vs Nash) diffèrent.
+    \item \textbf{Existence :} Vérifiez les hypothèses de compacité et continuité. Glicksberg nécessite la quasi-concavité des joueurs. Sion a des conditions asymétriques (quasi-concave/quasi-convexe).
+    \item \textbf{Optimisation :} Utiliser la condition du premier ordre (CPO) ne suffit pas ! Il faut \textbf{toujours} vérifier la condition du second ordre (CSO) ou argumenter la concavité de la fonction d'utilité (payoff) pour le joueur considéré.
+    \item \textbf{Pur vs Mixte :} Ne confondez pas équilibre pur et mixte. Un équilibre mixte sans support pur unique implique une indifférence entre les stratégies du support.
+    \item \textbf{Non-existence :} Il existe des jeux sans valeur (ex: Sion-Wolfe) ou sans équilibre de Nash (si discontinuité ou non quasi-concavité).
+\end{itemize}
+\begin{tcolorbox}[colback=orange!10,title=Méthodologie : Détecter la Non-Existence]
+Suspectez une non-existence d'équilibre ou de valeur si :
+\begin{itemize}
+    \item \textbf{Discontinuité :} La fonction de gain fait un saut (ex: enchères, guerre d'usure, Sion-Wolfe).
+    \item \textbf{Non-compacité :} L'espace est ouvert (ex: $]0,1[$) ou non borné ($[0, \infty[$) et les gains croissent à l'infini.
+    \item \textbf{Non-Concavité :} La fonction d'utilité (payoff) $u_i$ n'est pas quasi-concave (bosses multiples), rendant les CPO insuffisantes.
+\end{itemize}
+\end{tcolorbox}
+\end{tcolorbox}
+
+\section{Jeux sous forme normale}
+Un jeu est un triplet $G = (N, (X_i)_{i \in N}, (u_i)_{i \in N})$.
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Dominance :} Une action $x_i^*$ est strictement dominante si :
+    \[ \forall x_{-i} \in X_{-i}, \forall x_i \in X_i \setminus \{x_i^*\}, \quad u_i(x_i^*, x_{-i}) > u_i(x_i, x_{-i}) \]
+    \item \textbf{IESDA (Iterated Elimination of Strictly Dominated Strategies)} :
+    On élimine séquentiellement les stratégies strictement dominées. Si le jeu est fini et résoluble par dominance, l'ordre d'élimination n'importe pas.
+\end{itemize}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Stratégies Rationalisables :} Ce sont les stratégies qui survivent à l'élimination itérative des stratégies qui ne sont jamais des meilleures réponses.
+    \item \textbf{Lien crucial :} Dans un jeu à 2 joueurs, l'ensemble des stratégies rationalisables coïncide exactement avec celui issu de l'IESDA.
+    \item \textbf{Équilibre en Stratégies Dominantes (DSE) :} Un profil $s^*$ est un DSE si pour chaque joueur $i$, $s_i^*$ est une meilleure réponse quel que soit le comportement des autres ($u_i(s_i^*, s_{-i}) \geq u_i(s_i, s_{-i})$ pour tout $s_{-i}$).
+    \item \textit{Note examen :} Tout DSE est un équilibre de Nash, mais l'inverse est faux.
+\end{itemize}
+
+\begin{tcolorbox}[colback=blue!5,colframe=myblue,title=Rigueur Examen : Rédaction IESDA]
+Pour justifier une élimination à l'étape $k$ :
+\textit{"Dans le jeu réduit $G(k)$, pour le joueur $i$, l'action $A$ est strictement dominée par l'action $B$ car quel que soit le profil adverse $x_{-i} \in X_{-i}(k)$, on a $u_i(A, x_{-i}) < u_i(B, x_{-i})$."}
+\end{tcolorbox}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Équilibre de Nash (NE) :} Un profil $\bar{x} = (\bar{x}_1, \dots, \bar{x}_n)$ est un NE si aucun joueur n'a intérêt à dévier unilatéralement :
+    \[ \forall i \in N, \forall x_i \in X_i, \quad u_i(\bar{x}_i, \bar{x}_{-i}) \geq u_i(x_i, \bar{x}_{-i}) \]
+    Autrement dit, $\bar{x}_i$ maximise $x_i \mapsto u_i(x_i, \bar{x}_{-i})$.
+\end{itemize}
+
+
+
+\begin{tcolorbox}[colback=purple!5,title=Distinction : Équilibre Pur vs Mixte]
+\begin{itemize}
+    \item \textbf{Pur :} Chaque joueur choisit UNE seule action. Vous cherchez $x_i^* \in X_i$.
+    \item \textbf{Mixte :} Chaque joueur choisit une DISTRIBUTION de probabilité $\sigma_i$. Vous cherchez $p \in [0,1]$.
+    \item \textbf{Indice :} Si on vous demande "montrer qu'il n'y a pas d'équilibre pur", cherchez un cycle de meilleures réponses $A \to B \to C \to A$. L'équilibre sera alors mixte.
+\end{itemize}
+\end{tcolorbox}
+
+\section{Les 3 Piliers de la Preuve d'Existence (Structure Exercice)}
+
+\begin{tcolorbox}[colback=white, title=\textbf{1. Théorème de Weierstrass (Extremum)}]
+\textit{Utilisé pour justifier que l'ensemble des meilleures réponses $BR_i$ n'est pas vide.}
+\begin{itemize}
+    \item \textbf{Hypothèses :}
+    \begin{itemize}
+        \item L'ensemble des stratégies $X_i$ est \textbf{compact} (fermé et borné).
+        \item La fonction de gain $u_i$ est \textbf{continue} par rapport à sa propre stratégie.
+    \end{itemize}
+    \item \textbf{Résultat :}
+    \begin{itemize}
+        \item Le maximum de la fonction est atteint sur l'ensemble.
+        \item L'ensemble des arguments maximisants (l'argmax) est donc \textbf{non vide}.
+    \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, title=\textbf{2. Théorème du Point Fixe de Kakutani}]
+\textit{Outil fondamental pour démontrer l'existence d'un équilibre. Appliqué à la correspondance $B : X \rightrightarrows X$.}
+\begin{itemize}
+    \item \textbf{Hypothèses :}
+    \begin{itemize}
+        \item \textbf{Sur l'espace $X$} : Doit être compact, convexe et non vide dans $\mathbb{R}^n$.
+        \item \textbf{Sur la correspondance $B$} :
+        \begin{enumerate}
+            \item \textbf{Non vide} pour tout $x$ (assuré par Weierstrass).
+            \item \textbf{Valeurs convexes} (assuré par la quasi-concavité de l'utilité (payoff)).
+            \item \textbf{Graphe fermé} (assuré par la continuité de l'utilité (payoff) / Thm de Berge).
+        \end{enumerate}
+    \end{itemize}
+    \item \textbf{Résultat :}
+    \begin{itemize}
+        \item Il existe un point fixe $x^* \in X$ tel que $x^* \in B(x^*)$.
+        \item Ce point fixe est un \textbf{Équilibre de Nash}.
+    \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\section{Jeux Continus et Théorèmes d'Existence}
+
+\subsection{Méthode de Résolution Pratique}
+Pour trouver un NE dans un jeu à stratégies continues (ex: Cournot, Bertrand) :
+1. \textbf{CPO :} Calculer $\frac{\partial u_i}{\partial x_i}(x_i, x_{-i}) = 0$.
+2. \textbf{Meilleure Réponse :} Isoler $x_i$ pour exprimer $BR_i(x_{-i})$.
+3. \textbf{Système :} Résoudre le système $x_i = BR_i(x_{-i})$ pour tout $i$.
+4. \textbf{Vérification (Crucial) :} Prouver que $u_i$ est concave en $x_i$ (par exemple $\frac{\partial^2 u_i}{\partial x_i^2} < 0$), assurant que la CPO donne un maximum global.
+\begin{tcolorbox}[colback=yellow!10, title=Rigueur CPO/CSO]
+Pour justifier qu'un point critique est un maximum global, il faut impérativement vérifier la Condition du Second Ordre (CSO) ou la concavité.
+\textit{Exemple :} "La fonction $u_i$ est concave par rapport à $x_i$ car $\frac{\partial^2 u_i}{\partial x_i^2} < 0$, donc la condition du premier ordre est nécessaire et suffisante pour un maximum global".
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, title=\textbf{3. Théorème de Glicksberg (Synthèse Jeux)}]
+\textit{Version "Théorie des Jeux" garantissant l'existence d'un NE en stratégies pures.}
+\begin{itemize}
+    \item \textbf{Hypothèses :}
+    \begin{itemize}
+        \item \textbf{Convexité et Compacité :} Les ensembles d'actions $X_i$ sont non vides, convexes et compacts.
+        \item \textbf{Continuité :} Les fonctions de gain $u_i$ sont continues (en $(x_i, x_{-i})$).
+        \item \textbf{Quasi-concavité :} Chaque $u_i$ est quasi-concave par rapport à sa propre action $x_i$.
+    \end{itemize}
+    \item \textbf{Résultat :}
+    \begin{itemize}
+        \item Le jeu admet au moins un équilibre de Nash.
+    \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!10, title=Pourquoi la quasi-concavité est cruciale ?]
+Elle est indispensable car elle garantit que l'ensemble des meilleures réponses $B(y)$ est \textbf{convexe}.
+Cela remplit l'une des conditions \textit{sine qua non} du théorème de Kakutani pour l'existence d'un équilibre.
+\textit{(Méthode : Pour prouver la convexité de $B(y)$, prendre $x_1, x_2 \in B(y)$ et montrer que $\lambda x_1 + (1-\lambda)x_2$ est aussi dans $B(y)$ via la quasi-concavité).}
+\end{tcolorbox}
+
+\subsection{Cas Non-Borné (Coercivité)}
+Si $X_i = [0, +\infty[$, la compacité fait défaut. On utilise un argument de coercivité :
+Si $\lim_{x_i \to +\infty} u_i(x_i, x_{-i}) = -\infty$ (uniformément ou pour les candidats pertinents), on peut restreindre l'étude à un compact $[0, K]$ suffisamment grand sans perdre d'équilibres potentiels.
+
+\section{Jeux sous forme extensive et SPE}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Stratégie :} Plan complet d'actions définit pour \textit{chaque} ensemble d'information (nœud), même ceux qui ne seront jamais atteints selon cette même stratégie.
+    \item \textbf{Théorème de Kuhn-Zermelo :} Tout jeu fini à information parfaite possède un équilibre de Nash en stratégies pures, qui peut être trouvé par induction arrière (SPE).
+    \item \textbf{Induction Arrière :} On résout le jeu en partant des nœuds finaux.
+    \item \textbf{SPE (Subgame Perfect Equilibrium) :} Un profil de stratégies est un SPE s'il induit un équilibre de Nash dans chaque sous-jeu (atteint ou non).
+    \item \textbf{Critique Menace Non Crédible :} Un NE simple peut reposer sur des menaces "incroyables" (ex: dire "je ferai exploser le jeu si tu entres", alors que si l'autre entre, exploser donne un gain pire). Le SPE élimine ces équilibres en forçant la rationalité séquentielle.
+\end{itemize}
+
+\subsection{Contre-exemples (Échec de l'existence d'un SPE)}
+\begin{itemize}
+    \item \textbf{Nombre infini d'actions :} Si l'espace des actions n'est pas compact ou si les gains ne sont pas continus (ex: jeu où l'on veut choisir le nombre réel le plus élevé, il n'y a pas de maximum).
+    \item \textbf{Horizon infini avec gains croissants :} Si $\alpha_{n+1} > \alpha_n$, chaque joueur veut toujours attendre le tour suivant pour gagner plus, donc personne ne s'arrête jamais, mais "ne jamais s'arrêter" donne 0, ce qui est pire qu'un arrêt immédiat $\implies$ Contradiction, pas de SPE.
+\end{itemize}
+
+
+
+\subsection{SPE en Horizon Infini}
+Soit un jeu où deux joueurs alternent. Arrêter au tour $n$ donne $(\alpha_n, \beta_n)$. Continuer indéfiniment donne $(0,0)$.
+\begin{itemize}
+    \item \textbf{Cas 1 : Gains strictement croissants} ($\alpha_{n+1} > \alpha_n$).
+    \textbf{Théorème : Aucun SPE n'existe.}
+    \textit{Preuve par l'absurde :}
+    Supposons un arrêt au tour $N$. Le joueur actif à $N$ préfèrerait "passer" pour laisser l'autre arrêter (ou arrêter lui-même) plus tard pour gagner plus ($\alpha_{N+2} > \alpha_N$).
+    Si personne n'arrête jamais, gain 0. Or, arrêter en 1 donne $\alpha_1 > 0$, donc "ne jamais arrêter" n'est pas optimal. Contradiction.
+
+    \item \textbf{Cas 2 : Gains strictement décroissants} ($\alpha_{n+1} < \alpha_n$).
+    \textbf{Théorème : Il existe un SPE (arrêt immédiat).}
+    Comme les gains futurs sont toujours moindres que le gain présent, le joueur au trait a intérêt à sécuriser le gain actuel.
+\end{itemize}
+
+\section{Jeux à Somme Nulle ($u_1 + u_2 = 0$)}
+\begin{tcolorbox}[colback=green!5,title=Astuce : Repérer un Jeu à Somme Nulle]
+Vérifiez si $u_1(x,y) + u_2(x,y) = C$ (constante, souvent 0).
+Si oui, c'est un jeu strictement compétitif : ce que gagne l'un est perdu par l'autre.
+\textbf{Conséquence :} On peut utiliser le théorème de Sion et chercher la Valeur (Maximin = Minimax). Si non somme nulle, on cherche un Nash classique.
+\end{tcolorbox}
+On note $u(x,y) = u_1(x,y)$. Le Joueur 1 (J1) maximise $u$, J2 minimise $u$ (car maximise $-u$).
+\begin{itemize}
+    \item \textbf{Maximin (Sécurité J1) :} $\underline{v} = \sup_{x \in X} \inf_{y \in Y} u(x,y)$.
+    Ce que J1 peut garantir au pire des cas.
+    \item \textbf{Minimax (Sécurité J2) :} $\bar{v} = \inf_{y \in Y} \sup_{x \in X} u(x,y)$.
+    Ce que J2 peut limiter au mieux si J1 joue parfaitement.
+    \item \textbf{Valeur du Jeu :} Le jeu a une valeur si $\underline{v} = \bar{v}$. Dans ce cas, il existe $(x^*, y^*)$ tel que $u(x^*, y^*) = v$. Ces stratégies sont optimales ("saddle point").
+\end{itemize}
+\textbf{Théorème d'Équivalence :} Un jeu possède une valeur $v$ si et seulement si il possède un équilibre de Nash $(x^*, y^*)$. Dans ce cas, $v = u(x^*, y^*)$ et les stratégies d'équilibre sont les stratégies optimales (maximin/minimax).
+
+\begin{tcolorbox}[colback=mygreen!5,colframe=mygreen,title=Théorème de Sion (Existence d'une Valeur)]
+Soit $G = (X, Y, u)$ un jeu à somme nulle où :
+\begin{itemize}
+    \item $X$ est l'ensemble de stratégies du Joueur 1 (qui maximise $u$).
+    \item $Y$ est l'ensemble de stratégies du Joueur 2 (qui minimise $u$).
+\end{itemize}
+Le jeu possède une \textbf{Valeur} ($\sup \inf = \inf \sup$) si :
+\begin{enumerate}
+    \item $X$ et $Y$ sont des ensembles \textbf{convexes} dans des espaces vectoriels topologiques.
+    \item \textbf{L'un des deux} espaces est \textbf{compact}.
+    \item $x \mapsto u(x,y)$ est \textbf{quasi-concave} et \textbf{s.c.s.} (semi-continue supérieurement) sur $X$.
+    \item $y \mapsto u(x,y)$ est \textbf{quasi-convexe} et \textbf{s.c.i.} (semi-continue inférieurement) sur $Y$.
+\end{enumerate}
+\end{tcolorbox}
+
+\textbf{Étapes Clés de la Preuve de Sion :}
+\begin{enumerate}
+    \item \textit{Contradiction :} On suppose pas de valeur, donc $\underline{v} < \bar{v}$. On insère un réel $c$ entre les deux.
+    \item \textit{Recouvrement :} On utilise les propriétés de semi-continuité pour définir des ouverts. Grâce à la compacité (disons de $Y$), on extrait un sous-recouvrement fini.
+    \item \textbf{Lemme d'Intersection (Knaster-Kuratowski-Mazurkiewicz généralisé) :}
+    Si une famille de compacts convexes a la propriété que toute intersection de $k$ éléments contient l'enveloppe convexe de... (version simplifiée : intersection non vide).
+    On utilise ce lemme sur les ensembles de niveau pour montrer que les joueurs ne peuvent pas "échapper" à la valeur $c$, aboutissant à une contradiction.
+\end{enumerate}
+
+\begin{tcolorbox}[colback=white,colframe=black,title=Lemme d'Intersection (Clé de Sion)]
+Soient $A_1, \dots, A_n$ des sous-ensembles \textbf{convexes compacts}. Si $\cup_{i=1}^n A_i$ est convexe et si toutes les intersections de $n-1$ ensembles sont non vides ($\cap_{i \neq j} A_i \neq \emptyset$), alors l'intersection totale est non vide ($\cap_{i=1}^n A_i \neq \emptyset$).
+\textit{Note pour l'exercice :} Préciser que les ensembles sont "convexes et compacts dans un espace euclidien".
+\end{tcolorbox}
+
+\section{Stratégies Mixtes}
+Si pas d'équilibre pur, on cherche des mesures de probabilité $\sigma_i$.
+\begin{itemize}
+    \item \textbf{Théorème :} Dans un jeu fini, il existe toujours un NE en stratégies mixtes (Nash 1950).
+    \item \textbf{Support :} Ensemble des actions jouées avec probabilité positive.
+    \item \textbf{Principe d'Indifférence :} Si un joueur joue une stratégie mixte à l'équilibre, il doit être \textbf{indifférent} entre toutes les actions pures de son support. Toutes ces actions doivent donner le même gain espéré (égal au gain du jeu pour ce joueur).
+\end{itemize}
+
+\paragraph{Méthode de Calcul 2x2 :}
+Soit J1 joue Haut ($p$) / Bas ($1-p$) et J2 joue Gauche ($q$) / Droite ($1-q$).
+Pour trouver $q^*$ (mix de J2), on écrit l'indifférence de J1 :
+\[ E[u_1(H, \sigma_2)] = E[u_1(B, \sigma_2)] \]
+\[ q \cdot u_1(H,G) + (1-q) \cdot u_1(H,D) = q \cdot u_1(B,G) + (1-q) \cdot u_1(B,D) \]
+On résout pour $q$. Idem pour $p$ avec les gains de J2.
+\textbf{Attention :} La probabilité $p$ de J1 rend J2 indifférent (dépend des gains de J2).
+
+\section{Contre-Exemples Classiques}
+\begin{itemize}
+    \item \textbf{Jeu de Sion-Wolfe (Détail technique) :} C'est l'exemple type d'un jeu à somme nulle sans valeur (et sans équilibre mixte).
+    \textit{Raison de l'échec :} La fonction d'utilité (payoff) est discontinue (souvent une fonction en escalier le long de la diagonale), ce qui empêche l'application du théorème de Sion car les conditions de semi-continuité (scs/sci) sont violées.
+    \item \textbf{Centipede Game :} Jeu fini ext. horizon.
+    \textit{Paradoxe :} L'induction arrière (SPE) prédit que le premier joueur arrête immédiatement (gains $(1,1)$ peut-être), alors que continuer mènerait à $(100,100)$. Conflit entre rationalité individuelle séquentielle et efficacité Pareto.
+\end{itemize}
+
+\end{document}

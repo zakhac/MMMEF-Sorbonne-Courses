@@ -1,0 +1,117 @@
+\chapter{Méthodes de pénalité et Lagrangien augmenté}
+\label{chap:penalty-augmented-lagrangian}
+
+\section{La méthode de pénalité quadratique}
+
+\subsection{Motivation}
+
+\begin{algorithm}[H]
+    \caption{Quadratic penalty method}
+    \SetAlgoLined
+    Given $\mu_0>0$, a nonnegative sequence $(\tau_k)_k$ with $\tau_k \to 0$, and a starting point $x_0^s$\;
+    \For{$k=0, 1, \ldots$}{
+        Find an approximate minimizer $x_k$ of $Q(\cdot;\mu_k)$, starting at $x_k^s$ and terminating when $\|\nabla_x Q(x;\mu_k)\|\leq \tau_k$\;
+        \If{final convergence test satisfied}{
+            \Stop with approximate solution $x_k$\;
+        }
+        Choose new penalty parameter $\mu_{k+1}>\mu_k$\;
+        Choose new starting point $x_{k+1}^s$\;
+    }
+\end{algorithm}
+
+\subsection{Convergence de la méthode (avec contraintes d'égalité)}
+
+% TODO: Contenu à développer
+
+\section{Fonctions de pénalité non lisses}
+
+\subsection{Propriétés}
+
+\begin{algorithm}[H]
+    \caption{Classical $\ell^1$ penalty method}
+    \SetAlgoLined
+    Given $\mu_0>0$, tolerance $\tau>0$, starting point $x_0^s$\;
+    \For{$k=0, 1, \ldots$}{
+        Find an approximate minimizer $x_k$ of $\phi_1(x;\mu_k)$, starting at $x_k^s$\;
+        \If{$\|h(x_k)\|\leq \tau$}{
+            \Stop with approximate solution $x_k$\;
+        }
+        Choose new penalty parameter $\mu_{k+1}>\mu_k$\;
+        Choose new starting point $x_{k+1}^s$\;
+    }
+\end{algorithm}
+
+\subsection{Méthode de pénalité $\ell^1$ pratique}
+
+% TODO: Contenu à développer
+
+\section{Méthode du Lagrangien augmenté}
+
+\subsection{Propriétés du cas avec contraintes d'égalité}
+
+\begin{algorithm}[H]
+    \caption{Augmented Lagrangian method for equality constraints}
+    \SetAlgoLined
+    Given $\mu_0>0$, tolerance $\tau_0>0$, starting points $x_0^s$ and $\lambda^0$\;
+    \For{$k=0, 1, \ldots$}{
+        Find an approximate minimizer $x_k$ of $\mathcal{L}_A(\cdot, \lambda^k;\mu_k)$, starting at $x_k^s$, and terminating when $\|\nabla_x \mathcal{L}_A(x_k, \lambda^k; \mu_k)\| \leq \tau_k$\;
+        \If{a convergence test for the equality-constrained problem is satisfied}{
+            \Stop with approximate solution $x_k$\;
+        }
+        Update Lagrange multipliers using
+        \[
+            \lambda_i^{k+1} = \lambda_i^k - \mu_k c_i(x_k), \text{ for all } i\in\mathcal{E};
+        \]
+        Choose new penalty parameter $\mu_{k+1} \geq \mu_k$\;
+        Set starting point for the next iteration to $x_{k+1}^s = x_k$\;
+        Select tolerance $\tau_{k+1}$\;
+    }
+\end{algorithm}
+
+\subsection{Méthodes pratiques du Lagrangien augmenté}
+
+\subsubsection{Formulation avec contraintes de bornes}
+
+\begin{algorithm}[H]
+    \caption{Bound-constrained Lagrangian method}
+    \SetAlgoLined
+    Choose an initial point $x_0$ and initial multipliers $\lambda^0$\;
+    Choose convergence tolerances $\eta_*$ and $\omega_*$\;
+    Set $\mu_0=10$, $\omega_0=\frac{1}{\mu_0}$, and $\eta_0=\frac{1}{\mu_0^{0.1}}$\;
+    \For{$k=0,1, \ldots$}{
+        Find an approximate solution $x_k$ of the problem
+        \[
+            \min_x \mathcal{L}_A(x,\lambda^k;\mu_k) \text{ subject to } l\leq x\leq u
+        \]
+        such that
+        \[
+            \left\| x_k-P\left(x_k - \nabla_x \mathcal{L}_A(x_k, \lambda^k ; \mu_k), l, u\right) \right\| \leq \omega_k;
+        \]
+        \If{$\|c(x_k)\|\leq \eta_k$}{
+            \Comment{test for convergence}
+            \If{$\|c(x_k)\|\leq \eta_*$ \And $\left\| x_k-P\left(x_k - \nabla_x \mathcal{L}_A(x_k, \lambda^k ; \mu_k), l, u\right) \right\| \leq \omega_*$}{
+                \Stop with approximate solution $x_k$\;
+            }
+            \Comment{update multipliers, tighten tolerances}
+            $\lambda^{k+1}\leftarrow \lambda^k - \mu_k c(x_k)$\;
+            $\mu_{k+1}\leftarrow \mu_k$\;
+            $\eta_{k+1}\leftarrow \frac{\eta_k}{\mu_{k+1}^{0.9}}$\;
+            $\omega_{k+1} \leftarrow \frac{\omega_k}{\mu_{k+1}}$\;
+        }
+        \Else{
+            \Comment{increase penalty parameters, tighten tolerances}
+            $\lambda^{k+1}\leftarrow \lambda^k$\;
+            $\mu_{k+1}\leftarrow 100 \mu_k$\;
+            $\eta_{k+1}\leftarrow \frac{1}{\mu_{k+1}^{0.1}}$\;
+            $\omega_{k+1} \leftarrow \frac{1}{\mu_{k+1}}$\;
+        }
+    }
+\end{algorithm}
+
+\subsubsection{Formulation avec contraintes linéaires}
+
+% TODO: Contenu à développer
+
+\subsubsection{Formulation sans contraintes}
+
+% TODO: Contenu à développer

@@ -1,0 +1,179 @@
+\chapter{Dominance}
+
+\section{Notation Importante}
+Cette notation est fondamentale et sera utilisée tout au long du cours. Elle peut être déroutante au premier abord.
+
+\begin{itemize}
+    \item $X_{-i} = \prod_{j \in N, j \ne i} X_j$ désigne l'ensemble des profils d'actions de tous les joueurs \textbf{sauf} le joueur $i$.
+    \item $x_{-i}$ désigne un élément de $X_{-i}$ (un vecteur d'actions des adversaires).
+    \item $u_i(x_i, x_{-i})$ est une notation abusive pour $u_i(x)$. Elle met en évidence que le gain dépend du choix $x_i$ du joueur et des choix $x_{-i}$ des autres.
+\end{itemize}
+
+\begin{exemple}[Exemple à 3 joueurs]
+Soit $N = \{1, 2, 3\}$. Pour le joueur $i=2$ :
+\begin{itemize}
+    \item Les adversaires sont $1$ et $3$.
+    \item Le profil des adversaires est $x_{-2} = (x_1, x_3)$.
+    \item L'ensemble de ces profils est $X_{-2} = X_1 \times X_3$.
+    \item La fonction de gain s'écrit $u_2(x) = u_2(x_2, x_{-2}) = u_2(x_2, (x_1, x_3))$.
+\end{itemize}
+\end{exemple}
+
+\section{Action Dominante et Équilibre}
+
+\subsection{Définitions}
+\begin{definition}
+Une action $x_i \in X_i$ est \textbf{dominante} si elle rapporte toujours plus (ou autant) que toute autre action, quels que soient les choix des autres :
+$$\forall d_{-i} \in X_{-i}, \forall d_i \in X_i, u_i(x_i, d_{-i}) \ge u_i(d_i, d_{-i})$$
+\end{definition}
+
+\begin{definition}
+Un profil $x = (x_i)_{i \in N}$ est un \textbf{équilibre en stratégies dominantes} si pour chaque $i$, $x_i$ est dominante.
+\end{definition}
+
+\paragraph{Rationalité et Défaillance Collective :}
+L'exemple ci-dessous montre qu'être rationnel individuellement (choisir sa stratégie dominante) peut mener à une catastrophe collective. C'est le paradoxe central du Dilemme du Prisonnier.
+
+\begin{center}
+\begin{tabular}{c|c|c}
+P1 \textbackslash P2 & a & b \\ \hline
+A & (1 000 000, 1 000 000) & (0, 1 000 001) \\ \hline
+B & (1 000 001, 0) & (100, 100)
+\end{tabular}
+\end{center}
+Ici, jouer B est dominant pour les deux, menant à (0.1, 0.1), alors que la coopération (A, A) donnait 1 Million chacun.
+
+\begin{remarque}[Réflexion]
+Avez-vous en tête des exemples dans la société où jouer une action dominante pour tout le monde mène à un mauvais résultat ? (Pollution, course aux armements, etc.)
+\end{remarque}
+
+\section{Connaissance Commune (Common Knowledge)}
+\begin{definition}
+Un énoncé $S$ est \textbf{connaissance commune} si :
+\begin{itemize}
+    \item Chacun sait que $S$ est vrai.
+    \item Chacun sait que les autres savent que $S$ est vrai.
+    \item Chacun sait que les autres savent que les autres savent... à l'infini.
+\end{itemize}
+\end{definition}
+\textbf{Nuance :} Il y a une différence fondamentale entre "Je sais S" et "S est connaissance commune". Votre comportement changera radicalement selon que vous pensez que l'autre est au courant ou non (exemple de l'attaque coordonnée ou de l'e-mail).
+
+\section{Élimination Itérée des Actions Strictement Dominées (IESDA)}
+
+\subsection{Action Strictement Dominée}
+\begin{definition}
+$x_i$ est \textbf{strictement dominée} par $y_i$ si :
+$$\forall d_{-i} \in X_{-i}, u_i(x_i, d_{-i}) < u_i(y_i, d_{-i})$$
+Un agent rationnel ne jouera jamais une action strictement dominée.
+\end{definition}
+
+\subsection{Processus IESDA (Formalisation)}
+\begin{itemize}
+    \item On part du jeu initial $G = G(0)$ avec les ensembles d'actions $X_i(0)$.
+    \item \textbf{Étape 1 :} On élimine toutes les actions strictement dominées dans $G(0)$ pour obtenir les ensembles $X_i(1)$ et le jeu réduit $G(1)$.
+    \item \textbf{Récurrence :} À l'étape $k$, on élimine les actions strictement dominées dans le jeu $G(k-1)$ pour obtenir $G(k)$.
+    \item \textbf{Résultat :} L'ensemble des profils survivants est l'intersection de toutes les étapes :
+    $$E^{\infty} = \bigcap_{n \ge 0} X(n)$$
+\end{itemize}
+
+\begin{corollaire}[Lien Nash-IESDA]
+L'ensemble des équilibres de Nash est toujours inclus dans l'ensemble des profils survivant à l'IESDA. Si l'IESDA réduit le jeu à un seul profil, c'est l'unique équilibre de Nash.
+\end{corollaire}
+
+\section{Exercices et Méthodologie}
+
+\subsection{Méthode de résolution (Type Examen)}
+Pour résoudre un jeu par IESDA, il faut écrire explicitement les étapes :
+\begin{enumerate}
+    \item "Dans le jeu initial, pour le Joueur $i$, l'action $A$ domine strictement $B$ car $u_i(A, \cdot) > u_i(B, \cdot)$."
+    \item "On supprime l'action $B$."
+    \item "Dans le jeu réduit, pour le Joueur $j$, l'action..."
+\end{enumerate}
+
+\subsection{Exercices d'Application}
+
+\begin{exemple}[Exercice type examen (2023)]
+Soit un jeu à deux joueurs sur $]0, +\infty[^2$ avec les fonctions de gain suivantes :
+\[ u_1(x, y) = (x - x^2 + 1)e^y \quad \text{et} \quad u_2(x, y) = (2y - y^2 + 2)x^2 \]
+\textbf{Question :} Déterminez les équilibres en stratégies dominantes.
+
+\paragraph{Correction rapide :} 
+On calcule les dérivées premières :
+\begin{itemize}
+    \item $\frac{\partial u_1}{\partial x} = (1 - 2x)e^y$. Le signe ne dépend pas de $y$. L'action dominante est $x^* = 1/2$.
+    \item $\frac{\partial u_2}{\partial y} = (2 - 2y)x^2$. Le signe ne dépend pas de $x$. L'action dominante est $y^* = 1$.
+\end{itemize}
+L'équilibre est $(\frac{1}{2}, 1)$.
+\end{exemple}
+
+\begin{exemple}[IESDA Matrix]
+Calculer l'équilibre par IESDA pour la matrice suivante :
+$$\begin{pmatrix} & A & B & C \\ a & (1,-1) & (0,1) & (-1,2) \\ b & (2,3) & (1,2) & (0,1) \\ c & (1,4) & (0,3) & (1,2) \end{pmatrix}$$
+\paragraph{Correction :}
+\begin{enumerate}
+    \item P1 regarde ses lignes. Aucune dominance stricte immédiate ($b$ semble bon mais $c$ est meilleur si C).
+    \item P2 regarde ses colonnes (il minimise ou maximise ? Matrice générale $\to$ maximise sa 2ème composante).
+    Comparons A et C pour P2 : $(-1, 3, 4)$ vs $(2, 1, 2)$. Pas de dominance claire.
+    Comparons B et C pour P2 : $(1, 2, 3)$ vs $(2, 1, 2)$.
+    Si P1 joue $c$, P2 préfère $B$ ($3>2$). Si $b$, préfère $B$ ($2>1$). Si $a$, préfère $C$ ($2>1$). Pas de dominance stricte globale simple.
+    \textit{Hypothèse :} Le jeu est peut-être mal spécifié dans l'énoncé brut, ou nécessite une analyse plus fine.
+    
+    Regardons les indices : $b$ vs $a$ pour P1 : $2>1$, $1>0$, $0>-1$. \textbf{$b$ domine strictement $a$}.
+    \item On élimine la ligne $a$. Il reste $\{b, c\}$ vs $\{A, B, C\}$.
+    \item P2 compare maintenant ses choix face à $\{b, c\}$ :
+    $A \to (3, 4)$, $B \to (2, 3)$, $C \to (1, 2)$.
+    La colonne $A$ rapporte $(3, 4)$. La colonne $B$ rapporte $(2, 3)$. $A$ domine strictement $B$ et $C$.
+    \item P2 ne jouera que $A$.
+    \item Face à $A$, P1 compare $b$ (gain 2) et $c$ (gain 1). Il choisit $b$.
+    \item \textbf{Équilibre IESDA :} $(b, A)$ rapportant $(2,3)$.
+\end{enumerate}
+\end{exemple}
+
+\begin{exemple}[Exam 2023 : IESDA Matrice]
+\textbf{Question :}
+Soit un jeu à deux joueurs défini par la matrice de gains suivante (le premier chiffre représente le gain du Joueur 1, le second celui du Joueur 2) :
+
+\begin{center}
+\begin{tabular}{c|cccc}
+P1 \textbackslash P2 & W & X & Y & Z \\ \hline
+A & (1, 0) & (1, 0) & (0, 0) & (-1, 0) \\
+B & (4, 0) & (4, 0) & (1, 2) & (0, 3) \\
+C & (2, 0) & (2, 0) & (0, 2) & (0, 3) \\
+D & (3, 0) & (3, 0) & (3, 2) & (4, 4)
+\end{tabular}
+\end{center}
+
+Déterminez l'équilibre de Nash en utilisant l'élimination itérée des stratégies strictement dominées.
+
+\textbf{Correction :}
+\begin{enumerate}
+    \item \textbf{Étape 1 :} Pour le Joueur 1, l'action $A$ est strictement dominée par $B$ (car $3 > 2$, $5 > 4$, $1 > 0$, $2 > 1$). On élimine la ligne $A$.
+    \item \textbf{Étape 2 :} Pour le Joueur 2, dans le jeu restant, on élimine l'action $X$ (dominée par d'autres colonnes).
+    \item \textbf{Étape 3 :} Pour le Joueur 1, on élimine l'action $C$.
+    \item \textbf{Étape 4 :} Pour le Joueur 2, on élimine l'action $W$.
+    \item \textbf{Étape 5 :} Pour le Joueur 1, on élimine l'action $B$.
+\end{enumerate}
+\textbf{Résultat :} Le profil $(D, Z)$ est l'équilibre unique obtenu par élimination. On vérifie facilement que $(D, Z)$ est un équilibre de Nash.
+
+\end{exemple}
+
+\begin{exemple}[Preuve Théorique]
+Soit $G$ un jeu où $u_i$ sont continues et $X_i$ compacts non vides.
+\textbf{Question :} Prouver que l'ensemble des équilibres survivant à l'IESDA est compact et non vide.
+
+\paragraph{Correction :}
+Soit $X^0 = \prod X_i$ compact non vide.
+À chaque étape $k$, on retire les stratégies strictement dominées. Si $u_i$ est continue, l'ensemble des stratégies dominées est un ouvert (ou une union d'ouverts), donc l'ensemble restant $X^k$ est fermé.
+Comme $X^k \subset X^{k-1} \subset \dots \subset X^0$, $X^k$ est une suite décroissante de compacts.
+Si l'on suppose que l'élimination est bien définie (jamais vide à chaque étape finie grâce au théorème du maximum), alors l'intersection infinie $X^\infty = \bigcap_{k \ge 0} X^k$ est une intersection décroissante de compacts non vides dans un espace séparé.
+D'après la propriété de Borel-Lebesgue (ou théorème de Cantor), cette intersection est \textbf{non vide et compacte}.
+\end{exemple}
+
+\begin{exemple}[Vérification Classique]
+Existe-t-il des stratégies dominantes dans :
+\begin{itemize}
+    \item Le jeu de la Coordination ? \textbf{Non.} (Dépend de l'autre).
+    \item Le Chicken Game (Poule mouillée) ? \textbf{Non.} (Si l'autre fonce, je dévie ; s'il dévie, je fonce).
+    \item Le Dilemme du Prisonnier ? \textbf{Oui.} "Dénoncer" est une stratégie strictement dominante pour les deux joueurs, quelle que soit l'action de l'autre.
+\end{itemize}
+\end{exemple}

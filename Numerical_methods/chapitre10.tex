@@ -1,0 +1,37 @@
+\chapter{Programmation linéaire : la méthode du simplexe}
+\label{chap:linear-programming}
+
+\section{Optimalité et dualité}
+
+\subsection{Optimalité du problème primal}
+
+% TODO: Contenu à développer
+
+\subsection{Le problème dual}
+
+% TODO: Contenu à développer
+
+\section{Géométrie de l'ensemble réalisable}
+
+% TODO: Contenu à développer
+
+\section{Aperçu de la méthode du simplexe}
+
+\begin{algorithm}[H]
+    \caption{One step of the Simplex method}
+    \SetAlgoLined
+    Given $\mathcal{B}$, $\mathcal{N}$, $x_B=B^{-1}b\geq 0$, $x_N=0$\;
+    Solve $B^\top\lambda = c_B$ for $\lambda$\;
+    Compute $s_N=c_N - N^\top\lambda$\; \Comment{Pricing}
+    \If{$s_N\geq 0$}{
+        \Stop \Comment{optimal point found}
+    }
+    Select $q\in\mathcal{N}$ with $s_q<0$ as the entering index\;
+    Solve $Bd=A_q$ for $d$\;
+    \If{$d\leq 0$}{
+        \Stop \Comment{problem is unbounded}
+    }
+    Calculate $x_q^+=\min_{i \mid d_i> 0}\left(\frac{(x_B)_i}{d_i}\right)$, use $p$ to denote the minimizing $i$\;
+    Update $x_B^+=x_B - d x_q^+$, $x_N^+=(0, \ldots, 0, x_q^+, 0, \ldots, 0)^\top$\;
+    Change $\mathcal{B}$ by adding $q$ and removing the basic variable corresponding to column $p$ of $B$\;
+\end{algorithm}

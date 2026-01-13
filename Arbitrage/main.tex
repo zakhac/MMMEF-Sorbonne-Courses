@@ -1,0 +1,242 @@
+%===========================
+% Fichier : main.tex
+% Cours d'Arbitrage - MMMEF
+%===========================
+\documentclass[11pt,a4paper,oneside]{book}
+
+%---------------------------
+% Encodage & langue
+%---------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+
+%---------------------------
+% Mathématiques
+%---------------------------
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm}
+\usepackage{amsfonts}
+
+\usepackage{float}
+\numberwithin{equation}{chapter}
+
+%---------------------------
+% Figures & illustrations
+%---------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{trees, arrows.meta, positioning, calc, shapes.geometric}
+\usepackage{tikz-3dplot}
+
+%---------------------------
+% Boites colorées (tcolorbox)
+%---------------------------
+\usepackage[most]{tcolorbox}
+
+%---------------------------
+% Mise en page & style
+%---------------------------
+\usepackage{geometry}
+\geometry{margin=2.5cm, headheight=14pt, footskip=50pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\thepage}
+\fancyfoot[L]{\footnotesize 2025-2026 \textperiodcentered{} Arbitrage Theory - MMMEF}
+\fancyfoot[R]{\footnotesize Rédigé par Zakari Hachemi}
+
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet,leftmargin=1.5em}
+
+\usepackage{array}
+
+%---------------------------
+% Liens hypertexte
+%---------------------------
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage[nameinlink,capitalise,noabbrev]{cleveref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    citecolor=blue!50!black,
+    urlcolor=blue!50!black,
+    pdfauthor={Zakari Hachemi},
+    pdftitle={Cours MMMEF - Arbitrage Theory},
+    pdfsubject={Cours complet},
+    pdfcreator={LaTeX},
+    plainpages=false
+}
+
+%---------------------------
+% Couleurs pour les environnements
+%---------------------------
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{darkgray}{gray}{0.35}
+\definecolor{darkred}{RGB}{99,0,0}
+
+%---------------------------
+% Environnements théorèmes & Couleurs
+%---------------------------
+
+% 1. Définition standard des environnements
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[chapter]
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Définition}
+\newtheorem{exemple}[theoreme]{Exemple}
+\newtheorem{hypothese}[theoreme]{Hypothèse}
+
+\theoremstyle{remark}
+\newtheorem*{remarque}{Remarque}
+\newtheorem*{remarques}{Remarques}
+
+% 2. Application des couleurs (tcolorbox)
+
+% --- Style pour les THÉORÈMES (Rouge) ---
+\tcolorboxenvironment{theoreme}{
+    enhanced,
+    colback=red!5!white,
+    colframe=red!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    drop fuzzy shadow
+}
+
+% --- Style pour les PROPOSITIONS (Orange) ---
+\tcolorboxenvironment{proposition}{
+    enhanced,
+    colback=orange!5!white,
+    colframe=orange!80!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- Style pour les DÉFINITIONS (Bleu) ---
+\tcolorboxenvironment{definition}{
+    enhanced,
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- Style pour les HYPOTHÈSES (Gris/Bleu) ---
+\tcolorboxenvironment{hypothese}{
+    enhanced,
+    colback=gray!5!white,
+    colframe=gray!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- Style pour les EXEMPLES (Vert) ---
+\tcolorboxenvironment{exemple}{
+    blanker,
+    breakable,
+    left=5mm,
+    before skip=10pt,
+    after skip=10pt,
+    borderline west={3pt}{0pt}{green!60!black}
+}
+
+% --- Style pour les LEMMES (Violet) ---
+\tcolorboxenvironment{lemme}{
+    enhanced,
+    colback=violet!5!white,
+    colframe=violet!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    drop fuzzy shadow
+}
+
+% --- Style pour les COROLLAIRES (Cyan) ---
+\tcolorboxenvironment{corollaire}{
+    enhanced,
+    colback=cyan!5!white,
+    colframe=cyan!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    drop fuzzy shadow
+}
+
+%---------------------------
+% Renvois intelligents (cleveref)
+%---------------------------
+\crefname{theoreme}{théorème}{théorèmes}
+\Crefname{theoreme}{Théorème}{Théorèmes}
+\crefname{lemme}{lemme}{lemmes}
+\Crefname{lemme}{Lemme}{Lemmes}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{corollaire}{corollaire}{corollaires}
+\Crefname{corollaire}{Corollaire}{Corollaires}
+\crefname{definition}{définition}{définitions}
+\Crefname{definition}{Définition}{Définitions}
+\crefname{exemple}{exemple}{exemples}
+\Crefname{exemple}{Exemple}{Exemples}
+\crefname{equation}{équation}{équations}
+\Crefname{equation}{Équation}{Équations}
+\crefname{chapter}{chapitre}{chapitres}
+\Crefname{chapter}{Chapitre}{Chapitres}
+\crefname{section}{section}{sections}
+\Crefname{section}{Section}{Sections}
+\crefname{remarque}{remarque}{remarques}
+\Crefname{remarque}{Remarque}{Remarques}
+
+%---------------------------
+% Macros utiles
+%---------------------------
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\indic}{\mathbf{1}}
+\DeclarePairedDelimiter{\sca}{\langle}{\rangle}
+\newcommand{\circled}[1]{\text{\tikz[baseline=(char.base)]\node[shape=circle,draw,inner sep=0.6pt] (char) {\scriptsize #1};}}
+
+%---------------------------
+% Informations
+%---------------------------
+\title{\textbf{Théorie de l'arbitrage}\\[0.5em]
+       \large Cours complet en français}
+\author{Zakari HACHEMI}
+\date{Basé sur le cours de Christophe Chorro - MMMEF \\ 2025-2026}
+
+%===========================
+\begin{document}
+%===========================
+
+\maketitle
+\tableofcontents
+\mainmatter
+
+%---------------------------
+% Corps du cours
+%---------------------------
+\include{chapitre1}
+\include{chapitre2}
+\include{chapitre3}
+\include{chapitre4}
+\include{chapitre5}
+
+\appendix
+
+\end{document}
+%===========================
