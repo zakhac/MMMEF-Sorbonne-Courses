@@ -1177,3 +1177,40 @@ Le point $x^* = (1, 0)$ est bien la projection de l'origine sur le demi-plan $x_
         \bar{\lambda}_i c_i(\bar{x}) &= 0 \quad \text{pour } i=1,\dots,m.
     \end{align*}
 \end{remarque}
+
+\begin{theoreme}[Réciproque partielle -- Partial Converse]
+    Supposons que $f$ et les fonctions $-c_i$ soient convexes et continûment différentiables sur $\mathbb{R}^n$.
+    Supposons que $\bar{x}$ soit une solution du problème primal satisfaisant LICQ.
+    Supposons que $\hat{\lambda}$ soit une solution du problème dual et que l'infimum inf$_x \mathcal{L}(x, \hat{\lambda})$ soit atteint en $\hat{x}$.
+    Supposons enfin que $\mathcal{L}(\cdot, \hat{\lambda})$ soit \textbf{strictement convexe}.
+    
+    Alors $\bar{x} = \hat{x}$ (c'est-à-dire que $\hat{x}$ est l'unique solution du problème primal) et $f(\bar{x}) = \mathcal{L}(\hat{x}, \hat{\lambda})$.
+\end{theoreme}
+
+\begin{remarque}
+    Dans l'exemple précédent, pour la solution duale $\hat{\lambda} = 1$, l'infimum de $\mathcal{L}(x, 1)$ est atteint en $x_1 = 1, x_2 = 0$, qui est la solution du problème primal.
+\end{remarque}
+
+\subsection{Exemple : Dualité en Programmation Linéaire}
+
+Considérons le programme linéaire primal suivant :
+\begin{equation}
+    (P) \quad \min_{x \in \mathbb{R}^n} c^T x \quad \text{sujet à} \quad Ax - b \geq 0.
+\end{equation}
+Ici, la fonction objective est linéaire (donc convexe) et les contraintes sont affines. La fonction objective duale est :
+\begin{align}
+    q(\lambda) &= \inf_{x \in \mathbb{R}^n} \left[ c^T x - \lambda^T (Ax - b) \right] \\
+    &= \inf_{x \in \mathbb{R}^n} \left[ (c - A^T \lambda)^T x + \lambda^T b \right].
+\end{align}
+L'infimum de cette fonction affine par rapport à $x$ vaut $-\infty$, sauf si le coefficient de $x$ est nul.
+\begin{equation}
+    \inf_x (c - A^T \lambda)^T x = \begin{cases} 0 & \text{si } c - A^T \lambda = 0, \\ -\infty & \text{sinon.} \end{cases}
+\end{equation}
+Donc, pour être dans le domaine $\mathcal{D}$ (où $q > -\infty$), nous devons imposer $c = A^T \lambda$. Dans ce cas, $q(\lambda) = \lambda^T b$.
+
+Le problème dual s'écrit alors :
+\begin{equation}
+    (D) \quad \max_{\lambda} \lambda^T b \quad \text{sujet à} \quad c = A^T \lambda, \quad \lambda \geq 0.
+\end{equation}
+
+Cela illustre comment le dual d'un problème de minimisation linéaire est un problème de maximisation linéaire.

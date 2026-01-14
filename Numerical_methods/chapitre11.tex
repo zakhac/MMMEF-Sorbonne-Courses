@@ -1,11 +1,37 @@
 \chapter{Programmation quadratique}
 \label{chap:quadratic-programming}
 
+\section{Introduction}
+
+Un programme quadratique (QP) général s'écrit sous la forme :
+\begin{equation}
+    \min_{x \in \mathbb{R}^n} q(x) = \frac{1}{2} x^T G x + c^T x,
+\end{equation}
+sujet aux contraintes :
+\begin{align}
+    a_i^T x &= b_i, \quad i \in \mathcal{E}, \\
+    a_i^T x &\geq b_i, \quad i \in \mathcal{I},
+\end{align}
+où $G$ est une matrice symétrique $n \times n$, $c \in \mathbb{R}^n$, $a_i \in \mathbb{R}^n$ et $b_i \in \mathbb{R}$.
+
+\begin{remarque}
+    Pour les QP, une quantité finie de calculs est nécessaire pour les résoudre ou pour déclarer qu'ils sont irréalisables ("infeasible").
+    \begin{itemize}
+        \item On parle de \textbf{QP convexe} lorsque $G$ est semi-définie positive.
+        \item On parle de \textbf{QP strictement convexe} lorsque $G$ est définie positive.
+    \end{itemize}
+\end{remarque}
+
 \section{QP avec contraintes d'égalité}
 
-\subsection{Propriétés}
+Considérons les problèmes de la forme :
+\begin{equation}
+    \min_{x \in \mathbb{R}^n} \frac{1}{2} x^T G x + c^T x, \quad \text{sujet à} \quad Ax = b,
+\end{equation}
+où $A \in \mathbb{R}^{m \times n}$ (avec $m < n$) est la Jacobienne des contraintes. Ses lignes sont les vecteurs $a_i$. Le vecteur $b \in \mathbb{R}^m$ rassemble les scalaires $b_i$.
+On suppose que la matrice $A$ est de \textbf{rang plein} ("full rank").
 
-% TODO: Contenu à développer
+\subsection{Propriétés}
 
 \subsection{Résolution directe du système KKT}
 
