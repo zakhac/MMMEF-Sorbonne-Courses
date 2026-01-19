@@ -190,7 +190,7 @@ Toutes les conditions étant réunies, $B$ admet un point fixe $x^* \in B(x^*)$,
 \subsection{Public Good Provision}
 Pour $n$ habitants, $u_i = W - x_i + \sqrt{\sum x_j}$. On cherche un équilibre symétrique $(a, \dots, a)$.
 Posons $f(x_i) = W - x_i + \sqrt{(n-1)a + x_i}$. La condition du premier ordre $f'(a) = 0$ donne :
-$$-1 + \frac{1}{2\sqrt{na}} = 0 \iff na = \frac{1}{4} \iff a = \frac{1}{4n^2}$$
+$$-1 + \frac{1}{2\sqrt{na}} = 0 \iff 2\sqrt{na} = 1 \iff 4na = 1 \iff a = \frac{1}{4n}$$
 
 \subsection{Rent-seeking (Tullock)}
 $n$ firmes, payoff $u_i = \frac{x_i}{\sum x_j}V - cx_i$. Pour un équilibre symétrique $a$ :
@@ -250,3 +250,7 @@ Soit un jeu symétrique $G = (X, X, u, u)$ où $X$ est compact convexe et $u$ es
    Comme le jeu est symétrique, $(x^*, \dots, x^*)$ est un équilibre de Nash.
 \end{exercice}
 
+\section{Conclusion et Transition}
+Nous avons vu que l'existence d'un équilibre de Nash en stratégies pures nécessite des conditions fortes (convexité, continuité, quasi-concavité). Lorsque ces conditions ne sont pas remplies (par exemple, dans les jeux finis où les ensembles d'actions discrets ne sont pas convexes), l'équilibre en stratégies pures peut ne pas exister (ex: Matching Pennies, Pierre-Papier-Ciseaux).
+
+Pour garantir l'existence d'une solution stable dans tous les jeux finis, nous devons étendre notre concept de stratégie et autoriser les joueurs à randomiser leurs choix. C'est l'objet du prochain chapitre sur les \textbf{stratégies mixtes}.

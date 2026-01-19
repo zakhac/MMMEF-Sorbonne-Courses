@@ -1,0 +1,258 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+\usepackage{geometry}
+\geometry{margin=2cm}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% Color definitions
+\definecolor{myblue}{RGB}{20, 100, 200}
+\definecolor{myred}{RGB}{200, 20, 20}
+\definecolor{mygreen}{RGB}{20, 150, 20}
+
+\title{\textbf{Advanced Summary Sheet: Game Theory}}
+\author{Exam Preparation - Philippe Bich}
+\date{Academic Year 2025-2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{tcolorbox}[colback=red!5,colframe=myred,title=\textbf{Strategic Tips \& Dangers (Read First!)}]
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Game Type:} Immediately identify if the game is \textbf{Zero-Sum} ($\sum u_i = 0$) or not. Theorems (Sion vs Glicksberg) and methods (Minimax vs Nash) differ.
+    \item \textbf{Existence:} Check compactness and continuity assumptions. Glicksberg requires quasi-concavity of players. Sion has asymmetric conditions (quasi-concave/quasi-convex).
+    \item \textbf{Optimization:} Using the First Order Condition (FOC) is not enough! You must \textbf{always} verify the Second Order Condition (SOC) or argue the concavity of the utility (payoff) function for the player considered.
+    \item \textbf{Pure vs Mixed:} Do not confuse pure and mixed equilibrium. A mixed equilibrium without a unique pure support implies indifference between the strategies of the support.
+    \item \textbf{Non-existence:} There are games without value (e.g., Sion-Wolfe) or without Nash equilibrium (if discontinuity or non-quasi-concavity).
+\end{itemize}
+\begin{tcolorbox}[colback=orange!10,title=Methodology: Detecting Non-Existence]
+Suspect non-existence of equilibrium or value if:
+\begin{itemize}
+    \item \textbf{Discontinuity:} The payoff function has a jump (e.g., auctions, war of attrition, Sion-Wolfe).
+    \item \textbf{Non-compactness:} The space is open (e.g., $]0,1[$) or unbounded ($[0, \infty[$) and payoffs grow to infinity.
+    \item \textbf{Non-Concavity:} The utility (payoff) function $u_i$ is not quasi-concave (multiple bumps), making FOCs insufficient.
+\end{itemize}
+\end{tcolorbox}
+\end{tcolorbox}
+
+\section{Normal Form Games}
+A game is a triplet $G = (N, (X_i)_{i \in N}, (u_i)_{i \in N})$.
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Dominance:} An action $x_i^*$ is strictly dominant if:
+    \[ \forall x_{-i} \in X_{-i}, \forall x_i \in X_i \setminus \{x_i^*\}, \quad u_i(x_i^*, x_{-i}) > u_i(x_i, x_{-i}) \]
+    \item \textbf{IESDS (Iterated Elimination of Strictly Dominated Strategies)}:
+    Sequentially eliminate strictly dominated strategies. If the game is finite and solvable by dominance, the order of elimination does not matter.
+\end{itemize}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Rationalizable Strategies:} These are the strategies that survive the iterated elimination of strategies that are never best responses.
+    \item \textbf{Crucial Link:} In a 2-player game, the set of rationalizable strategies coincides exactly with that resulting from IESDS.
+    \item \textbf{Dominant Strategy Equilibrium (DSE):} A profile $s^*$ is a DSE if for each player $i$, $s_i^*$ is a best response regardless of the behavior of others ($u_i(s_i^*, s_{-i}) \geq u_i(s_i, s_{-i})$ for all $s_{-i}$).
+    \item \textit{Exam Note:} Every DSE is a Nash equilibrium, but the converse is false.
+\end{itemize}
+
+\begin{tcolorbox}[colback=blue!5,colframe=myblue,title=Exam Rigor: IESDS Wording]
+To justify an elimination at step $k$:
+\textit{"In the reduced game $G(k)$, for player $i$, action $A$ is strictly dominated by action $B$ because for any opposing profile $x_{-i} \in X_{-i}(k)$, we have $u_i(A, x_{-i}) < u_i(B, x_{-i})$."}
+\end{tcolorbox}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Nash Equilibrium (NE):} A profile $\bar{x} = (\bar{x}_1, \dots, \bar{x}_n)$ is an NE if no player has an incentive to unilaterally deviate:
+    \[ \forall i \in N, \forall x_i \in X_i, \quad u_i(\bar{x}_i, \bar{x}_{-i}) \geq u_i(x_i, \bar{x}_{-i}) \]
+    In other words, $\bar{x}_i$ maximizes $x_i \mapsto u_i(x_i, \bar{x}_{-i})$.
+\end{itemize}
+
+
+
+\begin{tcolorbox}[colback=purple!5,title=Distinction: Pure vs Mixed Equilibrium]
+\begin{itemize}
+    \item \textbf{Pure:} Each player chooses ONE single action. You are looking for $x_i^* \in X_i$.
+    \item \textbf{Mixed:} Each player chooses a PROBABILITY DISTRIBUTION $\sigma_i$. You are looking for $p \in [0,1]$.
+    \item \textbf{Hint:} If asked to "show that there is no pure equilibrium", look for a best response cycle $A \to B \to C \to A$. The equilibrium will then be mixed.
+\end{itemize}
+\end{tcolorbox}
+
+\section{The 3 Pillars of Existence Proof (Exercise Structure)}
+
+\begin{tcolorbox}[colback=white, title=\textbf{1. Weierstrass Theorem (Extremum)}]
+\textit{Used to justify that the set of best responses $BR_i$ is not empty.}
+\begin{itemize}
+    \item \textbf{Assumptions:}
+    \begin{itemize}
+        \item The set of strategies $X_i$ is \textbf{compact} (closed and bounded).
+        \item The payoff function $u_i$ is \textbf{continuous} with respect to their own strategy.
+    \end{itemize}
+    \item \textbf{Result:}
+    \begin{itemize}
+        \item The maximum of the function is reached on the set.
+        \item The set of maximizing arguments (the argmax) is therefore \textbf{non-empty}.
+    \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, title=\textbf{2. Kakutani Fixed Point Theorem}]
+\textit{Fundamental tool to prove the existence of an equilibrium. Applied to the correspondence $B : X \rightrightarrows X$.}
+\begin{itemize}
+    \item \textbf{Assumptions:}
+    \begin{itemize}
+        \item \textbf{On the space $X$}: Must be compact, convex, and non-empty in $\mathbb{R}^n$.
+        \item \textbf{On the correspondence $B$}:
+        \begin{enumerate}
+            \item \textbf{Non-empty} for all $x$ (ensured by Weierstrass).
+            \item \textbf{Convex values} (ensured by quasi-concavity of utility/payoff).
+            \item \textbf{Closed graph} (ensured by continuity of utility/payoff / Berge's Thm).
+        \end{enumerate}
+    \end{itemize}
+    \item \textbf{Result:}
+    \begin{itemize}
+        \item There exists a fixed point $x^* \in X$ such that $x^* \in B(x^*)$.
+        \item This fixed point is a \textbf{Nash Equilibrium}.
+    \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\section{Continuous Games and Existence Theorems}
+
+\subsection{Practical Resolution Method}
+To find an NE in a game with continuous strategies (e.g., Cournot, Bertrand):
+1. \textbf{FOC:} Calculate $\frac{\partial u_i}{\partial x_i}(x_i, x_{-i}) = 0$.
+2. \textbf{Best Response:} Isolate $x_i$ to express $BR_i(x_{-i})$.
+3. \textbf{System:} Solve the system $x_i = BR_i(x_{-i})$ for all $i$.
+4. \textbf{Verification (Crucial):} Prove that $u_i$ is concave in $x_i$ (e.g., $\frac{\partial^2 u_i}{\partial x_i^2} < 0$), ensuring the FOC gives a global maximum.
+\begin{tcolorbox}[colback=yellow!10, title=FOC/SOC Rigor]
+To justify that a critical point is a global maximum, it is imperative to verify the Second Order Condition (SOC) or concavity.
+\textit{Example:} "The function $u_i$ is concave with respect to $x_i$ because $\frac{\partial^2 u_i}{\partial x_i^2} < 0$, so the first order condition is necessary and sufficient for a global maximum".
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, title=\textbf{3. Glicksberg's Theorem (Game Synthesis)}]
+\textit{"Game Theory" version guaranteeing the existence of a pure strategy NE.}
+\begin{itemize}
+    \item \textbf{Assumptions:}
+    \begin{itemize}
+        \item \textbf{Convexity and Compactness:} Action sets $X_i$ are non-empty, convex, and compact.
+        \item \textbf{Continuity:} Payoff functions $u_i$ are continuous (in $(x_i, x_{-i})$).
+        \item \textbf{Quasi-concavity:} Each $u_i$ is quasi-concave with respect to its own action $x_i$.
+    \end{itemize}
+    \item \textbf{Result:}
+    \begin{itemize}
+        \item The game admits at least one Nash equilibrium.
+    \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!10, title=Why is quasi-concavity crucial?]
+It is indispensable because it guarantees that the set of best responses $B(y)$ is \textbf{convex}.
+This fulfills one of the \textit{sine qua non} conditions of Kakutani's theorem for the existence of an equilibrium.
+\textit{(Method: To prove convexity of $B(y)$, take $x_1, x_2 \in B(y)$ and show that $\lambda x_1 + (1-\lambda)x_2$ is also in $B(y)$ via quasi-concavity).}
+\end{tcolorbox}
+
+\subsection{Unbounded Case (Coercivity)}
+If $X_i = [0, +\infty[$, compactness is missing. We use a coercivity argument:
+If $\lim_{x_i \to +\infty} u_i(x_i, x_{-i}) = -\infty$ (uniformly or for relevant candidates), we can restrict the study to a sufficiently large compact $[0, K]$ without losing potential equilibria.
+
+\section{Extensive Form Games and SPE}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Strategy:} Complete plan of actions defined for \textit{every} information set (node), even those that will never be reached under that same strategy.
+    \item \textbf{Kuhn-Zermelo Theorem:} Every finite game with perfect information possesses a Nash equilibrium in pure strategies, which can be found by backward induction (SPE).
+    \item \textbf{Backward Induction:} Solve the game starting from the final nodes.
+    \item \textbf{SPE (Subgame Perfect Equilibrium):} A strategy profile is an SPE if it induces a Nash equilibrium in every subgame (reached or not).
+    \item \textbf{Non-Credible Threat Critique:} A simple NE can rely on "incredible" threats (e.g., saying "I will blow up the game if you enter", whereas if the other enters, blowing up gives a worse payoff). The SPE eliminates these equilibria by enforcing sequential rationality.
+\end{itemize}
+
+\subsection{Counter-examples (Failure of SPE Existence)}
+\begin{itemize}
+    \item \textbf{Infinite number of actions:} If the action space is not compact or payoffs are not continuous (e.g., game where you want to pick the highest real number, there is no maximum).
+    \item \textbf{Infinite horizon with increasing payoffs:} If $\alpha_{n+1} > \alpha_n$, each player always wants to wait for the next turn to win more, so no one ever stops, but "never stopping" gives 0, which is worse than an immediate stop $\implies$ Contradiction, no SPE.
+\end{itemize}
+
+
+
+\subsection{SPE in Infinite Horizon}
+Consider a game where two players alternate. Stopping at round $n$ gives $(\alpha_n, \beta_n)$. Continuing indefinitely gives $(0,0)$.
+\begin{itemize}
+    \item \textbf{Case 1: Strictly increasing payoffs} ($\alpha_{n+1} > \alpha_n$).
+    \textbf{Theorem: No SPE exists.}
+    \textit{Proof by contradiction:}
+    Suppose stopping at round $N$. The active player at $N$ would prefer to "pass" to let the other stop (or stop themselves) later to win more ($\alpha_{N+2} > \alpha_N$).
+    If no one ever stops, payoff 0. But stopping at 1 gives $\alpha_1 > 0$, so "never stopping" is not optimal. Contradiction.
+
+    \item \textbf{Case 2: Strictly decreasing payoffs} ($\alpha_{n+1} < \alpha_n$).
+    \textbf{Theorem: There exists an SPE (immediate stop).}
+    Since future payoffs are always less than the present payoff, the player to move has an incentive to secure the current payoff.
+\end{itemize}
+
+\section{Zero-Sum Games ($u_1 + u_2 = 0$)}
+\begin{tcolorbox}[colback=green!5,title=Tip: Spotting a Zero-Sum Game]
+Check if $u_1(x,y) + u_2(x,y) = C$ (constant, often 0).
+If yes, it is a strictly competitive game: what one gains is lost by the other.
+\textbf{Consequence:} We can use Sion's theorem and look for the Value (Maximin = Minimax). If not zero-sum, we look for a classic Nash.
+\end{tcolorbox}
+Denote $u(x,y) = u_1(x,y)$. Player 1 (P1) maximizes $u$, P2 minimizes $u$ (since maximizing $-u$).
+\begin{itemize}
+    \item \textbf{Maximin (P1 Security):} $\underline{v} = \sup_{x \in X} \inf_{y \in Y} u(x,y)$.
+    What P1 can guarantee in the worst case.
+    \item \textbf{Minimax (P2 Security):} $\bar{v} = \inf_{y \in Y} \sup_{x \in X} u(x,y)$.
+    What P2 can limit to at best if P1 plays perfectly.
+    \item \textbf{Value of the Game:} The game has a value if $\underline{v} = \bar{v}$. In this case, there exists $(x^*, y^*)$ such that $u(x^*, y^*) = v$. These strategies are optimal ("saddle point").
+\end{itemize}
+\textbf{Equivalence Theorem:} A game possesses a value $v$ if and only if it possesses a Nash equilibrium $(x^*, y^*)$. In this case, $v = u(x^*, y^*)$ and the equilibrium strategies are the optimal strategies (maximin/minimax).
+
+\begin{tcolorbox}[colback=mygreen!5,colframe=mygreen,title=Sion's Theorem (Existence of a Value)]
+Let $G = (X, Y, u)$ be a zero-sum game where:
+\begin{itemize}
+    \item $X$ is the set of strategies for Player 1 (maximizes $u$).
+    \item $Y$ is the set of strategies for Player 2 (minimizes $u$).
+\end{itemize}
+The game possesses a \textbf{Value} ($\sup \inf = \inf \sup$) if:
+\begin{enumerate}
+    \item $X$ and $Y$ are \textbf{convex} sets in topological vector spaces.
+    \item \textbf{One of the two} spaces is \textbf{compact}.
+    \item $x \mapsto u(x,y)$ is \textbf{quasi-concave} and \textbf{u.s.c.} (upper semi-continuous) on $X$.
+    \item $y \mapsto u(x,y)$ is \textbf{quasi-convex} and \textbf{l.s.c.} (lower semi-continuous) on $Y$.
+\end{enumerate}
+\end{tcolorbox}
+
+\textbf{Key Steps of Sion's Proof:}
+\begin{enumerate}
+    \item \textit{Contradiction:} Assume no value, so $\underline{v} < \bar{v}$. Insert a real $c$ between the two.
+    \item \textit{Covering:} Use semi-continuity properties to define open sets. Thanks to compactness (say of $Y$), extract a finite subcover.
+    \item \textbf{Intersection Lemma (Generalised Knaster-Kuratowski-Mazurkiewicz):}
+    If a family of compact convex sets has the property that any intersection of $k$ elements contains the convex hull of... (simplified version: non-empty intersection).
+    Use this lemma on level sets to show that players cannot "escape" value $c$, leading to a contradiction.
+\end{enumerate}
+
+\begin{tcolorbox}[colback=white,colframe=black,title=Intersection Lemma (Key to Sion)]
+Let $A_1, \dots, A_n$ be \textbf{convex compact} subsets. If $\cup_{i=1}^n A_i$ is convex and if all intersections of $n-1$ sets are non-empty ($\cap_{i \neq j} A_i \neq \emptyset$), then the total intersection is non-empty ($\cap_{i=1}^n A_i \neq \emptyset$).
+\textit{Exercise Note:} Specify that sets are "convex and compact in a Euclidean space".
+\end{tcolorbox}
+
+\section{Mixed Strategies}
+If no pure equilibrium, look for probability measures $\sigma_i$.
+\begin{itemize}
+    \item \textbf{Theorem:} In a finite game, there always exists a mixed strategy NE (Nash 1950).
+    \item \textbf{Support:} Set of actions played with positive probability.
+    \item \textbf{Indifference Principle:} If a player plays a mixed strategy at equilibrium, they must be \textbf{indifferent} between all pure actions in their support. All these actions must yield the same expected payoff (equal to the game payoff for this player).
+\end{itemize}
+
+\paragraph{2x2 Calculation Method:}
+Let P1 play Top ($p$) / Bottom ($1-p$) and P2 play Left ($q$) / Right ($1-q$).
+To find $q^*$ (P2 mix), write P1's indifference:
+\[ E[u_1(T, \sigma_2)] = E[u_1(B, \sigma_2)] \]
+\[ q \cdot u_1(T,L) + (1-q) \cdot u_1(T,R) = q \cdot u_1(B,L) + (1-q) \cdot u_1(B,R) \]
+Solve for $q$. Same for $p$ with P2's payoffs.
+\textbf{Warning:} P1's probability $p$ makes P2 indifferent (depends on P2's payoffs).
+
+\section{Classic Counter-Examples}
+\begin{itemize}
+    \item \textbf{Sion-Wolfe Game (Technical Detail):} Typical example of a zero-sum game without value (and without mixed equilibrium).
+    \textit{Reason for failure:} The utility (payoff) function is discontinuous (often a step function along the diagonal), preventing the application of Sion's theorem because semi-continuity conditions (usc/lsc) are violated.
+    \item \textbf{Centipede Game:} Finite extensive form game.
+    \textit{Paradox:} Backward induction (SPE) predicts the first player stops immediately (payoffs $(1,1)$ perhaps), whereas continuing would lead to $(100,100)$. Conflict between sequential individual rationality and Pareto efficiency.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,333 @@
+\chapter{Zero-Sum Games}
+
+\section{Topological Preliminaries}
+
+\begin{definition}[Semi-continuity]
+A function $f:X \to \mathbb{R}$ is \textbf{upper semi-continuous (u.s.c.)} if for all $\alpha \in \mathbb{R}$, the set $\{x \in X : f(x) \ge \alpha\}$ is closed.
+
+A function $f:X \to \mathbb{R}$ is \textbf{lower semi-continuous (l.s.c.)} if for all $\alpha \in \mathbb{R}$, the set $\{x \in X : f(x) \le \alpha\}$ is closed.
+\end{definition}
+
+\begin{exercice}[Properties to Prove]
+\begin{itemize}
+    \item Show that the infimum of a family of u.s.c. functions is u.s.c.
+    \item Show that the supremum of a family of l.s.c. functions is l.s.c.
+\end{itemize}
+\paragraph{Solution:}
+\begin{enumerate}
+    \item Let $f = \inf_{i \in I} f_i$ where each $f_i$ is u.s.c.
+    $ \{ x : f(x) \ge \alpha \} = \{ x : \forall i, f_i(x) \ge \alpha \} = \bigcap_{i \in I} \{ x : f_i(x) \ge \alpha \} $.
+    Each set $\{ f_i \ge \alpha \}$ is closed (def u.s.c.). Any intersection of closed sets is closed. Thus $f$ is u.s.c.
+    
+    \item Let $g = \sup f_i$ with $f_i$ l.s.c.
+    $ \{ x : g(x) \le \alpha \} = \{ x : \sup f_i(x) \le \alpha \} = \{ x : \forall i, f_i(x) \le \alpha \} = \bigcap \{ f_i \le \alpha \}$.
+    Intersection of closed sets $\implies$ closed. Thus $g$ is l.s.c.
+\end{enumerate}
+\end{exercice}
+
+
+\begin{exercice}[Characterization of quasi-concavity]
+Prove that a function $f:X \to \mathbb{R}$ is quasi-concave if and only if, for all $\alpha \in \mathbb{R}$, the upper level set $L_{\alpha} = \{x \in X : f(x) \ge \alpha\}$ is a convex set.
+\end{exercice}
+
+\paragraph{Solution:}
+\begin{itemize}
+    \item $\Rightarrow$: Assume $f$ is quasi-concave. By definition $f(\lambda x + (1-\lambda)y) \ge \min(f(x), f(y))$.
+    Let $x, y \in L_\alpha$. Then $f(x) \ge \alpha$ and $f(y) \ge \alpha$. So $\min \ge \alpha$.
+    Hence $f(z) \ge \alpha$ for all $z$ in segment $[x,y]$. So $z \in L_\alpha$. $L_\alpha$ is convex.
+    \item $\Leftarrow$: Assume $L_\alpha$ are convex.
+    Let $\alpha = \min(f(x), f(y))$. Then $x \in L_\alpha$ and $y \in L_\alpha$.
+    By convexity, the connecting segment is in $L_\alpha$, so $f(\lambda x + \dots) \ge \alpha$, Q.E.D.
+\end{itemize}
+
+\section{Definitions and Analogies}
+
+\begin{definition}[Two-Player Zero-Sum Game]
+A zero-sum game is a triplet $(X, Y, u)$ where:
+\begin{itemize}
+    \item $X$ is the set of strategies for Player 1 (maximizing).
+    \item $Y$ is the set of strategies for Player 2 (minimizing).
+    \item $u: X \times Y \rightarrow \mathbb{R}$ represents Player 1's payoff.
+    \item Player 2's payoff is \textbf{identically opposite}: $-u(x, y)$.
+\end{itemize}
+This model captures the essence of \textbf{pure conflict}: what one gains, the other necessarily loses.
+\end{definition}
+
+\paragraph{Sports and Classical Analogies:}
+\begin{itemize}
+    \item \textbf{Penalty Kick in Football:} If the striker scores (+1), the goalkeeper concedes (-1). It is the archetype of the zero-sum game.
+    \item \textbf{Matching Pennies:} Each player chooses H or T. If choices match, P1 wins 1 (P2 loses 1). Otherwise, P1 loses 1 (P2 wins 1).
+    $$M = \begin{pmatrix} 1 & -1 \\ -1 & 1 \end{pmatrix}$$
+\end{itemize}
+
+\section{Maximin and Minimax Values (Intuition)}
+
+Let $v_1(x) = \inf_{y \in Y} u(x, y)$ be the worst possible outcome for P1 if they play $x$.
+Player 1, being prudent, will seek to maximize this safety:
+$$\underline{v} = \sup_{x \in X} \inf_{y \in Y} u(x, y) \quad \text{(Maximin Value or Security Level)}$$
+
+Similarly, Player 2 wants to minimize P1's payoff (thus maximize their own). They anticipate P1's best move:
+$$\overline{v} = \inf_{y \in Y} \sup_{x \in X} u(x, y) \quad \text{(Minimax Value or Ceiling Payoff)}$$
+
+\begin{definition}[Value of the Game]
+A zero-sum game $G=(X, Y, u)$ possesses a \textbf{value} $V \in \mathbb{R}$ if:
+$$ V = \underline{v} = \overline{v} $$
+That is, if the maximin equals the minimax.
+\end{definition}
+
+\begin{remarque}[Security Value]
+The minimax value $\overline{v}$ can be seen as a kind of "security value" for Player 2 (in the sense that Player 2 is sure not to have to pay more than a value very close to $\overline{v}$).
+\end{remarque}
+
+\begin{proposition}[Fundamental Inequality]
+For any function $u$, we always have:
+$$\underline{v} \le \overline{v}$$
+The converse is false in general (unless there is a saddle point).
+\end{proposition}
+
+\section{Topological Tools (Prerequisites)}
+Sion's theorem requires precise notions of continuity and convexity.
+
+\begin{definition}[Semi-continuity]
+Let $f: X \to \mathbb{R}$.
+\begin{itemize}
+    \item $f$ is \textbf{upper semi-continuous (u.s.c.)} if for all $\lambda$, the upper level set $\{x : f(x) \ge \lambda\}$ is \textbf{closed}.
+    \item $f$ is \textbf{lower semi-continuous (l.s.c.)} if for all $\lambda$, the lower level set $\{x : f(x) \le \lambda\}$ is \textbf{closed}.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Quasi-convexity]
+$f$ is \textbf{quasi-convex} if its lower level sets $\{x : f(x) \le \lambda\}$ are \textbf{convex}. (The opposite of a quasi-concave function).
+\end{definition}
+
+\subsection{The Intersection Lemma}
+This lemma is crucial for Sion's proof:
+\begin{lemme}[Separation (Preliminary)]
+Let $A$ and $B$ be two non-empty, disjoint, compact convex sets. Let $H$ be the hyperplane strictly separating them (Hahn-Banach Theorem). If a convex set $C$ has a non-empty intersection with $A$ and with $B$, then $C \cap H \neq \emptyset$.
+\end{lemme}
+
+\begin{lemme}[Intersection]
+Let $C_1, \dots, C_n$ be non-empty compact convex sets. If $\cup_{i=1}^n C_i$ is convex and if for all $j \in \{1,\dots,n\}$, $\cap_{i \neq j} C_i \neq \emptyset$, then $\cap_{i=1}^n C_i \neq \emptyset$.
+\end{lemme}
+
+\begin{proof}[Proof (by induction on n)]
+\begin{itemize}
+    \item \textbf{Initialization ($n=2$):} If $C_1 \cup C_2$ is convex with $C_1 \cap C_2 = \emptyset$, then by Hahn-Banach there exists a hyperplane $H$ strictly separating $C_1$ and $C_2$. Since $C_1 \cup C_2$ is convex and intersects both sides of $H$, it must intersect $H$. However, $H$ meets neither $C_1$ nor $C_2$, contradiction. Thus $C_1 \cap C_2 \neq \emptyset$.
+    \item \textbf{Heridity:} Assume the result is true for $n-1$. (The rest of the proof constructs intersections of type $C_i \cap C_n$).
+\end{itemize}
+\end{proof}
+
+\subsection{Von Neumann Matrix Notation}
+For a finite game defined by a matrix $A$, we denote the value:
+\[ val(A) = \max_{x \in \Delta(I)} \min_{y \in \Delta(J)} xAy = \min_{y \in \Delta(J)} \max_{x \in \Delta(I)} xAy \]
+where $x$ is a row vector and $y$ a column vector.
+
+\section{Von Neumann's Minimax Theorem}
+
+This theorem establishes a deep connection between Nash equilibrium and maximin/minimax values in zero-sum games.
+
+\begin{theoreme}[Von Neumann Minimax]
+For a two-player zero-sum game, the following two statements are equivalent:
+\begin{enumerate}
+    \item The game possesses a \textbf{Nash equilibrium} $(x^*, y^*)$.
+    \item The game has a \textbf{value}, i.e., $\underline{v} = \overline{v} = V$, and each player has an optimal strategy.
+\end{enumerate}
+\textbf{Consequence:} If these conditions are met, the equilibrium payoff is $(V, -V)$.
+\end{theoreme}
+
+\section{$\epsilon$-Nash Equilibrium and Value}
+
+\begin{definition}[$\epsilon$-equilibrium]
+A profile $(x, y)$ is an $\epsilon$-equilibrium if no one can gain more than $\epsilon$ by deviating:
+$$u(d_x, y) - \epsilon \le u(x, y) \quad \text{and} \quad -u(x, d_y) - \epsilon \le -u(x, y)$$
+\end{definition}
+
+\begin{proposition}
+A game has a value if and only if for all $\epsilon > 0$, there exists an $\epsilon$-equilibrium.
+\end{proposition}
+
+\section{Detailed Study: Sion's Minimax Theorem}
+
+\subsection{Hypotheses and Definitions}
+Let $(X, Y, u)$ be a game where:
+\begin{itemize}
+    \item $X$ is a compact and convex set.
+    \item $Y$ is a convex set.
+    \item $u$ is quasi-concave and upper semi-continuous (u.s.c.) in $x$.
+    \item $u$ is quasi-convex and lower semi-continuous (l.s.c.) in $y$.
+\end{itemize}
+
+\subsection{Part 1: Constructing the Contradiction}
+
+\paragraph{Question 1} Explain why there exists a real $v$ such that:
+$$ \sup_{x \in X} \inf_{y \in Y} u(x,y) < v < \inf_{y \in Y} \sup_{x \in X} u(x,y) $$
+\textbf{Solution:} We assume by contradiction that the game has no value, i.e., $\underline{v} < \overline{v}$. By the density property of reals, we can choose a $v$ between these two bounds. If the values are finite, we can take $v = \frac{\underline{v} + \overline{v}}{2}$. If $\overline{v} = +\infty$, we can take $v = \underline{v} + 1$.
+
+\paragraph{Question 2} Explain why (1) $\forall x \in X, \exists y \in Y : u(x,y) < v$ and (2) $\forall y \in Y, \exists x \in X : u(x,y) > v$.
+\textbf{Solution:} 
+(1) Since $\sup_x (\inf_y u(x,y)) < v$, then for any $x$, the minimal value $\inf_y u(x,y)$ is strictly less than $v$. There must exist a $y$ (dependent on $x$) such that $u(x,y) < v$. 
+(2) Similarly, $\inf_y (\sup_x u(x,y)) > v$ implies that for all $y$, P1's best possible payoff is above $v$, so there exists an $x$ such that $u(x,y) > v$.
+
+\paragraph{Question 3} For each $y \in Y$ and $\epsilon > 0$, let $X_y^\epsilon = \{x \in X : u(x,y) < v - \epsilon\}$. Prove that it is an open set.
+\textbf{Solution:} The complement of this set in $X$ is $\{x \in X : u(x,y) \geq v - \epsilon\}$. Since the map $x \mapsto u(x,y)$ is upper semi-continuous (u.s.c.), its upper level sets are closed by definition. The complement $X_y^\epsilon$ is therefore open.
+
+\paragraph{Question 4} Prove that for all $x \in X$, there exists $y \in Y$ and $\epsilon > 0$ such that $u(x,y) < v - \epsilon$.
+\textbf{Solution:} From Question 2, for all $x$, there exists $y$ such that $u(x,y) < v$. Keeping $\epsilon = \frac{v - u(x,y)}{2} > 0$, we indeed get $u(x,y) = v - 2\epsilon < v - \epsilon$.
+
+\paragraph{Question 5} Prove that $X \subset \bigcup_{y \in Y, \epsilon > 0} X_y^\epsilon$.
+\textbf{Solution:} Since every point $x$ of $X$ belongs to at least one set $X_y^\epsilon$ (from Question 4), the union of all these open sets necessarily covers $X$.
+
+\paragraph{Question 6} Prove that there exists a finite set $Y_0 \subset Y$ and $\epsilon > 0$ such that $X \subset \bigcup_{y \in Y_0} X_y^\epsilon$.
+\textbf{Solution:} The set $X$ is compact. By the Borel-Lebesgue property, from any open cover, we can extract a finite subcover. Thus points $y_1, \dots, y_n$ and associated $\epsilon_i$ exist. Taking $\epsilon = \min(\epsilon_1, \dots, \epsilon_n)$, we maintain the inclusion since $X_{y_i}^{\epsilon_i} \subset X_{y_i}^{\epsilon}$ for $\epsilon \leq \epsilon_i$.
+
+\paragraph{Question 7} Prove that $Y' := \text{conv}(Y_0)$ is compact and convex.
+\textbf{Solution:} $Y'$ is the convex hull of a finite number of points. It is convex by definition. As we work in a finite-dimensional space (the span of $Y_0$), it is bounded. For compactness, any sequence in $Y'$ has its mixture coefficients in the simplex (which is compact), so by Bolzano-Weierstrass, we can extract a convergent subsequence whose limit is still in $Y'$.
+
+\paragraph{Question 8} Prove that: $\sup_{x \in X} \inf_{y \in Y_0} u(x,y) < v < \inf_{y \in Y'} \sup_{x \in X} u(x,y)$.
+\textbf{Solution:}
+(Left) Since $X$ is covered by $X_y^\epsilon$ for $y \in Y_0$, for all $x$, there is a $y \in Y_0$ such that $u(x,y) < v - \epsilon$. The infimum over $Y_0$ is thus always less than $v$.
+(Right) Since $Y' \subset Y$, the infimum over $Y'$ is greater than or equal to the infimum over $Y$, which itself is strictly greater than $v$ by the hypothesis of Question 1.
+
+\subsection{Part 2: Symmetrization}
+
+\paragraph{Question 11} Prove that there exists a finite set $X_0 \subset X$ such that $Y' \subset \bigcup_{x \in X_0} Y_x^\epsilon$.
+\textbf{Solution:} We apply the same reasoning as before: $Y'$ is compact and $u$ is l.s.c. in $y$, so the sets $Y_x^\epsilon = \{y \in Y' : u(x,y) > v + \epsilon\}$ are open. By compactness of $Y'$, we extract a finite subcover $X_0$.
+
+\paragraph{Question 13} Prove that $\sup_{x \in X'} \inf_{y \in Y'} u(x,y) < v < \inf_{y \in Y'} \sup_{x \in X_0} u(x,y)$ (where $X' = \text{conv}(X_0)$).
+\textbf{Solution:} This follows from the monotonicity of sup and inf over compact subsets $X'$ and $Y'$.
+
+\paragraph{Question 16} Justify the existence of minimal $X_0$ and $Y_0$ satisfying these inequalities.
+\textbf{Solution:} If an element of $X_0$ or $Y_0$ is not necessary to maintain the inequality, we can simply remove it from the finite set until the set is minimal for inclusion.
+
+\subsection{Part 3: Intersection Lemma and Contradiction}
+
+\paragraph{Question 17} For $x \in X_0$, let $A_x = \{y \in Y' : u(x,y) \leq v\}$. Prove that $A_x$ is compact and convex.
+\textbf{Solution:} 
+\begin{itemize}
+    \item \textbf{Compact:} $u$ is l.s.c. in $y$, so $A_x$ is closed. Being contained in the compact $Y'$, it is compact.
+    \item \textbf{Convex:} $u$ is quasi-convex in $y$, so its lower level sets are convex by definition.
+\end{itemize}
+
+\paragraph{Question 18} Prove that $\bigcap_{x \in X_0} A_x = \emptyset$.
+\textbf{Solution:} If the intersection contained a point $y^*$, we would have $u(x, y^*) \leq v$ for all $x \in X_0$. This would imply $\sup_{x \in X_0} u(x, y^*) \leq v$, which contradicts the right inequality of Question 13: $\inf_{y \in Y'} \sup_{x \in X_0} u(x, y) > v$.
+
+\paragraph{Question 20} Prove that $\bigcup_{x \in X_0} A_x$ is not convex and is not equal to $Y'$.
+\textbf{Solution:} By the Intersection Lemma, if a family of compact convex sets $A_x$ has an empty total intersection but all its subfamilies have non-empty intersection (by minimality of $X_0$), then their union is not convex. In particular, it cannot be equal to the convex set $Y'$.
+
+\paragraph{Question 21 \& 22} Prove the existence of $y_0 \in Y'$ such that $u(x, y_0) > v$ for all $x \in X'$.
+\textbf{Solution:} Since the union of $A_x$ does not cover $Y'$, there exists $y_0 \in Y' \setminus \bigcup A_x$. Thus $y_0$ belongs to no $A_x$, hence $\forall x \in X_0, u(x, y_0) > v$. By quasi-concavity of $u$ in $x$, this property holds for any convex combination $x \in X' = \text{conv}(X_0)$.
+
+\paragraph{Question 23} Finish the proof.
+\textbf{Solution:} By a symmetric argument, there exists $x_0 \in X'$ such that for all $y \in Y'$, $u(x_0, y) < v$. Evaluating at point $(x_0, y_0)$, we get $u(x_0, y_0) > v$ and $u(x_0, y_0) < v$. This is a contradiction. Thus $\underline{v} = \overline{v}$.
+
+\paragraph{Question 25} Prove the existence of an optimal strategy.
+\textbf{Solution:} The map $f(x) = \inf_{y \in Y} u(x,y)$ is the infimum of a family of u.s.c. functions, so it is u.s.c. By the Weierstrass theorem, a u.s.c. function on a compact set ($X$) attains its maximum. Thus there exists an $\overline{x}$ such that $f(\overline{x}) = \sup_x f(x)$, which is the optimal strategy.
+
+\begin{exercice}[Sion-Wolfe Counter-Example]
+Consider the game on $S_1 = S_2 = [0,1]$ with:
+$$u_1(x,y) = \begin{cases} -1 & \text{if } x < y < x + 1/2 \\ 0 & \text{if } x = y \text{ or } y = x + 1/2 \\ 1 & \text{otherwise} \end{cases}$$
+Show that this game has no value (Min-Max differs from Max-Min) because Sion's regularity conditions (semi-continuity) are not satisfied.
+\end{exercice}
+
+\paragraph{Solution:}
+\begin{itemize}
+    \item \textbf{Maximin Calculation ($\underline{v}$)}:
+    For fixed $x$, Player 2 can choose $y=x + \epsilon$ (with small $\epsilon$). Then $x < y < x+1/2$, so $u=-1$.
+    Thus $\inf_y u(x,y) = -1$.
+    And $\sup_x (-1) = -1$. So $\underline{v} = -1$.
+    
+    \item \textbf{Minimax Calculation ($\overline{v}$)}:
+    For fixed $y$, Player 1 can choose $x = y$ or very close.
+    If P1 chooses $x=y$, $u=0$.
+    But P1 can choose $x$ such that $y$ is not in $]x, x+1/2[$. For example $x$ such that $x > y$. Then $u=1$.
+    Thus $\sup_x u(x,y) = 1$.
+    And $\inf_y (1) = 1$. So $\overline{v} = 1$.
+    
+    \item \textbf{Conclusion:} $-1 \ne 1$. The game has no value. This comes from the crude discontinuity of payoffs.
+\end{itemize}
+
+\section{Complementary Exercises}
+
+\subsection{4x4 Matrix Exercise}
+Calculate $\underline{v}$ and $\overline{v}$ for:
+$$M = \begin{pmatrix} -1 & 2 & -1 & 0 \\ 1 & 3 & 3 & 5 \\ -9 & -2 & 8 & 2 \\ -1 & 4 & -4 & 5 \end{pmatrix}$$
+\textit{Method:}
+\begin{itemize}
+    \item Maximin (Row): Min of each row $\to (-1, 1, -9, -4)$. The max is $1$ (Row 2). So $\underline{v} = 1$.
+    \item Minimax (Column): Max of each column $\to (1, 4, 8, 5)$. The min is $1$ (Column 1). So $\overline{v} = 1$.
+    \item Conclusion: Saddle point $(R2, C1)$, value $v=1$.
+\end{itemize}
+
+\subsection{"No Value" Exercise (Course)}
+Consider the zero-sum game given by the following matrix (P1 actions: $i$, P2 actions: $j$):
+$$ A = \begin{pmatrix} 1 & 2 & -1 & 0 \\ 0 & 1 & 3 & 5 \\ 9 & -2 & 8 & 2 \\ 1 & 4 & -4 & 5 \end{pmatrix} $$
+
+\textbf{Payoff Analysis:}
+For example, if $i=1$ and $j=2$ (P1 plays 1, P2 plays 2), then P1 wins 2 and P2 wins -2.
+
+\textbf{Pure Value Calculation:}
+\begin{itemize}
+    \item \textbf{Maximin ($\underline{V}$)}:
+    \begin{itemize}
+        \item Row 1: min = -1
+        \item Row 2: min = 0
+        \item Row 3: min = -2
+        \item Row 4: min = -4
+    \end{itemize}
+    The maximum of these minimums is $\underline{V} = 0$.
+
+    \item \textbf{Minimax ($\overline{V}$)}:
+    \begin{itemize}
+        \item Col 1: max = 9
+        \item Col 2: max = 4
+        \item Col 3: max = 8
+        \item Col 4: max = 5
+    \end{itemize}
+    The minimum of these maximums is $\overline{V} = 4$.
+\end{itemize}
+
+\textbf{Conclusion:}
+$$ \underline{V} = 0 < 4 = \overline{V} $$
+The game has \textbf{no value} (in pure strategies). Thus there is no Nash equilibrium and no consensus possible.
+
+\subsection{2x2 Game without Pure Value (Course Example)}
+$$M = \begin{pmatrix} 2 & 1 \\ 0 & 2 \end{pmatrix}$$
+\begin{enumerate}
+    \item \textbf{Pure Values:}
+    \begin{itemize}
+        \item Maximin (J1): min row 1 = 1, min row 2 = 0. Max = 1. So $\underline{v} = 1$.
+        \item Minimax (J2): max col 1 = 2, max col 2 = 2. Min = 2. So $\overline{v} = 2$.
+    \end{itemize}
+    Since $\underline{v} < \overline{v}$, there is no saddle point (no consensus).
+
+    \item \textbf{Mixed Strategies (Indifference Method):}
+    Let $p$ be the probability P1 plays Top, and $q$ be the probability P2 plays Left.
+    \begin{itemize}
+        \item \textbf{P1 Indifference:} P1 must earn the same if P2 plays L or R (for P2 to be willing to mix).
+         \textit{Note: Course notes might invert logic, but theoretically:}
+         P1 makes P2 indifferent:
+         $$2p + 0(1-p) = 1p + 2(1-p)$$
+         $$2p = p + 2 - 2p \implies 3p = 2 \implies p = 2/3$$
+        
+        \item \textbf{P2 Indifference:} P2 makes P1 indifferent:
+        $$2q + 1(1-q) = 0q + 2(1-q)$$
+        $$q + 1 = 2 - 2q \implies 3q = 1 \implies q = 1/3$$
+    \end{itemize}
+    \textbf{Nash Equilibrium:} $((2/3, 1/3), (1/3, 2/3))$.
+    \textbf{Value of the game:} $v = 3(1/3) + 1(2/3) \dots$ no, let's calculate P1's payoff:
+    $u_1 = 2(1/3) + 1(2/3) = 4/3$ (if P1 plays T against q).
+    Check: $0(1/3) + 2(2/3) = 4/3$. OK.
+\end{enumerate}
+
+\begin{exercice}[Link between Value and $\epsilon$-Nash]
+Prove that a zero-sum game has a value $V$ if and only if, for all $\epsilon > 0$, there exists a strategy profile $(x^*_\epsilon, y^*_\epsilon)$ such that:
+$$ \underline{v}(x^*_\epsilon) \ge V - \epsilon \quad \text{and} \quad \overline{v}(y^*_\epsilon) \le V + \epsilon $$
+\end{exercice}
+
+\paragraph{Solution:}
+\begin{itemize}
+    \item $\Rightarrow$ If $V$ exists, $\underline{v} = \overline{v} = V$. It suffices to take $x^*_\epsilon$ an $\epsilon$-optimal strategy for maximin, and $y^*_\epsilon$ for minimax.
+    \item $\Leftarrow$ We always have $\underline{v} \le \overline{v}$.
+    The hypothesis gives: $V - \epsilon \le \underline{v}(x^*_\epsilon) \le \underline{v} \le \overline{v} \le \overline{v}(y^*_\epsilon) \le V + \epsilon$.
+    Letting $\epsilon \to 0$, we get $V \le \underline{v} \le \overline{v} \le V$, so equality holds everywhere.
+\end{itemize}

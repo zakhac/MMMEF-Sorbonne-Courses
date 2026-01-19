@@ -1,0 +1,188 @@
+\chapter{Nash Equilibrium (Pure Strategies)}
+
+This chapter introduces the most famous and widely used prediction notion in game theory: the Nash equilibrium.
+
+\section{Introductory Example and Intuition}
+Consider a 2-player game with $X_1 = X_2 = [0,1]$. Payoff functions are quadratic (concave):
+\begin{itemize}
+    \item $u_1(x_1, x_2) = -(x_1 - x_2)^2$
+    \item $u_2(x_1, x_2) = -(1 - x_1 - x_2)^2$
+\end{itemize}
+
+\textbf{Analysis:}
+\begin{enumerate}
+    \item For player 1, maximizing $u_1$ means minimizing the distance between $x_1$ and $x_2$. Their best response is therefore $x_1 = x_2$.
+    \item For player 2, maximizing $u_2$ means choosing $x_2 = 1 - x_1$.
+    \item The equilibrium is reached when both strategies are mutually optimal: $x_1 = x_2 = \frac{1}{2}$.
+\end{enumerate}
+
+\begin{remarque}[Fundamental Contrast: Nash vs Dominance]
+The profile $(\frac{1}{2}, \frac{1}{2})$ is a Nash equilibrium, but it is \textbf{NOT} a dominant strategy equilibrium.
+\begin{proof}
+For player 1, action $\frac{1}{2}$ is not dominant. Indeed:
+\begin{itemize}
+    \item If P2 plays $x_2 = \frac{1}{2}$, then $u_1(\frac{1}{2}, \frac{1}{2}) = 0$ (maximum possible).
+    \item But if P2 plays $x_2 = 0$, then $u_1(\frac{1}{2}, 0) = -(\frac{1}{2})^2 = -0.25$.
+    \item However, if P1 had played $0$ against $0$, they would have had $u_1(0,0) = 0$.
+    \item Thus, playing $\frac{1}{2}$ is not always better than playing $0$.
+\end{itemize}
+This illustrates that Nash equilibrium is a weaker stability condition than dominance.
+\end{proof}
+\end{remarque}
+
+\section{Formal Definitions}
+
+\begin{definition}[Nash Equilibrium]
+Consider a normal form game $(N, (X_i)_{i \in N}, (u_i)_{i \in N})$. An action profile $\bar{x} = (\bar{x}_i)_{i \in N}$ is a \textbf{Nash equilibrium} if for each player $i$, no unilateral deviation is profitable:
+\[ \forall i \in N, \forall d_i \in X_i, \quad u_i(\bar{x}_i, \bar{x}_{-i}) \ge u_i(d_i, \bar{x}_{-i}) \]
+\end{definition}
+
+\section{Best-reply Correspondence}
+
+\begin{definition}[Best-reply Correspondence]
+The best response of player $i$ is not necessarily a unique function; it is a \textbf{correspondence} (a set-valued function), denoted $B_i : X_{-i} \rightrightarrows X_i$:
+$$B_i(x_{-i}) := \{ x_i \in X_i : \forall d_i \in X_i, u_i(x_i, x_{-i}) \ge u_i(d_i, x_{-i}) \}$$
+\end{definition}
+
+\begin{definition}[Global Correspondence]
+We define $B : X \rightrightarrows X$ as the Cartesian product of individual best responses:
+$$B(x) = \prod_{i \in N} B_i(x_{-i})$$
+\end{definition}
+
+\begin{theoreme}[Fixed Point Characterization]
+An action profile $x \in X$ is a Nash equilibrium if and only if:
+\begin{enumerate}
+    \item $x$ is a \textbf{fixed point} of the correspondence $B$, i.e., $x \in B(x)$.
+    \item Geometrically, $x$ belongs to the \textbf{intersection of the graphs} of the players' best responses.
+\end{enumerate}
+\end{theoreme}
+This link with fixed points is crucial because it will allow the use of powerful topological theorems (Brouwer, Kakutani) to prove the existence of equilibria.
+
+\section{Graphical Examples: BR Intersection}
+For two-player games with continuous actions (e.g., $X_1 = X_2 = [0,1]$), Nash equilibria correspond to the intersection points of the curves $x_1 = B_1(x_2)$ and $x_2 = B_2(x_1)$ in the $(x_1, x_2)$ plane.
+
+\begin{itemize}
+    \item \textbf{Unique Equilibrium:} The curves intersect at a single point (classic case of concave functions like the introductory example).
+    \item \textbf{Multiple Equilibria:} The curves intersect at several points. For example, in a coordination game (continuous Battle of Sexes), there can be two stable intersections and one unstable one.
+    \item \textbf{No Equilibrium (in pure strategies):} The curves never intersect. This is the case for the continuous "Matching Pennies" game without a fixed point.
+\end{itemize}
+
+\section{Relation to Dominance}
+
+\begin{corollaire}[Inclusion in IESDS]
+The set of Nash equilibria is included in the set of action profiles that survive Iterated Elimination of Strictly Dominated Strategies (IESDS).
+\end{corollaire}
+\begin{remarque}
+This is a powerful result: IESDS, often simpler to compute, can be used as a "bounding box" to reduce the search space for Nash equilibria.
+\end{remarque}
+
+\begin{proposition}[Exclusion Property]
+If an action $x_i$ is strictly dominated, then it is \textbf{never} a best response (it never belongs to $B_i(x_{-i})$ for any $x_{-i}$).
+\end{proposition}
+\textit{Note:} The converse is not always true (except in finite 2-player zero-sum games, for example).
+
+\begin{proposition}[Stability by Elimination]
+Let $G'$ be the game obtained by removing a strictly dominated action of a player. Then the set of Nash equilibria of $G$ is identical to that of $G'$.
+\end{proposition}
+This property justifies the use of IESDS as a preliminary step to simplify a game before searching for its Nash equilibria.
+
+\subsection{Rigorous Resolution Example (IESDS)}
+\begin{center}
+\begin{tabular}{c|c|c|c}
+P1 \textbackslash P2 & A & B & C \\ \hline
+a & (2,2) & (1,1) & (1,0) \\ \hline
+b & (0,2) & (0,3) & (1,1) \\ \hline
+c & (0,1) & (-1,-1) & (2,0)
+\end{tabular}
+\end{center}
+
+\textbf{Expected Write-up:}
+\begin{enumerate}
+    \item \textbf{Step 1:} For P2, action A strictly dominates C (since $2>0, 3>1, 1>0$). Eliminate column C.
+    \item \textbf{Step 2:} In the reduced game, for P1, action $a$ strictly dominates $b$ (since $2>0, 1>0$) and $c$ (since $2>0, 1>-1$). Eliminate rows $b$ and $c$.
+    \item \textbf{Step 3:} Only row $a$ remains. For P2, facing $a$, A yields 2 and B yields 1. A strictly dominates B.
+\end{enumerate}
+\textbf{Conclusion:} The unique residual equilibrium is $(a, A)$. It is the unique Nash equilibrium.
+
+\section{Exercises and Resolution Methods}
+
+\subsection{Method for Continuous Games}
+If payoff functions are differentiable and concave with respect to the player's variable:
+\begin{enumerate}
+    \item Compute the First Order Condition (FOC): $\frac{\partial u_i}{\partial x_i} = 0$.
+    \item Isolate $x_i$ to find the best response function $x_i = BR_i(x_{-i})$.
+    \item Solve the system of equations formed by all best responses to find the fixed point.
+\end{enumerate}
+
+\subsection{Application Exercises}
+
+\begin{exemple}[Exam 2023]
+\begin{itemize}
+    \item A) $u_1(x,y) = xy - x^2 + 2$, $u_2(x,y) = 2xy - y^2$ on $[0,1]^2$. Calculate equilibria using the FOC method.
+    \item B) $u_i(x_1, x_2) = x_i$ if $x_1+x_2 \le 1$ and $0$ otherwise. Calculate the Nash set $N$ and Pareto optimal points.
+\end{itemize}
+\textbf{Solution:}
+\begin{itemize}
+    \item \textbf{A)} FOC Player 1: $\frac{\partial u_1}{\partial x} = y - 2x = 0 \implies x = y/2$.
+    FOC Player 2: $\frac{\partial u_2}{\partial y} = 2x - 2y = 0 \implies y = x$.
+    System: $x = x/2 \implies x=0, y=0$. Unique equilibrium $(0,0)$.
+    Hessians: $\partial^2 u_1 / \partial x^2 = -2 < 0$ (concave), same for P2. It is indeed a maximum.
+    
+    \item \textbf{B)} 
+    - If $x_1 + x_2 < 1$, each player wants to increase their $x_i$ (increasing payoff) until the constraint acts. Not stable.
+    - If $x_1 + x_2 > 1$, payoff 0. They have an incentive to reduce to get under 1.
+    - Equilibrium: Any pair $(x_1, x_2)$ such that $x_1 + x_2 = 1$ and $x_i \ge 0$. If a player deviates upwards, payoff 0. If downwards, reduced payoff.
+    - Pareto: Any point on the frontier $x_1+x_2=1$ is Pareto-optimal (sum 1).
+\end{itemize}
+\end{exemple}
+
+
+\begin{exemple}[Exam 2023: Nash and Best Responses]
+\textbf{Question:}
+Consider a continuous game. Determine Player 1's best response to $y$ and the Nash equilibria of the game for various parameters.
+
+\textbf{Solution:}
+\begin{itemize}
+    \item Player 1's best response to $y$ is the solution to $\sup_{x \in \mathbb{R}} u_1(x, y)$.
+    \item \textbf{Case 1:} If there is no solution because $\lim_{x \to \infty} u_1(x, y) = \infty$, then there is no Nash equilibrium.
+    \item \textbf{Case 2:} If the function is concave, the solution satisfies the necessary first-order condition (FOC). For example, for Player 2, $y$ must satisfy $4y = 7/2$ in a given configuration.
+    \item The best response correspondences ($BR_1$ and $BR_2$) are analyzed on $[0, 1]$. The Nash equilibrium is found at the intersection of these correspondences.
+\end{itemize}
+\end{exemple}
+
+\begin{exemple}[Rent-seeking / Tullock]
+$n$ lobbyists choose effort $x_i \ge 0$. Cost $cx_i$. Gain if win: $V$. Payoff: $\frac{x_i}{\sum x_j}V - cx_i$.
+\textbf{Hint:} Look for a \textbf{symmetric equilibrium} where $x_i = x^*$ for all $i$, which greatly simplifies solving the FOC.
+
+\paragraph{Solution:}
+Each player $i$ maximizes $u_i(x_1, \dots, x_n) = \frac{x_i}{x_i + \sum_{j \ne i} x_j} V - c x_i$.
+FOC: $\frac{\partial u_i}{\partial x_i} = \frac{1 \cdot (\sum x_j) - x_i \cdot 0}{(\sum x_j)^2} V - c = 0$? No, quotient derivative.
+$\frac{\partial u_i}{\partial x_i} = V \frac{1 \cdot (x_i + X_{-i}) - x_i \cdot 1}{(x_i + X_{-i})^2} - c = V \frac{X_{-i}}{(\sum x_j)^2} - c = 0$.
+At symmetric equilibrium $x_i = x^*$. $\sum x_j = n x^*$. $X_{-i} = (n-1)x^*$.
+$V \frac{(n-1)x^*}{(n x^*)^2} = c \implies V \frac{n-1}{n^2 x^*} = c \implies x^* = \frac{n-1}{n^2} \frac{V}{c}$.
+\end{exemple}
+
+\begin{exemple}[Exam 2023: Symmetric Nash Equilibrium and Optimality]
+\textbf{Question:}
+Consider a symmetric game. Find the symmetric Nash equilibrium and determine if it is socially optimal.
+
+\textbf{Solution:}
+\begin{itemize}
+    \item In a symmetric equilibrium, each Player $i$ maximizes their payoff $u_i$. We look for $p$ such that the derivative of the payoff function is zero ($f'(p) = 0$).
+    \item In this exercise, we find a symmetric equilibrium $\bar{p} = 1/4$ (or values depending on $n$).
+    \item We then compare the equilibrium payoff with the social maximum (Max $\sum u_i$).
+    \item \textbf{Conclusion:} The Nash equilibrium here is suboptimal from a social point of view.
+\end{itemize}
+\end{exemple}
+
+\begin{exemple}[Public Good]
+$n$ inhabitants. Wealth $W$. Contribution $x_i$. Payoff: $u_i(x) = W - x_i + \sqrt{\sum_{j=1}^n x_j}$. Show that the individual contribution at equilibrium decreases with $n$.
+
+\paragraph{Solution:}
+We look for a symmetric equilibrium $x_i = x^*$.
+First order condition (player $i$ considers others' $x_j$ as fixed, let $S_{-i} = \sum_{j \ne i} x_j$):
+$$ \frac{\partial u_i}{\partial x_i} = -1 + \frac{1}{2\sqrt{x_i + S_{-i}}} = 0 $$
+At symmetric equilibrium, $S_{-i} = (n-1)x^*$ and $x_i = x^*$.
+$$ 1 = \frac{1}{2\sqrt{n x^*}} \implies 2\sqrt{n x^*} = 1 \implies 4n x^* = 1 \implies x^* = \frac{1}{4n} $$
+The individual contribution $x^*(n) = \frac{1}{4n}$ is indeed a decreasing function of $n$ (free-rider phenomenon).
+\end{exemple}

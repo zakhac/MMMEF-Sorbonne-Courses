@@ -104,7 +104,10 @@ Supposons qu'il existe une action $a$ dans le support de $\sigma_i^*$ telle que 
     \item Soit $b$ une action qui atteint le maximum $M$.
     \item Construisons une nouvelle stratégie $\sigma'_i$ en transférant le poids (la probabilité) $p_a > 0$ de l'action "médiocre" $a$ vers l'action "optimale" $b$.
     \item Le gain espéré devient :
-    $$\tilde{u}_i(\sigma'_i, \sigma^*_{-i}) = \tilde{u}_i(\sigma^*_i, \sigma^*_{-i}) - p_a \underbrace{u_i(a, \sigma^*_{-i})}_{< M} + p_a \underbrace{u_i(b, \sigma^*_{-i})}_{M}$$
+    \begin{align*}
+    \tilde{u}_i(\sigma'_i, \sigma^*_{-i}) &= \tilde{u}_i(\sigma^*_i, \sigma^*_{-i}) - p_a \underbrace{u_i(a, \sigma^*_{-i})}_{< M} + p_a \underbrace{u_i(b, \sigma^*_{-i})}_{M} \\
+    &> \tilde{u}_i(\sigma^*_i, \sigma^*_{-i})
+    \end{align*}
     \item Comme $u_i(b) > u_i(a)$, on a $\tilde{u}_i(\sigma') > \tilde{u}_i(\sigma^*)$.
 \end{enumerate}
 Ceci contredit le fait que $\sigma^*$ était une meilleure réponse (équilibre de Nash). Donc toutes les actions du support doivent rapporter le maximum $M$.
@@ -128,15 +131,31 @@ C'est ce théorème, combiné à la linéarité (donc quasi-concavité) des gain
 
 \section{Exemples Classiques}
 
-\begin{exemple}[Battle of the Sexes]
+\begin{exemple}[Exemple de calcul détaillé 2x2]
+Considérons le jeu suivant, où le Joueur 1 (lignes) choisit entre $X$ et $Y$, et le Joueur 2 (colonnes) entre $x$ et $y$.
 \begin{center}
 \begin{tabular}{c|c|c}
-H \textbackslash W & F ($y$) & C ($1-y$) \\ \hline
-F ($x$) & (2,1) & (0,0) \\ \hline
-C ($1-x$) & (0,0) & (1,2)
+ & $x$ ($q$) & $y$ ($1-q$) \\ \hline
+$X$ ($p$) & (2, 1) & (0, 0) \\ \hline
+$Y$ ($1-p$) & (0, 0) & (1, 2)
 \end{tabular}
 \end{center}
-Indifférence pour H : $xy \to 2y = 1(1-y) \implies y = 1/3$.
+Le Joueur 1 joue $X$ avec probabilité $p$, le Joueur 2 joue $x$ avec probabilité $q$.
+
+\textbf{Calcul pour le Joueur 1 (Indifférence) :}
+Pour que P1 soit disposé à mixer (jouer aléatoirement), il doit être indifférent entre $X$ et $Y$. Ses espérances de gain doivent être égales :
+\[ E[U_1(X, \sigma_2)] = E[U_1(Y, \sigma_2)] \]
+\[ q \cdot 2 + (1-q) \cdot 0 = q \cdot 0 + (1-q) \cdot 1 \]
+\[ 2q = 1 - q \implies 3q = 1 \implies q = 1/3 \]
+
+\textbf{Calcul pour le Joueur 2 (Indifférence) :}
+De même, P2 doit être indifférent entre $x$ et $y$ :
+\[ E[U_2(\sigma_1, x)] = E[U_2(\sigma_1, y)] \]
+\[ p \cdot 1 + (1-p) \cdot 0 = p \cdot 0 + (1-p) \cdot 2 \]
+\[ p = 2(1 - p) \implies p = 2 - 2p \implies 3p = 2 \implies p = 2/3 \]
+
+\textbf{Conclusion :} L'unique équilibre de Nash en stratégies mixtes est le profil $((p=2/3), (q=1/3))$.
+Graphiquement, les correspondances de meilleure réponse se croisent en ce point $(2/3, 1/3)$ dans le carré des probabilités.
 \end{exemple}
 
 \begin{exemple}[Chicken Game]

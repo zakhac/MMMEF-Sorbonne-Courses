@@ -99,39 +99,39 @@ Un \textbf{jeu sous forme normale} est un triplet $(N, (X_i)_{i \in N}, (u_i)_{i
 \subsection{Exemples Célèbres}
 
 \begin{enumerate}
-    \item \textbf{Coordination Game :} Exemple de la conduite (choix du côté de la route).
+    \item \textbf{Jeu de coordination :}
     \begin{center}
     \begin{tabular}{c|c|c}
-    P1 \textbackslash P2 & a & b \\ \hline
-    A & (1,1) & (0,0) \\ \hline
-    B & (0,0) & (1,1)
+     & A & B \\ \hline
+    A & (1, 1) & (0, 0) \\ \hline
+    B & (0, 0) & (2, 2)
     \end{tabular}
     \end{center}
 
-    \item \textbf{Chicken Game (Hawk-Dove) :} Exemple d'une course aux brevets.
+    \item \textbf{Jeu de la poule mouillée (Chicken Game / Hawk-Dove) :}
     \begin{center}
     \begin{tabular}{c|c|c}
-    P1 \textbackslash P2 & a & b \\ \hline
-    A & (0,0) & (4,1) \\ \hline
-    B & (1,4) & (3,3)
+     & Dévier & Foncer \\ \hline
+    Dévier & (0, 0) & (-1, 1) \\ \hline
+    Foncer & (1, -1) & (-10, -10)
     \end{tabular}
     \end{center}
 
-    \item \textbf{Matching Penny :} Modèle classique pour les \textbf{penalties au football} (Tireur vs Gardien).
+    \item \textbf{Jeu des pièces de monnaie (Matching Pennies) :}
     \begin{center}
     \begin{tabular}{c|c|c}
-    P1 \textbackslash P2 & a & b \\ \hline
-    A & (1,-1) & (-1,1) \\ \hline
-    B & (-1,1) & (1,-1)
+     & Pile & Face \\ \hline
+    Pile & (1, -1) & (-1, 1) \\ \hline
+    Face & (-1, 1) & (1, -1)
     \end{tabular}
     \end{center}
 
-    \item \textbf{Prisoner Dilemma :} Confesser (C) ou Non Confesser (NC).
+    \item \textbf{Dilemme du prisonnier :}
     \begin{center}
     \begin{tabular}{c|c|c}
-    P1 \textbackslash P2 & NC & C \\ \hline
-    NC & (-1,-1) & (-5,0) \\ \hline
-    C & (0,-5) & (-3,-3)
+     & Ne pas confesser & Confesser \\ \hline
+    Ne pas confesser & (-1, -1) & (-10, 0) \\ \hline
+    Confesser & (0, -10) & (-5, -5)
     \end{tabular}
     \end{center}
 
@@ -188,7 +188,13 @@ v_1 - x_2 & \text{si } x_1 > x_2 \\
 \section{Exercices}
 
 \begin{exemple}[All pay auction]
-Chaque enchérisseur paie son offre, même s'il perd (modèle de lobbying ou de pots-de-vin).
+Tous les enchérisseurs paient leur offre, que l'objet soit remporté ou non. Le plus offrant remporte l'objet.
+\begin{itemize}
+    \item \textbf{Mécanisme :} Chaque joueur soumet une offre $x_i \ge 0$.
+    \item \textbf{Fonction de gain :} Pour le joueur $i$, avec une valorisation $v_i$ :
+    \[ u_i(x_i, x_{-i}) = \begin{cases} v_i - x_i & \text{si } x_i > x_j \quad \forall j \neq i \\ -x_i & \text{si } x_i < \max(x_{-i}) \end{cases} \]
+    (En cas d'égalité pour l'offre la plus élevée, le gain peut être partagé).
+\end{itemize}
 \end{exemple}
 
 \begin{exemple}[Ice-cream sellers (Hotelling)]

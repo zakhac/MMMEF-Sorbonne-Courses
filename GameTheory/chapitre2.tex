@@ -58,7 +58,7 @@ Un énoncé $S$ est \textbf{connaissance commune} si :
 \end{definition}
 \textbf{Nuance :} Il y a une différence fondamentale entre "Je sais S" et "S est connaissance commune". Votre comportement changera radicalement selon que vous pensez que l'autre est au courant ou non (exemple de l'attaque coordonnée ou de l'e-mail).
 
-\section{Élimination Itérée des Actions Strictement Dominées (IESDA)}
+\section{Élimination des Stratégies Strictement Dominées (IESDS)}
 
 \subsection{Action Strictement Dominée}
 \begin{definition}
@@ -92,42 +92,52 @@ Pour résoudre un jeu par IESDA, il faut écrire explicitement les étapes :
 
 \subsection{Exercices d'Application}
 
-\begin{exemple}[Exercice type examen (2023)]
-Soit un jeu à deux joueurs sur $]0, +\infty[^2$ avec les fonctions de gain suivantes :
-\[ u_1(x, y) = (x - x^2 + 1)e^y \quad \text{et} \quad u_2(x, y) = (2y - y^2 + 2)x^2 \]
-\textbf{Question :} Déterminez les équilibres en stratégies dominantes.
-
-\paragraph{Correction rapide :} 
-On calcule les dérivées premières :
+\begin{exemple}[Exercice d'application (Fonctions continues)]
+Soit un jeu à deux joueurs avec les gains :
+\[ u_1(x, y) = (-x^2 + x + 1)e^y \quad \text{et} \quad u_2(x, y) = (2y - y^2 + 2)e^x \]
+où $x, y \ge 0$.
 \begin{itemize}
-    \item $\frac{\partial u_1}{\partial x} = (1 - 2x)e^y$. Le signe ne dépend pas de $y$. L'action dominante est $x^* = 1/2$.
-    \item $\frac{\partial u_2}{\partial y} = (2 - 2y)x^2$. Le signe ne dépend pas de $x$. L'action dominante est $y^* = 1$.
+    \item Pour le joueur 1, maximiser $u_1$ par rapport à $x$ (en traitant $e^y$ comme constant positif) revient à maximiser $-x^2 + x + 1$.
+    \[ \frac{\partial u_1}{\partial x} = (-2x + 1)e^y = 0 \implies x = 1/2 \]
+    \item Pour le joueur 2, maximiser $u_2$ par rapport à $y$ revient à maximiser $2y - y^2 + 2$.
+    \[ \frac{\partial u_2}{\partial y} = (2 - 2y)e^x = 0 \implies y = 1 \]
 \end{itemize}
-L'équilibre est $(\frac{1}{2}, 1)$.
+L'unique équilibre en stratégies dominantes est $(1/2, 1)$.
 \end{exemple}
 
-\begin{exemple}[IESDA Matrix]
-Calculer l'équilibre par IESDA pour la matrice suivante :
-$$\begin{pmatrix} & A & B & C \\ a & (1,-1) & (0,1) & (-1,2) \\ b & (2,3) & (1,2) & (0,1) \\ c & (1,4) & (0,3) & (1,2) \end{pmatrix}$$
-\paragraph{Correction :}
+\begin{exemple}[Illustration du processus IESDS]
+Considérons le jeu et la matrice suivants :
+\[
+\begin{pmatrix} & A & B & C \\ a & (1,-1) & (0,1) & (-1,0) \\ b & (2,3) & (2,2) & (0,1) \\ c & (1,4) & (0,3) & (1,2) \end{pmatrix}
+\]
+\textbf{Résolution par étapes :}
 \begin{enumerate}
-    \item P1 regarde ses lignes. Aucune dominance stricte immédiate ($b$ semble bon mais $c$ est meilleur si C).
-    \item P2 regarde ses colonnes (il minimise ou maximise ? Matrice générale $\to$ maximise sa 2ème composante).
-    Comparons A et C pour P2 : $(-1, 3, 4)$ vs $(2, 1, 2)$. Pas de dominance claire.
-    Comparons B et C pour P2 : $(1, 2, 3)$ vs $(2, 1, 2)$.
-    Si P1 joue $c$, P2 préfère $B$ ($3>2$). Si $b$, préfère $B$ ($2>1$). Si $a$, préfère $C$ ($2>1$). Pas de dominance stricte globale simple.
-    \textit{Hypothèse :} Le jeu est peut-être mal spécifié dans l'énoncé brut, ou nécessite une analyse plus fine.
-    
-    Regardons les indices : $b$ vs $a$ pour P1 : $2>1$, $1>0$, $0>-1$. \textbf{$b$ domine strictement $a$}.
-    \item On élimine la ligne $a$. Il reste $\{b, c\}$ vs $\{A, B, C\}$.
-    \item P2 compare maintenant ses choix face à $\{b, c\}$ :
-    $A \to (3, 4)$, $B \to (2, 3)$, $C \to (1, 2)$.
-    La colonne $A$ rapporte $(3, 4)$. La colonne $B$ rapporte $(2, 3)$. $A$ domine strictement $B$ et $C$.
-    \item P2 ne jouera que $A$.
-    \item Face à $A$, P1 compare $b$ (gain 2) et $c$ (gain 1). Il choisit $b$.
-    \item \textbf{Équilibre IESDA :} $(b, A)$ rapportant $(2,3)$.
+    \item \textbf{Étape 1 :} Pour le Joueur 1, l'action $a$ est strictement dominée par $b$ (car $1<2, 0<2, -1<0$). On élimine la ligne $a$.
+    \item \textbf{Étape 2 :} Dans le jeu réduit (lignes $b, c$), le Joueur 2 compare ses colonnes.
+    \begin{itemize}
+        \item $B$ vs $A$ : $(2 < 3)$ si $b$, $(3 < 4)$ si $c$. Donc $B$ est dominée par $A$.
+        \item $C$ vs $A$ : $(1 < 3)$ si $b$, $(2 < 4)$ si $c$. Donc $C$ est dominée par $A$.
+    \end{itemize}
+    On élimine les colonnes $B$ et $C$.
+    \item \textbf{Étape 3 :} Dans le jeu réduit (colonne $A$ uniquement), le Joueur 1 choisit entre $b$ (gain 2) et $c$ (gain 1). L'action $c$ est dominée. On élimine $c$.
+    \item \textbf{Solution :} Le seul profil survivant est $(b, A)$ avec gains $(2, 3)$.
 \end{enumerate}
 \end{exemple}
+
+\section{Relation avec la Meilleure Réponse}
+
+\begin{proposition}
+Une action strictement dominée n'est \textbf{jamais} une meilleure réponse à une quelconque croyance sur les stratégies des adversaires.
+\end{proposition}
+\begin{remarque}
+Lien fondamental : Cette proposition lie l'hypothèse comportementale de rationalité (ne pas jouer d'action dominée) au concept mathématique de meilleure réponse (point fixe, Nash).
+\end{remarque}
+\begin{exercice}[Analyse des jeux classiques]
+\begin{itemize}
+    \item \textbf{Dilemme du prisonnier :} Démontrez que "Confesser" est une stratégie dominante pour chaque joueur.
+    \item \textbf{Jeu de coordination et Poule mouillée :} Montrez qu'aucun joueur ne possède de stratégie dominante (la meilleure action dépend de l'autre).
+\end{itemize}
+\end{exercice}
 
 \begin{exemple}[Exam 2023 : IESDA Matrice]
 \textbf{Question :}

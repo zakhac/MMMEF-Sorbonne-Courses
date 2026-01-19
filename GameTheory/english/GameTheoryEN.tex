@@ -1,0 +1,272 @@
+%===========================
+% File : GameTheory.tex
+% Game Theory Course
+%===========================
+\documentclass[11pt,a4paper,oneside]{book}
+
+%---------------------------
+% Encoding & Language
+%---------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+
+%---------------------------
+% Mathematics
+%---------------------------
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm}
+\usepackage{amsfonts}
+
+\usepackage{float}
+\numberwithin{equation}{chapter}
+
+%---------------------------
+% Figures & illustrations
+%---------------------------
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{tikz}
+\usetikzlibrary{trees, arrows.meta, positioning, calc, shapes.geometric}
+\usepackage{tikz-3dplot}
+
+%---------------------------
+% Colored boxes (tcolorbox)
+%---------------------------
+\usepackage[most]{tcolorbox}
+
+%---------------------------
+% Layout & Style
+%---------------------------
+\usepackage{geometry}
+\geometry{margin=2.5cm, headheight=15pt, footskip=50pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\thepage}
+\fancyfoot[L]{\footnotesize 2025-2026 \textperiodcentered{} Game Theory}
+\fancyfoot[R]{\footnotesize Written by Zakari Hachemi}
+
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet,leftmargin=1.5em}
+
+\usepackage{array}
+
+%---------------------------
+% Hyperlinks
+%---------------------------
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage[nameinlink,capitalise,noabbrev]{cleveref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    citecolor=blue!50!black,
+    urlcolor=blue!50!black,
+    pdfauthor={Zakari Hachemi},
+    pdftitle={Game Theory Course},
+    pdfsubject={Complete Course},
+    pdfcreator={LaTeX},
+    plainpages=false
+}
+
+%---------------------------
+% Colors for environments
+%---------------------------
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{darkgray}{gray}{0.35}
+\definecolor{darkred}{RGB}{99,0,0}
+
+%---------------------------
+% Theorem Environments & Colors
+%---------------------------
+
+% 1. Standard environment definitions
+\theoremstyle{plain}
+\newtheorem{theoreme}{Theorem}[chapter]
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemma}
+\newtheorem{corollaire}[theoreme]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Definition}
+\newtheorem{exemple}[theoreme]{Example}
+\newtheorem{exercice}[theoreme]{Exercise}
+\newtheorem{hypothese}[theoreme]{Hypothesis}
+
+\theoremstyle{remark}
+\newtheorem*{remarque}{Remark}
+\newtheorem*{remarques}{Remarks}
+
+% 2. Applying colors (tcolorbox)
+
+% --- THEOREMS Style (Red) ---
+\tcolorboxenvironment{theoreme}{
+    enhanced,
+    colback=red!5!white,
+    colframe=red!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    drop fuzzy shadow
+}
+
+% --- PROPOSITIONS Style (Orange) ---
+\tcolorboxenvironment{proposition}{
+    enhanced,
+    colback=orange!5!white,
+    colframe=orange!80!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- DEFINITIONS Style (Blue) ---
+\tcolorboxenvironment{definition}{
+    enhanced,
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- HYPOTHESES Style (Gray/Blue) ---
+\tcolorboxenvironment{hypothese}{
+    enhanced,
+    colback=gray!5!white,
+    colframe=gray!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    drop fuzzy shadow
+}
+
+% --- EXAMPLES Style (Green) ---
+\tcolorboxenvironment{exemple}{
+    blanker,
+    breakable,
+    left=5mm,
+    before skip=10pt,
+    after skip=10pt,
+    borderline west={3pt}{0pt}{green!60!black}
+}
+
+% --- LEMMAS Style (Violet) ---
+\tcolorboxenvironment{lemme}{
+    enhanced,
+    colback=violet!5!white,
+    colframe=violet!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    drop fuzzy shadow
+}
+
+% --- COROLLARIES Style (Cyan) ---
+\tcolorboxenvironment{corollaire}{
+    enhanced,
+    colback=cyan!5!white,
+    colframe=cyan!75!black,
+    boxrule=0.5mm,
+    arc=2mm,
+    drop fuzzy shadow
+}
+
+% --- FIGURE EXPLANATION Style (Gray / Sharp) ---
+\newtcolorbox{figureexplanation}{
+    enhanced,
+    colback=gray!10!white,    % Light gray background
+    colframe=gray!50!black,   % Dark gray frame
+    boxrule=0.5mm,            % Frame thickness
+    sharp corners,            % Sharp corners
+    left=2mm, right=2mm, top=2mm, bottom=2mm, % Inner margins
+    drop fuzzy shadow         % Small shadow
+}
+
+%---------------------------
+% Clever References (cleveref)
+%---------------------------
+\crefname{theoreme}{theorem}{theorems}
+\Crefname{theoreme}{Theorem}{Theorems}
+\crefname{lemme}{lemma}{lemmas}
+\Crefname{lemme}{Lemma}{Lemmas}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{corollaire}{corollary}{corollaries}
+\Crefname{corollaire}{Corollary}{Corollaries}
+\crefname{definition}{definition}{definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{exemple}{example}{examples}
+\Crefname{exemple}{Example}{Examples}
+\crefname{equation}{equation}{equations}
+\Crefname{equation}{Equation}{Equations}
+\crefname{chapter}{chapter}{chapters}
+\Crefname{chapter}{Chapter}{Chapters}
+\crefname{section}{section}{sections}
+\Crefname{section}{Section}{Sections}
+\crefname{remarque}{remark}{remarks}
+\Crefname{remarque}{Remark}{Remarks}
+
+%---------------------------
+% Useful Macros
+%---------------------------
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\indic}{\mathbf{1}}
+\DeclarePairedDelimiter{\sca}{\langle}{\rangle}
+
+%---------------------------
+% Information
+%---------------------------
+\title{\textbf{Game Theory}\\[0.5em]
+       \large Complete Course}
+\author{Zakari HACHEMI}
+\date{Based on Philippe BICH's course \\ 2025-2026}
+
+%===========================
+\begin{document}
+%===========================
+
+\maketitle
+
+\clearpage
+\thispagestyle{empty}
+\vspace*{4cm}
+
+\noindent \textbf{Acknowledgments} \\
+I thank \textbf{Prince NIANGA MBOUALA} for sharing his notes, which contributed to the enrichment of this document.
+
+\vspace{1.5cm}
+
+\noindent \textbf{Disclaimer} \\
+This document is the fruit of my personal work. It is based on my own notes taken during the Game Theory course, as well as my efforts to understand and structure the taught concepts.
+It is in no way an official document validated by the teaching team, nor an absolute reference. It should be considered as a study and revision aid, reflecting my own interpretation and learning process.
+
+\tableofcontents
+
+
+\mainmatter
+
+%---------------------------
+% Course Body
+%---------------------------
+\include{chapitre1}
+\include{chapitre2}
+\include{chapitre3}
+\include{chapitre4}
+\include{chapitre5}
+\include{chapitre6}
+\include{chapitre7}
+
+
+\appendix
+
+\end{document}

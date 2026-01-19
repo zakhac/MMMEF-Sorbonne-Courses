@@ -1,0 +1,56 @@
+%===========================
+% Chapitre 2 : Classification Under Demographic Parity Constraint
+%===========================
+\chapter{Classification Under Demographic Parity Constraint}
+
+\section{Notations}
+
+Considérons les notations suivantes pour ce chapitre :
+\begin{itemize}
+    \item Une observation est un triplet $(X, S, Y)$.
+    \item $X \in \mathbb{R}^d$ représente les caractéristiques (features).
+    \item $S \in \{-1, 1\}$ est l'attribut sensible (sensitive attribute).
+    \item $Y \in \{0, 1\}$ est la sortie (label).
+\end{itemize}
+
+Un prédicteur (ou classifieur) $f$ est une fonction de $(X,S)$ telle que $f(X,S) \in \{0, 1\}$.
+
+Nous considérons le risque de mauvaise classification (\textit{misclassification risk}) :
+\begin{equation}
+    R(f) = \mathbb{P}(f(X,S) \neq Y)
+\end{equation}
+comme mesure de performance.
+
+Dans ce cas, le prédicteur optimal (ou Classifieur de Bayes) qui satisfait :
+\begin{equation}
+    f^* \in \argmin_{f} R(f)
+\end{equation}
+est défini par :
+\begin{equation}
+    f^*(X,S) = \indic\{\eta(X,S) \ge 1/2\}
+\end{equation}
+où $\eta(X,S) = \mathbb{P}(Y=1 | X,S)$.
+
+\section{Définition de l'Équité (Fairness)}
+
+Nous considérons la contrainte de Parité Démographique (Demographic Parity constraint ou DP-constraint).
+Nous disons qu'un prédicteur $f$ satisfait la contrainte DP si :
+\begin{equation}
+    \forall s \in \{-1, 1\}, \quad \mathbb{P}(f(X,S)=1 | S=s) = \mathbb{P}(f(X,S)=1)
+\end{equation}
+Ceci équivaut aux propriétés suivantes :
+\begin{align}
+    f(X,S) \perp \!\!\! \perp S \quad &\iff \mathbb{P}(f(X,S)=1 | S=1) = \mathbb{P}(f(X,S)=1 | S=-1) \\
+    &\iff \sum_{s \in \{-1, 1\}} s \cdot \mathbb{P}(f(X,S)=1 | S=s) = 0
+\end{align}
+
+\section{Classifieur Optimal sous Contrainte DP}
+
+Nous considérons $f^*_{fair}$ défini comme :
+\begin{equation}
+    f^*_{fair} \in \argmin_{f \text{ satisfaisant DP}} R(f)
+\end{equation}
+Ceci est équivalent à résoudre le problème d'optimisation sous contrainte :
+\begin{equation}
+    f^*_{fair} \in \argmin_{\substack{f \\ \text{t.q. } \sum_{s \in \{-1, 1\}} s \cdot \mathbb{P}(f(X,S)=1 | S=s) = 0}} R(f)
+\end{equation}

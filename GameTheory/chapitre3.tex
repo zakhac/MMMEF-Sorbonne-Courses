@@ -34,7 +34,7 @@ Cela illustre que l'équilibre de Nash est une condition de stabilité plus faib
 
 \begin{definition}[Équilibre de Nash]
 Considérons un jeu sous forme normale $(N, (X_i)_{i \in N}, (u_i)_{i \in N})$. Un profil d'actions $\bar{x} = (\bar{x}_i)_{i \in N}$ est un \textbf{équilibre de Nash} si pour chaque joueur $i$, aucune déviation unilatérale n'est profitable :
-$$\forall i \in N, \forall d_i \in X_i, \quad u_i(\bar{x}_i, \bar{x}_{-i}) \ge u_i(d_i, \bar{x}_{-i})$$
+\[ \forall i \in N, \forall d_i \in X_i, \quad u_i(\bar{x}_i, \bar{x}_{-i}) \ge u_i(d_i, \bar{x}_{-i}) \]
 \end{definition}
 
 \section{Correspondance de Meilleure Réponse (Best-reply)}
@@ -58,7 +58,23 @@ Un profil d'actions $x \in X$ est un équilibre de Nash si et seulement si :
 \end{theoreme}
 Ce lien avec les points fixes est crucial car il permettra d'utiliser des théorèmes topologiques puissants (Brouwer, Kakutani) pour prouver l'existence d'équilibres.
 
+\section{Exemples Graphiques : Intersection des BR}
+Pour des jeux à deux joueurs avec des actions continues (par exemple $X_1 = X_2 = [0,1]$), les équilibres de Nash correspondent aux points d'intersection des courbes $x_1 = B_1(x_2)$ et $x_2 = B_2(x_1)$ dans le plan $(x_1, x_2)$.
+
+\begin{itemize}
+    \item \textbf{Équilibre Unique :} Les courbes se croisent en un seul point (cas classique des fonctions concaves comme l'exemple introductif).
+    \item \textbf{Multiples Équilibres :} Les courbes se croisent en plusieurs points. Par exemple, dans un jeu de coordination (Battle of Sexes continu), il peut y avoir deux intersections stables et une instable.
+    \item \textbf{Aucun Équilibre (en stratégies pures) :} Les courbes ne se croisent jamais. C'est le cas du jeu "Matching Pennies" version continue sans point fixe.
+\end{itemize}
+
 \section{Relation avec la Dominance}
+
+\begin{corollaire}[Inclusion dans l'IESDS]
+L'ensemble des équilibres de Nash est inclus dans l'ensemble des profils d'actions qui survivent à l'élimination itérée des stratégies strictement dominées (IESDS).
+\end{corollaire}
+\begin{remarque}
+C'est un résultat puissant : l'IESDS, souvent plus simple à calculer, peut être utilisé comme une "boîte englobante" pour réduire l'espace de recherche des équilibres de Nash.
+\end{remarque}
 
 \begin{proposition}[Propriété d'exclusion]
 Si une action $x_i$ est strictement dominée, alors elle n'est \textbf{jamais} une meilleure réponse (elle n'appartient jamais à $B_i(x_{-i})$ pour aucun $x_{-i}$).

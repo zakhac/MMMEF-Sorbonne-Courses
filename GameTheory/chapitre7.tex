@@ -195,7 +195,7 @@ Le Joueur 1 (P1) choisit Arme Nucléaire ($W$) ou Non ($N$). Le Joueur 2 (P2) r�
             edge from parent node[below] {$n$}
         }
         child {
-            node[label=right:{$(-1,-1)$}] {}
+            node[label=right:{$(-3,-3)$}] {}
             edge from parent node[above] {$w$}
         }
         edge from parent node[above] {$W$}
@@ -217,18 +217,12 @@ $$
 \begin{array}{c|c|c|c|c}
 P1 \setminus P2 & ww' & wn' & nw' & nn' \\
 \hline
-W & (-1,-1) & (-1,-1) & (1,-2) & (1,-2) \\
+W & (-3,-3) & (-3,-3) & (1,-2) & (1,-2) \\
 \hline
 N & (-2,1) & (0,0) & (-2,1) & (0,0) \\
 \end{array}
 $$
-\textit{Explication :} Si P1 joue $W$ et P2 joue $wn'$, le jeu va en $W$ puis en $w$ (car la 1ère lettre de P2 est w). Le gain est $(-1,-1)$. Le choix $n'$ de P2 n'est pas observé ("counterfactual").
-
-\textbf{4. Équilibres de Nash :}
-\begin{itemize}
-    \item Nash de $\Gamma$ = Nash de la forme normale.
-    \item Ici, $(W, ww')$ est un Équilibre de Nash (gain $-1, -1$). Vérifiez dans la matrice.
-\end{itemize}
+\textit{Explication :} Si P1 joue $W$ et P2 joue $wn'$, le jeu va en $W$ puis en $w$. Gain $(-3,-3)$.
 \end{exemple}
 
 
@@ -247,13 +241,26 @@ Pour résoudre un jeu fini à information parfaite, on raisonne à rebours :
 L'algorithme d'induction arrière détermine un \textbf{Équilibre de Nash Parfait en Sous-Jeu (SPE)}.
 \end{theoreme}
 
-\subsection{Menaces Non Crédibles}
-Tout SPE est un équilibre de Nash, mais la réciproque est fausse.
+\begin{definition}[Équilibre Parfait en Sous-Jeu - SPE]
+Un profil de stratégies est un \textbf{Équilibre Parfait en Sous-Jeu (SPE)} s'il induit un équilibre de Nash dans \textbf{chaque sous-jeu} de l'arbre (y compris le jeu entier).
+\end{definition}
+
+\begin{exemple}[Examen : SPE vs Nash]
+Soit le jeu suivant : P1 choisit $A$ ou $D$ (gain 2,2). Si $A$, P2 choisit $l$ ou $r$. Si $l$, P1 choisit $L(4,2)$ ou $R(1,0)$. Si $r$, P1 choisit $L'(0,3)$ ou $R'(3,1)$.
 \begin{itemize}
-    \item Un équilibre de Nash peut reposer sur une "menace non crédible" : le joueur promet une punition sévère (ex: se faire exploser) à un nœud qui n'est pas atteint à l'équilibre.
-    \item Comme le nœud n'est jamais atteint, la menace ne coûte rien ("talk is cheap").
-    \item Le concept de SPE (et l'induction arrière) élimine ces équilibres en exigeant la rationalité \textbf{partout}, même hors du chemin d'équilibre.
+    \item \textbf{Forme Normale :} P1 a 4 stratégies $\{AL, AR, DL, DR\}$. P2 en a 2 $\{l, r\}$.
+    \item \textbf{Équilibres de Nash :} $(AL, r)$ (Gain $0,3$), $(DL, l)$ (Gain $2,2$), $(DR, l)$ (Gain $2,2$).
+    \item \textbf{Analyse des Sous-Jeux (Induction) :}
+    \begin{enumerate}
+        \item Sous-jeu après $(A,l)$ : P1 choisit $L$ (4 > 1).
+        \item Sous-jeu après $(A,r)$ : P1 choisit $R'$ (3 > 0).
+        \item P2 anticipe : s'il joue $l$, P1 jouera $L$ (gain P2 = 2). S'il joue $r$, P1 jouera $R'$ (gain P2 = 1). P2 choisit $l$.
+        \item Racine : P1 anticipe que $A$ mène à $L$ (gain 4). $D$ mène à 2. P1 choisit $A$.
+    \end{enumerate}
+    \item \textbf{Conclusion :} L'unique SPE est le chemin $(A, l, L)$ donné par les stratégies complètes \textbf{(P1: $A, L, R'$; P2: $l$)}.
+    \item \textbf{Analyse :} L'équilibre de Nash $(DL, l)$ n'est pas un SPE car il repose sur la menace (implicite) que P1 jouerait mal dans le sous-jeu $(A,r)$ (il ne jouerait pas sa meilleure réponse).
 \end{itemize}
+\end{exemple}
 
 \section{Cas Pratique : Le Jeu du Mille-pattes (Centipede Game)}
 ...

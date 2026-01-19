@@ -1,0 +1,189 @@
+\chapter{Dominance}
+
+\section{Important Notation}
+This notation is fundamental and will be used throughout the course. It may be confusing at first glance.
+
+\begin{itemize}
+    \item $X_{-i} = \prod_{j \in N, j \ne i} X_j$ denotes the set of action profiles of all players \textbf{except} player $i$.
+    \item $x_{-i}$ denotes an element of $X_{-i}$ (a vector of the opponents' actions).
+    \item $u_i(x_i, x_{-i})$ is an abusive notation for $u_i(x)$. It highlights that the payoff depends on the player's choice $x_i$ and the others' choices $x_{-i}$.
+\end{itemize}
+
+\begin{exemple}[3-Player Example]
+Let $N = \{1, 2, 3\}$. For player $i=2$:
+\begin{itemize}
+    \item The opponents are $1$ and $3$.
+    \item The opponents' profile is $x_{-2} = (x_1, x_3)$.
+    \item The set of these profiles is $X_{-2} = X_1 \times X_3$.
+    \item The payoff function is written as $u_2(x) = u_2(x_2, x_{-2}) = u_2(x_2, (x_1, x_3))$.
+\end{itemize}
+\end{exemple}
+
+\section{Dominant Action and Equilibrium}
+
+\subsection{Definitions}
+\begin{definition}
+An action $x_i \in X_i$ is \textbf{dominant} if it always yields more (or as much) payoff than any other action, regardless of the others' choices:
+$$\forall d_{-i} \in X_{-i}, \forall d_i \in X_i, u_i(x_i, d_{-i}) \ge u_i(d_i, d_{-i})$$
+\end{definition}
+
+\begin{definition}
+A profile $x = (x_i)_{i \in N}$ is a \textbf{dominant strategy equilibrium} if for each $i$, $x_i$ is dominant.
+\end{definition}
+
+\paragraph{Rationality and Collective Failure:}
+The example below shows that being individually rational (choosing one's dominant strategy) can lead to a collective disaster. This is the central paradox of the Prisoner's Dilemma.
+
+\begin{center}
+\begin{tabular}{c|c|c}
+P1 \textbackslash P2 & a & b \\ \hline
+A & (1 000 000, 1 000 000) & (0, 1 000 001) \\ \hline
+B & (1 000 001, 0) & (100, 100)
+\end{tabular}
+\end{center}
+Here, playing B is dominant for both, leading to (0.1, 0.1), while cooperation (A, A) yielded 1 Million each.
+
+\begin{remarque}[Reflection]
+Can you think of societal examples where playing a dominant action for everyone leads to a bad outcome? (Pollution, arms race, etc.)
+\end{remarque}
+
+\section{Common Knowledge}
+\begin{definition}
+A statement $S$ is \textbf{common knowledge} if:
+\begin{itemize}
+    \item Everyone knows that $S$ is true.
+    \item Everyone knows that everyone else knows that $S$ is true.
+    \item Everyone knows that everyone else knows that everyone else knows... ad infinitum.
+\end{itemize}
+\end{definition}
+\textbf{Nuance:} There is a fundamental difference between "I know S" and "S is common knowledge". Your behavior will change radically depending on whether you think the other person is aware or not (examples: coordinated attack, email acknowledgement).
+
+\section{Iterated Elimination of Strictly Dominated Strategies (IESDS)}
+
+\subsection{Strictly Dominated Action}
+\begin{definition}
+$x_i$ is \textbf{strictly dominated} by $y_i$ if:
+$$\forall d_{-i} \in X_{-i}, u_i(x_i, d_{-i}) < u_i(y_i, d_{-i})$$
+A rational agent will never play a strictly dominated action.
+\end{definition}
+
+\subsection{IESDS Process (Formalization)}
+\begin{itemize}
+    \item We start with the initial game $G = G(0)$ with action sets $X_i(0)$.
+    \item \textbf{Step 1:} We eliminate all strictly dominated actions in $G(0)$ to obtain sets $X_i(1)$ and the reduced game $G(1)$.
+    \item \textbf{Recurrence:} At step $k$, we eliminate strictly dominated actions in game $G(k-1)$ to obtain $G(k)$.
+    \item \textbf{Result:} The set of surviving profiles is the intersection of all steps:
+    $$E^{\infty} = \bigcap_{n \ge 0} X(n)$$
+\end{itemize}
+
+\begin{corollaire}[Nash-IESDS Link]
+The set of Nash equilibria is always included in the set of profiles surviving IESDS. If IESDS reduces the game to a single profile, it is the unique Nash equilibrium.
+\end{corollaire}
+
+\section{Exercises and Methodology}
+
+\subsection{Resolution Method (Exam Type)}
+To solve a game using IESDS, you must explicitly write down the steps:
+\begin{enumerate}
+    \item "In the initial game, for Player $i$, action $A$ strictly dominates $B$ because $u_i(A, \cdot) > u_i(B, \cdot)$."
+    \item "We remove action $B$."
+    \item "In the reduced game, for Player $j$, action..."
+\end{enumerate}
+
+\subsection{Application Exercises}
+
+\begin{exemple}[Application Exercise (Continuous Functions)]
+Consider a two-player game with payoffs:
+\[ u_1(x, y) = (-x^2 + x + 1)e^y \quad \text{and} \quad u_2(x, y) = (2y - y^2 + 2)e^x \]
+where $x, y \ge 0$.
+\begin{itemize}
+    \item For Player 1, maximizing $u_1$ with respect to $x$ (treating $e^y$ as a positive constant) amounts to maximizing $-x^2 + x + 1$.
+    \[ \frac{\partial u_1}{\partial x} = (-2x + 1)e^y = 0 \implies x = 1/2 \]
+    \item For Player 2, maximizing $u_2$ with respect to $y$ amounts to maximizing $2y - y^2 + 2$.
+    \[ \frac{\partial u_2}{\partial y} = (2 - 2y)e^x = 0 \implies y = 1 \]
+\end{itemize}
+The unique dominant strategy equilibrium is $(1/2, 1)$.
+\end{exemple}
+
+\begin{exemple}[Illustration of IESDS Process]
+Consider the following game and matrix:
+\[
+\begin{pmatrix} & A & B & C \\ a & (1,-1) & (0,1) & (-1,0) \\ b & (2,3) & (2,2) & (0,1) \\ c & (1,4) & (0,3) & (1,2) \end{pmatrix}
+\]
+\textbf{Step-by-step resolution:}
+\begin{enumerate}
+    \item \textbf{Step 1:} For Player 1, action $a$ is strictly dominated by $b$ (since $1<2, 0<2, -1<0$). Eliminate row $a$.
+    \item \textbf{Step 2:} In the reduced game (rows $b, c$), Player 2 compares their columns.
+    \begin{itemize}
+        \item $B$ vs $A$: $(2 < 3)$ if $b$, $(3 < 4)$ if $c$. So $B$ is dominated by $A$.
+        \item $C$ vs $A$: $(1 < 3)$ if $b$, $(2 < 4)$ if $c$. So $C$ is dominated by $A$.
+    \end{itemize}
+    Eliminate columns $B$ and $C$.
+    \item \textbf{Step 3:} In the reduced game (column $A$ only), Player 1 chooses between $b$ (payoff 2) and $c$ (payoff 1). Action $c$ is dominated. Eliminate $c$.
+    \item \textbf{Solution:} The only surviving profile is $(b, A)$ with payoffs $(2, 3)$.
+\end{enumerate}
+\end{exemple}
+
+\section{Relation to Best Response}
+
+\begin{proposition}
+A strictly dominated action is \textbf{never} a best response to any belief about opponents' strategies.
+\end{proposition}
+\begin{remarque}
+Fundamental link: This proposition links the behavioral hypothesis of rationality (not playing dominated actions) to the mathematical concept of best response (fixed point, Nash).
+\end{remarque}
+\begin{exercice}[Analysis of Classic Games]
+\begin{itemize}
+    \item \textbf{Prisoner's Dilemma:} Demonstrate that "Confess" is a dominant strategy for each player.
+    \item \textbf{Coordination Game and Chicken Game:} Show that no player has a dominant strategy (the best action depends on the other).
+\end{itemize}
+\end{exercice}
+
+\begin{exemple}[Exam 2023: IESDS Matrix]
+\textbf{Question:}
+Consider a two-player game defined by the following payoff matrix (the first number is Player 1's payoff, the second is Player 2's):
+
+\begin{center}
+\begin{tabular}{c|cccc}
+P1 \textbackslash P2 & W & X & Y & Z \\ \hline
+A & (1, 0) & (1, 0) & (0, 0) & (-1, 0) \\
+B & (4, 0) & (4, 0) & (1, 2) & (0, 3) \\
+C & (2, 0) & (2, 0) & (0, 2) & (0, 3) \\
+D & (3, 0) & (3, 0) & (3, 2) & (4, 4)
+\end{tabular}
+\end{center}
+
+Determine the Nash equilibrium using Iterated Elimination of Strictly Dominated Strategies.
+
+\textbf{Solution:}
+\begin{enumerate}
+    \item \textbf{Step 1:} For Player 1, action $A$ is strictly dominated by $B$ (since $4 > 1, 4 > 1, 1 > 0, 0 > -1$). Eliminate row $A$.
+    \item \textbf{Step 2:} For Player 2, in the remaining game, eliminate action $X$ (dominated by other columns).
+    \item \textbf{Step 3:} For Player 1, eliminate action $C$.
+    \item \textbf{Step 4:} For Player 2, eliminate action $W$.
+    \item \textbf{Step 5:} For Player 1, eliminate action $B$.
+\end{enumerate}
+\textbf{Result:} The profile $(D, Z)$ is the unique equilibrium obtained by elimination. We easily check that $(D, Z)$ is a Nash equilibrium.
+
+\end{exemple}
+
+\begin{exemple}[Theoretical Proof]
+Let $G$ be a game where $u_i$ are continuous and $X_i$ are non-empty compact sets.
+\textbf{Question:} Prove that the set of surviving equilibria under IESDS is compact and non-empty.
+
+\paragraph{Solution:}
+Let $X^0 = \prod X_i$ be non-empty compact.
+At each step $k$, we remove strictly dominated strategies. If $u_i$ is continuous, the set of dominated strategies is open (or a union of open sets), so the remaining set $X^k$ is closed.
+Since $X^k \subset X^{k-1} \subset \dots \subset X^0$, $X^k$ is a decreasing sequence of compact sets.
+Assuming the elimination is well-defined (never empty at each finite step thanks to the maximum theorem), the infinite intersection $X^\infty = \bigcap_{k \ge 0} X^k$ is a decreasing intersection of non-empty compact sets in a Hausdorff space.
+By the Borel-Lebesgue property (or Cantor's intersection theorem), this intersection is \textbf{non-empty and compact}.
+\end{exemple}
+
+\begin{exemple}[Classic Check]
+Are there dominant strategies in:
+\begin{itemize}
+    \item The Coordination Game? \textbf{No.} (Depends on the other).
+    \item The Chicken Game? \textbf{No.} (If the other swerves, I swerve? No. If they swerve, I go straight; if they go straight, I swerve).
+    \item The Prisoner's Dilemma? \textbf{Yes.} "Confess" is a strictly dominant strategy for both players, regardless of the other's action.
+\end{itemize}
+\end{exemple}

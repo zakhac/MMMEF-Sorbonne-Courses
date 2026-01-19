@@ -121,7 +121,18 @@ Soient $C_1, \dots, C_n$ des ensembles convexes compacts non vides. Si $\cup_{i=
 Pour un jeu fini défini par une matrice $A$, on note le gain :
 \[ val(A) = \max_{x \in \Delta(I)} \min_{y \in \Delta(J)} xAy = \min_{y \in \Delta(J)} \max_{x \in \Delta(I)} xAy \]
 où $x$ est un vecteur ligne et $y$ un vecteur colonne.
+\section{Théorème du Minimax de von Neumann}
 
+Ce théorème établit une connexion profonde entre l'équilibre de Nash et les valeurs maximin/minimax dans les jeux à somme nulle.
+
+\begin{theoreme}[Minimax de von Neumann]
+Pour un jeu à deux joueurs à somme nulle, les deux affirmations suivantes sont équivalentes :
+\begin{enumerate}
+    \item Le jeu possède un \textbf{équilibre de Nash} $(x^*, y^*)$.
+    \item Le jeu a une \textbf{valeur}, c'est-à-dire $\underline{v} = \overline{v} = V$, et chaque joueur dispose d'une stratégie optimale.
+\end{enumerate}
+\textbf{Conséquence :} Si ces conditions sont remplies, le gain à l'équilibre est $(V, -V)$.
+\end{theoreme}
 \section{Équilibre $\epsilon$-Nash et Valeur}
 
 \begin{definition}[$\epsilon$-équilibre]
