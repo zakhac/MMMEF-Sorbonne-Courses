@@ -54,3 +54,80 @@ Ceci est équivalent à résoudre le problème d'optimisation sous contrainte :
 \begin{equation}
     f^*_{fair} \in \argmin_{\substack{f \\ \text{t.q. } \sum_{s \in \{-1, 1\}} s \cdot \mathbb{P}(f(X,S)=1 | S=s) = 0}} R(f)
 \end{equation}
+
+Le Lagrangien associé s'écrit comme suit :
+\begin{equation}
+    \mathcal{L}(f, \lambda) = R(f) + \lambda \sum_{s \in \{-1, 1\}} s \mathbb{P}(f(X,S)=1 | S=s)
+\end{equation}
+En introduisant la notation $\mathbb{P}(\cdot | S=s) := \mathbb{P}_{X|S=s}(\cdot)$, on a :
+\begin{equation}
+    \mathcal{L}(f, \lambda) = R(f) + \lambda \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f(X,S)=1)
+\end{equation}
+
+Pour résoudre le problème d'optimisation :
+\begin{equation}
+    f^*_{fair} \in \argmin_{f \text{ satisfaisant DP}} R(f)
+\end{equation}
+nous devons résoudre le problème d'optimisation suivant (problème primal) :
+\begin{equation}
+    \min_{f} \max_{\lambda} \mathcal{L}(f, \lambda)
+\end{equation}
+
+En général, nous résolvons le problème dual :
+\begin{equation} \label{eq:dual_problem} \tag{$*$}
+    \max_{\lambda} \min_{f} \mathcal{L}(f, \lambda)
+\end{equation}
+Nous avons toujours la propriété suivante (\textit{principe de dualité faible}) :
+\begin{equation}
+    \min_{f} \max_{\lambda} \mathcal{L}(f, \lambda) \ge \max_{\lambda} \min_{f} \mathcal{L}(f, \lambda)
+\end{equation}
+Nous résolvons le problème \eqref{eq:dual_problem} et montrons que :
+\begin{equation}
+    \min_{f} \max_{\lambda} \mathcal{L}(f, \lambda) = \max_{\lambda} \min_{f} \mathcal{L}(f, \lambda)
+\end{equation}
+C'est-à-dire qu'il n'y a pas de saut de dualité (\textit{no duality gap}, ou dualité forte).
+
+\section{Résolution du Problème Dual}
+
+Le but est d'obtenir une expression analytique (\textit{closed form expression}) du prédicteur optimal $f^*_{fair}$.
+
+\subsection*{Première étape : Minimisation par rapport à $f$}
+
+Pour tout $\lambda \in \mathbb{R}$ fixé, nous cherchons à résoudre :
+\begin{equation}
+    \min_{f} \mathcal{L}(f, \lambda)
+\end{equation}
+Rappelons l'expression du Lagrangien :
+\begin{equation}
+    \mathcal{L}(f, \lambda) = R(f) + \lambda \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f(X,S)=1)
+\end{equation}
+Le risque s'écrit comme une espérance :
+\begin{align}
+    R(f) &= \mathbb{P}(f(X,S) \neq Y) \\
+    &= \mathbb{E}[\indic\{f(X,S) \neq Y\}]
+\end{align}
+En conditionnant par rapport à $Y$, on obtient :
+\begin{align}
+    R(f) &= \mathbb{E}\left[ \indic\{f(X,S) \neq Y\} \indic\{Y=0\} \right] + \mathbb{E}\left[ \indic\{f(X,S) \neq Y\} \indic\{Y=1\} \right]
+\end{align}
+Pour tout $y \in \{0, 1\}$, en utilisant la loi des espérances itérées par rapport à $(X,S)$ :
+\begin{align}
+    \mathbb{E}\left[ \indic\{f(X,S) \neq y\} \indic\{Y=y\} \right] &= \mathbb{E}\left[ \mathbb{E}\left[ \indic\{f(X,S) \neq y\} \indic\{Y=y\} \big| X, S \right] \right] \\
+    &= \mathbb{E}\left[ \indic\{f(X,S) \neq y\} \mathbb{E}\left[ \indic\{Y=y\} \big| X, S \right] \right] \\
+    &= \mathbb{E}\left[ \indic\{f(X,S) \neq y\} \mathbb{P}(Y=y | X, S) \right]
+\end{align}
+En notant $\eta(X,S) = \mathbb{P}(Y=1 | X,S)$, on a $\mathbb{P}(Y=0 | X,S) = 1 - \eta(X,S)$.
+Ainsi, le risque devient :
+\begin{align}
+    R(f) &= \mathbb{E}\left[ \indic\{f(X,S) \neq 0\} (1 - \eta(X,S)) \right] + \mathbb{E}\left[ \indic\{f(X,S) \neq 1\} \eta(X,S) \right]
+\end{align}
+Puisque $f(X,S) \in \{0, 1\}$, nous avons les identités suivantes :
+\begin{align}
+    \indic\{f(X,S) \neq 0\} &= \indic\{f(X,S) = 1\} = f(X,S) \\
+    \indic\{f(X,S) \neq 1\} &= \indic\{f(X,S) = 0\} = 1 - f(X,S)
+\end{align}
+En substituant ces identités dans l'expression du risque, on obtient :
+\begin{align}
+    R(f) &= \mathbb{E}\left[ f(X,S) (1 - \eta(X,S)) \right] + \mathbb{E}\left[ (1 - f(X,S)) \eta(X,S) \right] \\
+    &= \mathbb{E}\left[ f(X,S) (1 - 2\eta(X,S)) \right] + \mathbb{E}\left[ \eta(X,S) \right]
+\end{align}
