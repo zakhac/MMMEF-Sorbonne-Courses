@@ -39,10 +39,10 @@ Nous disons qu'un prédicteur $f$ satisfait la contrainte DP si :
     \forall s \in \{-1, 1\}, \quad \mathbb{P}(f(X,S)=1 | S=s) = \mathbb{P}(f(X,S)=1)
 \end{equation}
 Ceci équivaut aux propriétés suivantes :
-\begin{align}
+\begin{align*}
     f(X,S) \perp \!\!\! \perp S \quad &\iff \mathbb{P}(f(X,S)=1 | S=1) = \mathbb{P}(f(X,S)=1 | S=-1) \\
     &\iff \sum_{s \in \{-1, 1\}} s \cdot \mathbb{P}(f(X,S)=1 | S=s) = 0
-\end{align}
+\end{align*}
 
 \section{Classifieur Optimal sous Contrainte DP}
 
@@ -102,32 +102,171 @@ Rappelons l'expression du Lagrangien :
     \mathcal{L}(f, \lambda) = R(f) + \lambda \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f(X,S)=1)
 \end{equation}
 Le risque s'écrit comme une espérance :
-\begin{align}
+\begin{align*}
     R(f) &= \mathbb{P}(f(X,S) \neq Y) \\
     &= \mathbb{E}[\indic\{f(X,S) \neq Y\}]
-\end{align}
+\end{align*}
 En conditionnant par rapport à $Y$, on obtient :
-\begin{align}
+\begin{align*}
     R(f) &= \mathbb{E}\left[ \indic\{f(X,S) \neq Y\} \indic\{Y=0\} \right] + \mathbb{E}\left[ \indic\{f(X,S) \neq Y\} \indic\{Y=1\} \right]
-\end{align}
+\end{align*}
 Pour tout $y \in \{0, 1\}$, en utilisant la loi des espérances itérées par rapport à $(X,S)$ :
-\begin{align}
+\begin{align*}
     \mathbb{E}\left[ \indic\{f(X,S) \neq y\} \indic\{Y=y\} \right] &= \mathbb{E}\left[ \mathbb{E}\left[ \indic\{f(X,S) \neq y\} \indic\{Y=y\} \big| X, S \right] \right] \\
     &= \mathbb{E}\left[ \indic\{f(X,S) \neq y\} \mathbb{E}\left[ \indic\{Y=y\} \big| X, S \right] \right] \\
     &= \mathbb{E}\left[ \indic\{f(X,S) \neq y\} \mathbb{P}(Y=y | X, S) \right]
-\end{align}
+\end{align*}
 En notant $\eta(X,S) = \mathbb{P}(Y=1 | X,S)$, on a $\mathbb{P}(Y=0 | X,S) = 1 - \eta(X,S)$.
 Ainsi, le risque devient :
-\begin{align}
+\begin{align*}
     R(f) &= \mathbb{E}\left[ \indic\{f(X,S) \neq 0\} (1 - \eta(X,S)) \right] + \mathbb{E}\left[ \indic\{f(X,S) \neq 1\} \eta(X,S) \right]
-\end{align}
+\end{align*}
 Puisque $f(X,S) \in \{0, 1\}$, nous avons les identités suivantes :
-\begin{align}
+\begin{align*}
     \indic\{f(X,S) \neq 0\} &= \indic\{f(X,S) = 1\} = f(X,S) \\
     \indic\{f(X,S) \neq 1\} &= \indic\{f(X,S) = 0\} = 1 - f(X,S)
-\end{align}
+\end{align*}
 En substituant ces identités dans l'expression du risque, on obtient :
-\begin{align}
+\begin{align*}
     R(f) &= \mathbb{E}\left[ f(X,S) (1 - \eta(X,S)) \right] + \mathbb{E}\left[ (1 - f(X,S)) \eta(X,S) \right] \\
     &= \mathbb{E}\left[ f(X,S) (1 - 2\eta(X,S)) \right] + \mathbb{E}\left[ \eta(X,S) \right]
+\end{align*}
+De plus, par la loi des espérances itérées :
+\begin{align*}
+    \mathbb{E}[\eta(X,S)] &= \mathbb{E}[\mathbb{P}(Y=1 | X,S)] \\
+    &= \mathbb{E}[\mathbb{E}[\indic\{Y=1\} | X,S]] \\
+    &= \mathbb{E}[\indic\{Y=1\}] \\
+    &= \mathbb{E}[Y]
+\end{align*}
+car $Y \in \{0,1\}$, donc $\mathbb{E}[Y|X,S] = \mathbb{P}(Y=1|X,S) = \eta(X,S)$.
+Ainsi :
+\begin{equation}
+    R(f) = \mathbb{E}[Y] + \mathbb{E}\left[ f(X,S) (1 - 2\eta(X,S)) \right]
+\end{equation}
+
+Notons $\pi_s = \mathbb{P}(S=s)$. Nous pouvons décomposer l'espérance sur $S$ :
+\begin{align*}
+    R(f) &= \mathbb{E}[Y] + \sum_{s \in \{-1, 1\}} \mathbb{P}(S=s) \mathbb{E}_{X|S=s}\left[ f(X,S) (1 - 2\eta(X,S)) \right] \\
+    &= \mathbb{E}[Y] + \sum_{s \in \{-1, 1\}} \pi_s \mathbb{E}_{X|S=s}\left[ f(X,S) (1 - 2\eta(X,S)) \right]
+\end{align*}
+Reprenons le Lagrangien :
+\begin{align*}
+    \mathcal{L}(f, \lambda) &= R(f) + \lambda \sum_{s \in \{-1, 1\}} s \mathbb{E}_{X|S=s}[f(X,S)] \\
+    &= \mathbb{E}[Y] + \sum_{s \in \{-1, 1\}} \pi_s \mathbb{E}_{X|S=s}\left[ f(X,S) (1 - 2\eta(X,S)) \right] + \sum_{s \in \{-1, 1\}} \lambda s \mathbb{E}_{X|S=s}[f(X,S)] \\
+    &= \mathbb{E}[Y] + \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \pi_s f(X,S) (1 - 2\eta(X,S)) + \lambda s f(X,S) \right] \\
+    &= \mathbb{E}[Y] + \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \left( \pi_s (1 - 2\eta(X,S)) + \lambda s \right) f(X,S) \right]
+\end{align*}
+Ainsi, chercher $f^*_{\lambda} \in \argmin_{f} \mathcal{L}(f, \lambda)$ revient à minimiser point par point le terme sous l'espérance.
+Puisque $f(X,S) \in \{0, 1\}$, pour minimiser une expression de la forme $A \cdot f(X,S)$, nous choisissons :
+\begin{equation*}
+    f(X,S) = 1 \iff A < 0
+\end{equation*}
+Ici, $A = \pi_s (1 - 2\eta(X,S)) + \lambda s$.
+Nous avons donc :
+\begin{align*}
+    f^*_{\lambda}(X,S) = 1 &\iff \pi_s (1 - 2\eta(X,S)) + \lambda s < 0 \\
+    &\iff 1 - 2\eta(X,S) < - \frac{\lambda s}{\pi_s} \\
+    &\iff 2\eta(X,S) > 1 + \frac{\lambda s}{\pi_s} \\
+    &\iff \eta(X,S) > \frac{1}{2} + \frac{\lambda s}{2\pi_s}
+\end{align*}
+Le prédicteur optimal pour un $\lambda$ fixé est donc :
+\begin{equation}
+    f^*_{\lambda}(X,S) = \indic\left\{ \eta(X,S) > \frac{1}{2} + \frac{\lambda s}{2\pi_s} \right\}
+\end{equation}
+
+\subsection*{Deuxième étape : Maximisation par rapport à $\lambda$}
+
+Nous cherchons maintenant à résoudre :
+\begin{equation}
+    \max_{\lambda \in \mathbb{R}} \mathcal{L}(f^*_{\lambda}, \lambda)
+\end{equation}
+Soit $\lambda^*$ la solution :
+\begin{equation}
+    \lambda^* \in \argmax_{\lambda \in \mathbb{R}} \mathcal{L}(f^*_{\lambda}, \lambda)
+\end{equation}
+En réinjectant l'expression de $f^*_{\lambda}$ dans le Lagrangien, on obtient pour tout $\lambda \in \mathbb{R}$ :
+\begin{align}
+    \mathcal{L}(f^*_{\lambda}, \lambda) &= \mathbb{E}[Y] + \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \left( \pi_s (1 - 2\eta(X,S)) + \lambda s \right) f^*_{\lambda}(X,S) \right] \nonumber \\
+    &= \mathbb{E}[Y] + \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \min\left( \pi_s (1 - 2\eta(X,S)) + \lambda s, 0 \right) \right]
 \end{align}
+
+Nous observons que :
+\begin{equation*}
+    \lambda^* \in \argmax_{\lambda \in \mathbb{R}} \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \min\left( \pi_s (1 - 2\eta(X,S)) + \lambda s, 0 \right) \right]
+\end{equation*}
+Ceci est équivalent à :
+\begin{equation}
+    \lambda^* \in \argmin_{\lambda \in \mathbb{R}} \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \max\left( \pi_s (2\eta(X,S) - 1) - \lambda s, 0 \right) \right]
+\end{equation}
+en utilisant l'identité $\max(A) = - \min(-A)$.
+
+La fonction $\lambda \mapsto \max(\pi_s (2\eta(X,S) - 1) - \lambda s, 0)$ est convexe.
+Par conséquent, la fonction objectif :
+\begin{equation*}
+    \lambda \mapsto \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \max\left( \pi_s (2\eta(X,S) - 1) - \lambda s, 0 \right) \right]
+\end{equation*}
+est convexe.
+
+De plus, la fonction
+\begin{equation}
+    \mathcal{H}(\lambda) = \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \max\left( \pi_s (2\eta(X,S) - 1) - \lambda s, 0 \right) \right]
+\end{equation}
+est coercive, c'est-à-dire que $\lim_{|\lambda| \to +\infty} \mathcal{H}(\lambda) = +\infty$ (preuve en exercice).
+Ceci implique que le minimiseur $\lambda^*$ existe.
+
+Pour terminer la dérivation de $f^*_{fair}$, nous devons considérer l'hypothèse suivante :
+\begin{equation}
+    t \mapsto \mathbb{P}_{X|S=s}(\eta(X,S) \le t) \quad \text{est continue.}
+\end{equation}
+Ceci implique que $\forall x \in \mathbb{R}, \mathbb{P}_{X|S=s}(\eta(X,S) = x) = 0$.
+
+Sous cette hypothèse, nous avons que $\lambda \mapsto \mathcal{H}(\lambda)$ est différentiable (par rapport à $\lambda$).
+
+Si nous considérons $h_s(\lambda) = \pi_s (2\eta(X,S) - 1) - \lambda s$, alors :
+\begin{align*}
+    \mathbb{E}_{X|S=s} \left[ \max(h_s(\lambda), 0) \right] &= \mathbb{E}_{X|S=s} \left[ h_s(\lambda) \indic\{h_s(\lambda) > 0\} \right] \\
+    &\quad + \mathbb{E}_{X|S=s} \left[ 0 \cdot \indic\{h_s(\lambda) < 0\} \right] \\
+    &\quad + \mathbb{E}_{X|S=s} \left[ h_s(\lambda) \indic\{h_s(\lambda) = 0\} \right]
+\end{align*}
+Or, $h_s(\lambda) = 0 \iff \pi_s (2\eta(X,S) - 1) - \lambda s = 0 \iff \eta(X,S) = \frac{1}{2} + \frac{\lambda s}{2\pi_s}$.
+D'après notre hypothèse de continuité, la probabilité de cet événement est nulle.
+Ainsi, le dernier terme est nul et le deuxième terme est nul car on multiplie par 0.
+Pour le premier terme, $h_s(\lambda)$ est dérivable par rapport à $\lambda$ avec $\frac{\partial h_s(\lambda)}{\partial \lambda} = -s$.
+
+On en déduit que $\lambda \mapsto \mathcal{H}(\lambda)$ est différentiable et sa dérivée est donnée par :
+\begin{equation}
+    \frac{\partial \mathcal{H}}{\partial \lambda}(\lambda) = \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \frac{\partial h_s(\lambda)}{\partial \lambda} \indic\{h_s(\lambda) > 0\} \right] = \sum_{s \in \{-1, 1\}} -s \cdot \mathbb{P}_{X|S=s}(h_s(\lambda) > 0)
+\end{equation}
+
+Illustration de la convexité de la fonction associée à chaque $s$ :
+
+\begin{center}
+\begin{tikzpicture}
+    % Axes
+    \draw[->] (-0.5,0) -- (3,0) node[right] {$\lambda$};
+    \draw[->] (0,-0.5) -- (0,2) node[above] {};
+    
+    % Convex function (ReLU-like shape)
+    % Flat part then linear increasing
+    \draw[thick, blue] (0,0.2) -- (1,0.2) -- (2.5,1.7);
+    
+    % Dashed line indicating the kink
+    \draw[dashed] (1,0.2) -- (1,0) node[below] {};
+\end{tikzpicture}
+\end{center}
+
+De plus, nous avons :
+\begin{align*}
+    \mathbb{E}_{X|S=s}[\indic\{h_s(\lambda) > 0\}] &= \mathbb{P}_{X|S=s}(h_s(\lambda) > 0) \\
+    &= \mathbb{P}_{X|S=s}\left(\eta(X,S) > \frac{1}{2} + \frac{\lambda s}{2\pi_s}\right) \\
+    &= \mathbb{P}_{X|S=s}(f^*_{\lambda}(X,S) = 1)
+\end{align*}
+Ainsi, pour tout $\lambda \in \mathbb{R}$ :
+\begin{equation}
+    \frac{\partial \mathcal{H}}{\partial \lambda}(\lambda) = - \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f^*_{\lambda}(X,S)=1)
+\end{equation}
+Puisque $\lambda^*$ est un minimum de $\mathcal{H}$ (fonction convexe différentiable et coercive sur $\mathbb{R}$), nous avons :
+\begin{equation}
+    \frac{\partial \mathcal{H}}{\partial \lambda}(\lambda^*) = 0 \iff \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f^*_{\lambda^*}(X,S)=1) = 0
+\end{equation}
+Ceci montre que le classifieur $f^*_{\lambda^*}$ satisfait la contrainte de Parité Démographique.
