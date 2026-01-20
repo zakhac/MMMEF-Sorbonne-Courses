@@ -156,7 +156,6 @@ $n$ lobbyists choose effort $x_i \ge 0$. Cost $cx_i$. Gain if win: $V$. Payoff: 
 
 \paragraph{Solution:}
 Each player $i$ maximizes $u_i(x_1, \dots, x_n) = \frac{x_i}{x_i + \sum_{j \ne i} x_j} V - c x_i$.
-FOC: $\frac{\partial u_i}{\partial x_i} = \frac{1 \cdot (\sum x_j) - x_i \cdot 0}{(\sum x_j)^2} V - c = 0$? No, quotient derivative.
 $\frac{\partial u_i}{\partial x_i} = V \frac{1 \cdot (x_i + X_{-i}) - x_i \cdot 1}{(x_i + X_{-i})^2} - c = V \frac{X_{-i}}{(\sum x_j)^2} - c = 0$.
 At symmetric equilibrium $x_i = x^*$. $\sum x_j = n x^*$. $X_{-i} = (n-1)x^*$.
 $V \frac{(n-1)x^*}{(n x^*)^2} = c \implies V \frac{n-1}{n^2 x^*} = c \implies x^* = \frac{n-1}{n^2} \frac{V}{c}$.
