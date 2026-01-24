@@ -33,26 +33,324 @@ On suppose que la matrice $A$ est de \textbf{rang plein} ("full rank").
 
 \subsection{Propriétés}
 
+Les conditions d'optimalité du premier ordre (KKT) s'écrivent :
+\begin{equation}
+    \begin{cases}
+        G x^* + c - A^T \lambda^* = 0 \\
+        A x^* = b
+    \end{cases}
+\end{equation}
+Cela est équivalent au système matriciel suivant :
+\begin{equation}
+    \begin{pmatrix}
+        G & -A^T \\
+        A & 0
+    \end{pmatrix}
+    \begin{pmatrix}
+        x^* \\
+        \lambda^*
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        -c \\
+        b
+    \end{pmatrix}
+\end{equation}
+
+\begin{remarque}
+    Si l'on réécrit $x^*$ comme $x + p$, où $x$ est un candidat pour la solution et $p$ est un pas ("step"), le système devient :
+    \begin{equation}
+        \begin{pmatrix}
+            G & A^T \\
+            A & 0
+        \end{pmatrix}
+        \begin{pmatrix}
+            -p \\
+            \lambda^*
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            g \\
+            h
+        \end{pmatrix}
+    \end{equation}
+    où $g = c + Gx$ est le gradient de la fonction objectif au point $x$, $h = Ax - b$ est le résidu des contraintes, et $p = x^* - x$.
+    
+    La matrice $\begin{pmatrix} G & A^T \\ A & 0 \end{pmatrix}$ est appelée la \textbf{matrice KKT}.
+\end{remarque}
+
+Soit $Z$ une matrice de taille $n \times (n-m)$ dont les colonnes forment une base de l'espace nul ("null-space") de $A$. C'est-à-dire que $AZ = 0$ et $A$ est de rang plein.
+
+\begin{lemme}
+    Supposons que $A$ soit de rang plein (sur les lignes). Supposons que la matrice Hessienne réduite $Z^T G Z$ soit définie positive.
+    Alors la matrice KKT $\begin{pmatrix} G & A^T \\ A & 0 \end{pmatrix}$ est non-singulière.
+\end{lemme}
+
+\begin{proof}
+    Soient les vecteurs $w$ et $v$ tels que :
+    \begin{equation}
+        \begin{pmatrix}
+            G & A^T \\
+            A & 0
+        \end{pmatrix}
+        \begin{pmatrix}
+            w \\
+            v
+        \end{pmatrix}
+        = 0
+    \end{equation}
+    La deuxième ligne nous donne $Aw = 0$. Ainsi, $w$ appartient à l'espace nul de $A$, donc il existe un vecteur $u$ tel que $w = Zu$.
+    
+    Multiplions la première ligne par $w^T$ à gauche :
+    \begin{align*}
+        0 &= \begin{pmatrix} w \\ v \end{pmatrix}^T \begin{pmatrix} G & A^T \\ A & 0 \end{pmatrix} \begin{pmatrix} w \\ v \end{pmatrix} \\
+          &= w^T G w + w^T A^T v + v^T A w
+    \end{align*}
+    Puisque $Aw = 0$, on a $v^T A w = 0$. De même, $w^T A^T v = (Aw)^T v = 0$.
+    On obtient donc $0 = w^T G w$.
+    En remplaçant $w$ par $Zu$, on a :
+    \begin{equation}
+        0 = (Zu)^T G (Zu) = u^T (Z^T G Z) u
+    \end{equation}
+    Puisque $Z^T G Z$ est définie positive, cela implique que $u = 0$, et par conséquent $w = Zu = 0$.
+    
+    La première ligne devient alors $G \cdot 0 + A^T v = 0$, soit $A^T v = 0$.
+    Comme $A$ est de rang plein (sur les lignes), $A^T$ est de rang plein (sur les colonnes), ce qui implique que $v = 0$.
+    
+    Ainsi, le seul vecteur solution est le vecteur nul $\begin{pmatrix} w \\ v \end{pmatrix} = 0$, ce qui prouve que la matrice est non-singulière.
+\end{proof}
+
+Nous allons prouver que sous les mêmes conditions, $x^*$ est un minimiseur local strict, et même une solution globale.
+
+\begin{theoreme}
+    Supposons que $A$ soit de rang plein (sur les lignes). Supposons que la matrice Hessienne réduite $Z^T G Z$ soit définie positive.
+    Alors le vecteur $x^*$ satisfaisant
+    \begin{equation}
+        \begin{pmatrix}
+            G & -A^T \\
+            A & 0
+        \end{pmatrix}
+        \begin{pmatrix}
+            x^* \\
+            \lambda^*
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            -c \\
+            b
+        \end{pmatrix}
+    \end{equation}
+    est l'unique solution globale.
+\end{theoreme}
+
+\begin{proof}
+    Soit $x$ un autre point réalisable : $Ax = b$.
+    Soit $p = x^* - x$.
+    Puisque $Ax = b$ et $Ax^* = b$, nous avons
+    \begin{equation}
+        Ap = A(x^* - x) = 0.
+    \end{equation}
+    Substituons dans $q(x)$ :
+    \begin{align*}
+        q(x) = q(x^* - p) &= \frac{1}{2} (x^* - p)^T G (x^* - p) + c^T (x^* - p) \\
+                          &= \frac{1}{2} p^T G p - p^T G x^* + \frac{1}{2} (x^*)^T G x^* - c^T p + c^T x^* \\
+                          &= \frac{1}{2} p^T G p - p^T G x^* - c^T p + q(x^*) \quad (*)
+    \end{align*}
+    Utilisons maintenant la première ligne du système KKT :
+    \begin{equation}
+        G x^* + c - A^T \lambda^* = 0 \implies G x^* + c = A^T \lambda^*
+    \end{equation}
+    Multiplions à gauche par $p^T$ :
+    \begin{equation}
+        p^T (G x^* + c) = p^T A^T \lambda^* = (Ap)^T \lambda^*
+    \end{equation}
+    Or, nous avons vu que $Ap = 0$, donc le terme de droite est nul. Ainsi :
+    \begin{equation}
+        p^T G x^* + p^T c = 0 \implies -p^T G x^* - c^T p = 0
+    \end{equation}
+    En substituant cela dans l'équation (*), nous obtenons :
+    \begin{equation}
+        q(x) = q(x^*) + \frac{1}{2} p^T G p
+    \end{equation}
+    Puisque $p$ est dans l'espace nul de $A$, il existe un vecteur $u \in \mathbb{R}^{n-m}$ tel que $p = Zu$. Alors :
+    \begin{equation}
+        p^T G p = (Zu)^T G (Zu) = u^T (Z^T G Z) u
+    \end{equation}
+    Comme la matrice Hessienne réduite $Z^T G Z$ est supposée définie positive, on a $u^T Z^T G Z u > 0$ pour tout $u \neq 0$.
+    Or $u \neq 0 \iff p \neq 0 \iff x \neq x^*$.
+    
+    Par conséquent, pour tout $x \neq x^*$ réalisable,
+    \begin{equation}
+        q(x) = q(x^*) + \frac{1}{2} u^T Z^T G Z u > q(x^*)
+    \end{equation}
+    Ce qui prouve que $x^*$ est l'unique minimiseur global.
+\end{proof}
+
 \subsection{Résolution directe du système KKT}
+
+\begin{remarque}
+    On peut prouver (Forsgren et al.) que la matrice KKT est toujours indéfinie lorsque $m \ge 1$. Autrement dit, il existe des vecteurs $x$ et $y$ tels que $x^T K x > 0$ et $y^T K y < 0$ (où $K$ désigne la matrice KKT).
+\end{remarque}
 
 \subsubsection{Factorisation du système KKT complet}
 
-% TODO: Contenu à développer
+Nous ne pouvons pas utiliser la factorisation de Cholesky à cause de la nature indéfinie de la matrice.
+Une décomposition LU est faisable, mais elle ignore la symétrie du système.
+
+Ainsi, nous utilisons la \textbf{factorisation symétrique indéfinie} pour $K$ (matrice symétrique) :
+\begin{equation}
+    P K P^T = L B L^T,
+\end{equation}
+où :
+\begin{itemize}
+    \item $P$ est une matrice de permutation;
+    \item $L$ est une matrice triangulaire inférieure unitaire ("unit lower triangular");
+    \item $B$ est une matrice diagonale par blocs, avec des blocs de taille $1 \times 1$ ou $2 \times 2$.
+\end{itemize}
+
+Pour résoudre le système KKT $K \begin{pmatrix} -p \\ \lambda^* \end{pmatrix} = \begin{pmatrix} g \\ h \end{pmatrix}$ :
+\begin{enumerate}
+    \item Résoudre $Lz = P^T \begin{pmatrix} g \\ h \end{pmatrix}$ pour $z$ (descente).
+    \item Résoudre $B\hat{z} = z$ pour $\hat{z}$ (résolution bloc-diagonale).
+    \item Résoudre $L^T \bar{z} = \hat{z}$ pour $\bar{z}$ (remontée).
+    \item Poser $\begin{pmatrix} -p \\ \lambda^* \end{pmatrix} = P \bar{z}$.
+\end{enumerate}
 
 \subsubsection{Méthode du complément de Schur}
 
-% TODO: Contenu à développer
+Cette méthode est applicable si $G$ est \textbf{définie positive} (et donc inversible).
+Partons du système KKT :
+\begin{equation}
+    \begin{cases}
+        -Gp + A^T \lambda^* = g \\
+        Ap = h
+    \end{cases}
+\end{equation}
+Multiplions la première équation par $AG^{-1}$ :
+\begin{align*}
+    -AG^{-1}Gp + AG^{-1}A^T \lambda^* &= AG^{-1}g \\
+    -Ap + (AG^{-1}A^T) \lambda^* &= AG^{-1}g
+\end{align*}
+En utilisant la deuxième équation ($Ap=h$), on obtient :
+\begin{equation}
+    (AG^{-1}A^T) \lambda^* = AG^{-1}g - h
+\end{equation}
+Le système $(AG^{-1}A^T) \lambda^* = AG^{-1}g - h$ est défini positif. On peut le résoudre pour trouver $\lambda^*$.
+Ensuite, on utilise la première ligne du système KKT pour trouver $p$ :
+\begin{equation}
+    Gp = A^T \lambda^* - g \implies p = G^{-1}(A^T \lambda^* - g).
+\end{equation}
+
+\paragraph{Considérations numériques :}
+Cette méthode nécessite des opérations avec $G^{-1}$ et la factorisation de la matrice $AG^{-1}A^T$. Elle est donc adaptée lorsque :
+\begin{itemize}
+    \item $G$ est bien conditionnée et facile à inverser (exemple : diagonale).
+    \item $G^{-1}$ est explicitement connue.
+    \item $m$ (le nombre de contraintes) est petit.
+\end{itemize}
 
 \subsubsection{Méthode de l'espace nul}
 
-% TODO: Contenu à développer
+La non-singularité de $G$ n'est pas requise ici ; nous avons seulement besoin des hypothèses du lemme (A de rang plein, $Z^T G Z$ définie positive).
+Supposons que nous partitionnons le vecteur $p$ comme suit :
+\begin{equation}
+    p = Y p_Y + Z p_Z
+\end{equation}
+où $Z$ est la matrice $n \times (n-m)$ de l'espace nul de $A$, et $Y$ est une matrice $n \times m$ telle que la matrice $[Y \mid Z]$ soit non-singulière.
+Pour simplification, on choisit souvent $Y$ tel que $AY = I$ (si possible) ou $A [Y \mid Z]$ triangulaire.
+
+Substituons $p$ dans la deuxième équation du système KKT ($Ap = h$) :
+\begin{equation}
+    A(Y p_Y + Z p_Z) = h \implies AY p_Y + AZ p_Z = h
+\end{equation}
+Puisque $Z$ est dans l'espace nul, $AZ = 0$. Ainsi :
+\begin{equation}
+    (AY) p_Y = h
+\end{equation}
+Comme $A$ est de rang $m$ et $[Y \mid Z]$ est non-singulière, la matrice $AY$ est non-singulière de taille $m \times m$.
+On peut donc résoudre ce système pour trouver $p_Y$. (Si on choisit $Y$ tel que $AY=I$, alors $p_Y = h$).
+
+Ensuite, substituons $p$ dans la première équation du système KKT ($ -Gp + A^T \lambda^* = g $) :
+\begin{equation}
+    -G(Y p_Y + Z p_Z) + A^T \lambda^* = g
+\end{equation}
+Multiplions à gauche par $Z^T$ :
+\begin{align*}
+    -Z^T G Y p_Y - Z^T G Z p_Z + Z^T A^T \lambda^* &= Z^T g \\
+    -Z^T G Y p_Y - Z^T G Z p_Z + (AZ)^T \lambda^* &= Z^T g
+\end{align*}
+Comme $AZ=0$, le terme impliquant $\lambda^*$ disparait :
+\begin{equation}
+    -(Z^T G Z) p_Z = Z^T g + Z^T G Y p_Y
+\end{equation}
+Le système $(Z^T G Z) p_Z = -(Z^T g + Z^T G Y p_Y)$ permet de trouver $p_Z$, car la matrice réduite $Z^T G Z$ est supposée définie positive (donc inversible).
+
+Enfin, pour trouver $\lambda^*$, on multiplie la première équation par $Y^T$ :
+\begin{equation}
+    (AY)^T \lambda^* = Y^T (g + Gp)
+\end{equation}
+Ce système linéaire permet de déterminer $\lambda^*$.
+
+\paragraph{Remarques :}
+\begin{itemize}
+    \item Cette méthode est efficace lorsque $n-m$ est petit.
+    \item Le calcul de $Z$ est la difficulté principale ; il n'est pas unique. De mauvais choix peuvent résulter en un mauvais conditionnement de $Z^T G Z$.
+\end{itemize}
+
+\paragraph{Exemple :}
+Soit $G = \begin{pmatrix} 6 & 2 & 1 \\ 2 & 5 & 2 \\ 1 & 2 & 4 \end{pmatrix}$, $c = \begin{pmatrix} -8 \\ -3 \\ -3 \end{pmatrix}$. Contraintes : $\begin{cases} x_1 + x_3 = 3 \\ x_2 + x_3 = 0 \end{cases}$.
+D'où $A = \begin{pmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \end{pmatrix}$ et $b = \begin{pmatrix} 3 \\ 0 \end{pmatrix}$.
+On peut choisir $Z = \begin{pmatrix} -1 \\ -1 \\ 1 \end{pmatrix}$ (vérifiez $AZ=0$) et $Y = \begin{pmatrix} 2/3 & -1/3 \\ -1/3 & 2/3 \\ 1/3 & 1/3 \end{pmatrix}$ tel que $AY = I_2$.
+
+\paragraph{Exemple (suite) :}
+Soit $x = \begin{pmatrix} -1 \\ -2 \\ 2 \end{pmatrix}$.
+On calcule $h = Ax - b = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$ et $g = c + Gx = \begin{pmatrix} -7/2 \\ -2 \\ 2 \end{pmatrix}$ (note: valeurs de l'exemple du cours).
+
+\begin{enumerate}
+    \item \textbf{Trouver $p_Y$} : Résoudre $(AY) p_Y = -h$. Ici $p_Y = -h = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$.
+    \item \textbf{Trouver $p_Z$} : Résoudre $(Z^T G Z) p_Z = -(Z^T g + Z^T G Y p_Y)$.
+    Calculons les termes : 
+    $Z^T G Z = \begin{pmatrix} -1 & -1 & 1 \end{pmatrix} \begin{pmatrix} 6 & 2 & 1 \\ 2 & 5 & 2 \\ 1 & 2 & 4 \end{pmatrix} \begin{pmatrix} -1 \\ -1 \\ 1 \end{pmatrix} = 13$ (scalaire).
+    $Z^T g = -13$.
+    Le terme $Z^T G Y p_Y$ est nul car $p_Y = 0$.
+    L'équation devient : $13 p_Z = -(-13) \implies p_Z = 1$.
+    \item \textbf{Reconstruire $p$} :
+    $p = Y p_Y + Z p_Z = Y \cdot 0 + Z \cdot 1 = \begin{pmatrix} -1 \\ -1 \\ 1 \end{pmatrix}$.
+    \item \textbf{Solution} :
+    $x^* = x + p = \begin{pmatrix} -1 \\ -2 \\ 2 \end{pmatrix} + \begin{pmatrix} -1 \\ -1 \\ 1 \end{pmatrix} = \begin{pmatrix} -2 \\ -3 \\ 3 \end{pmatrix}$.
+\end{enumerate}
 
 \subsection{Résolution itérative du système KKT}
+
+Pour les systèmes de grande taille, les méthodes directes deviennent trop coûteuses. On préfère alors les méthodes itératives, comme le Gradient Conjugué (CG).
+Cependant, l'utilisation directe du CG sur le système KKT complet est instable car la matrice KKT n'est pas définie positive (elle est indéfinie).
+
+L'idée est d'appliquer le CG sur le \textbf{système réduit}, qui lui est défini positif (sous l'hypothèse que $Z^T G Z$ l'est).
+
+Substituons $x^* = Y p_Y + Z p_Z$ dans le problème.
+$p_Z$ est solution du problème de minimisation sans contrainte :
+\begin{equation}
+    \min_{p_Z \in \mathbb{R}^{n-m}} \frac{1}{2} p_Z^T (Z^T G Z) p_Z + p_Z^T c_Z
+\end{equation}
+où $c_Z = Z^T G Y p_Y + Z^T c$ (en notant que le terme linéaire dépend aussi de $p_Y$, déterminé par les contraintes).
+
+Ainsi, $p_Z$ vérifie l'équation normale :
+\begin{equation}
+    (Z^T G Z) p_Z = -c_Z
+\end{equation}
+Puisque $Z^T G Z$ est définie positive, on peut utiliser le Gradient Conjugué (CG) pour trouver $p_Z$.
+
+\paragraph{Préconditionnement :}
+En pratique, on utilise un préconditionneur $W_{ZZ}$ pour accélérer la convergence. Un bon préconditionneur devrait regrouper les valeurs propres de $W_{ZZ}^{-1/2} (Z^T G Z) W_{ZZ}^{-1/2}$.
+Idéalement, on choisirait $W_{ZZ} = Z^T G Z$, mais c'est trop coûteux.
+De bons choix sont de la forme $W_{ZZ} = Z^T H Z$, où $H$ est une approximation symétrique de $G$ telle que $Z^T H Z$ soit définie positive.
+
+L'algorithme suivant (Algorithme 17 dans certaines références) décrit cette procédure :
 
 \begin{algorithm}[H]
     \caption{Preconditioned Conjugate Gradient for reduced systems}
     \SetAlgoLined
-    Choose an initial point $x_Z$\;
+    Choose an initial point $x_Z$ (correspondant à notre $p_Z$)\;
     Compute $r_Z=Z^\top GZx_Z + c_Z$, $g_Z=W_{ZZ}^{-1}r_Z$, and $d_Z=-g_Z$\;
     \Repeat{a termination test is satisfied}{
         $\alpha\leftarrow \frac{r_Z^\top g_Z}{d_Z^\top Z^\top GZd_Z}$\;

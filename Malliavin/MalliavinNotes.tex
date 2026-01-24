@@ -1,0 +1,327 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Notes de Cours - Méthodes de Monte Carlo et Malliavin}
+\date{}
+
+\begin{document}
+\maketitle
+
+\part{Fondements et Méthodes de Monte Carlo}
+
+\section{Fondements des Méthodes de Monte Carlo}
+L'objectif premier est d'estimer numériquement une intégrale multidimensionnelle $\int_{\mathbb{R}^d} f(x)d\mu(x)$ lorsqu'aucune solution analytique n'existe.
+
+\subsection{Théorèmes de Convergence}
+\begin{itemize}
+    \item \textbf{Loi Forte des Grands Nombres (LFGN)} : Garantit que la moyenne empirique converge presque sûrement vers l'espérance $E[X_1]$, à condition que $E[|X_1|] < \infty$.
+    \item \textbf{Théorème Central Limite (TCL)} : Permet de contrôler l'erreur. Pour $n$ grand, l'erreur suit une loi normale.
+    \item \textbf{Intervalle de Confiance (95\%)} : L'espérance se situe avec 95\% de probabilité dans :
+    \[
+    \left[ \bar{S}_n - 1.96 \frac{\sigma}{\sqrt{n}}, \bar{S}_n + 1.96 \frac{\sigma}{\sqrt{n}} \right]
+    \]
+\end{itemize}
+
+\textbf{Subtilité :} Contrairement aux méthodes d'analyse classique (comme les sommes de Riemann) dont l'erreur dépend de la dimension $d$ (en $O(n^{-1/d})$), l'erreur de Monte Carlo (en $O(n^{-1/2})$) est \textbf{indépendante de la dimension}, ce qui la rend indispensable en finance.
+
+\section{Simulation de Variables Aléatoires}
+Pour appliquer Monte Carlo, il faut savoir générer des variables suivant des lois spécifiques :
+
+\begin{itemize}
+    \item \textbf{Méthode d'Inversion} : Utilise l'inverse de la fonction de répartition $F_X^{-1}(U)$ où $U \sim \mathcal{U}([0,1])$.
+    \item \textbf{Méthode de Box-Muller} : Une transformation spécifique pour générer un couple de variables normales indépendantes à partir de deux variables uniformes.
+    \item \textbf{Mouvement Brownien} : Se simule par discrétisation temporelle en utilisant le fait que les incréments sont indépendants et suivent une loi $\mathcal{N}(0, t_k - t_{k-1})$.
+\end{itemize}
+
+\section{Le Modèle de Black-Scholes (B\&S)}
+Le prix d'une option à l'instant $t$ est l'espérance actualisée de son payoff $\Phi_T$ sous la probabilité risque-neutre $Q$ :
+\[
+P_t = E^Q [e^{-r(T-t)} \Phi_T | \mathcal{F}_t ]
+\]
+\begin{itemize}
+    \item \textbf{Avantage} : Il existe des formules fermées pour les Calls et Puts classiques.
+    \item \textbf{Usage de Monte Carlo} : Indispensable pour des options complexes (ex: options asiatiques, lookback) où aucune formule fermée n'existe.
+\end{itemize}
+
+\section{Calcul des Grecs : Méthodes et Comparaisons}
+Les Grecs mesurent la sensibilité du prix aux paramètres (Delta $\Delta$, Gamma $\Gamma$, Vega, etc.).
+
+\subsection{Méthode des Différences Finies (DF)}
+On estime la dérivée par un petit décalage $h$ :
+\[
+\Delta \approx \frac{F(x+h) - F(x-h)}{2h}
+\]
+\begin{itemize}
+    \item \textbf{Subtilité technique} : Il est crucial d'utiliser les mêmes échantillons aléatoires pour calculer $F(x+h)$ et $F(x-h)$ afin de réduire la variance du numérateur (méthode des \textit{Common Random Numbers}).
+    \item \textbf{Inconvénient} : Choix difficile de $h$. Trop grand, il y a un biais ; trop petit, la variance explose.
+\end{itemize}
+
+\subsection{Méthode d'Intégration par Parties (IPP)}
+On transforme la dérivée du prix en une espérance du payoff multiplié par un "poids" $\pi$ :
+\[
+\text{Grec} = E^Q [\text{Payoff} \times \text{Poids}]
+\]
+Exemple de poids pour le Delta : $\pi = \frac{B_T}{x \sigma T}$.
+\begin{itemize}
+    \item \textbf{Avantages} : Pas de biais d'approximation (contrairement aux DF) et le poids est indépendant du payoff.
+\end{itemize}
+
+\section{Synthèse des performances}
+Le cours met en évidence des résultats numériques majeurs :
+\begin{itemize}
+    \item \textbf{Régularité du Payoff} : Plus le payoff est irrégulier (ex: option Digitale), plus la méthode IPP est supérieure aux Différences Finies. Pour une option Digitale, le ratio de variance peut être massif (ex: $\approx 2354$ pour le Gamma).
+    \item \textbf{Ordre de Dérivation} : L'avantage de l'IPP s'accentue pour les dérivées d'ordre supérieur (Gamma vs Delta).
+    \item \textbf{Vers le Calcul de Malliavin} : L'IPP présentée ici est une introduction simple. Pour généraliser ces poids à des modèles plus complexes ou des trajectoires entières, on utilise le Calcul de Malliavin, détaillé dans la partie suivante.
+\end{itemize}
+
+\part{Introduction au Calcul de Malliavin}
+Ce cours marque le passage du calcul stochastique classique (Itô) à une analyse plus profonde de la sensibilité des variables aléatoires sur l'espace de Wiener.
+
+\section{Motivation et Objectifs}
+Le calcul de Malliavin est un \textbf{calcul différentiel en dimension infinie} (sur l'espace de Wiener) qui permet principalement :
+\begin{itemize}
+    \item \textbf{L'analyse de sensibilité (Greeks)} : Calculer des dérivées de prix même pour des payoffs discontinus (ex: options Digitales).
+    \item \textbf{La couverture (Hedging) explicite} : Trouver le processus de couverture $\phi_t$ dans le théorème de représentation d'Itô de manière directe (formule de Clark-Ocone).
+    \item \textbf{La régularité des densités} : Prouver l'existence et la lissage de la densité d'une variable aléatoire.
+\end{itemize}
+
+\section{Le Cadre : L'Espace de Wiener}
+Contrairement au calcul classique, on définit ici précisément l'espace de probabilité :
+\begin{itemize}
+    \item \textbf{Espace ($\Omega$)} : L'espace de Banach $C_0([0,T])$ des fonctions continues partant de 0.
+    \item \textbf{Mesure ($P$)} : La \textbf{mesure de Wiener} $W$.
+    \item \textbf{Variable Aléatoire} : Dans ce cadre, le mouvement brownien est simplement l'évaluation $W_t(\omega) = \omega(t)$.
+\end{itemize}
+
+\section{Le problème de la Dérivation en Dimension Infinie}
+Pourquoi ne pas utiliser la dérivée classique (Fréchet) ?
+\begin{itemize}
+    \item \textbf{Échec de Fréchet} : Une intégrale stochastique $\int f dW$ vue comme une fonction de $\omega$ n'est généralement \textbf{pas continue} pour la norme uniforme. Elle ne peut donc pas être différentiable au sens de Fréchet.
+    \item \textbf{La Solution} : La \textbf{dérivée de Malliavin}. C'est une dérivée directionnelle dans des directions "lisses" appartenant à l'espace de Cameron-Martin $\mathcal{H}^1$.
+\end{itemize}
+
+\section{L'Intégration par Parties (IPP) Stochastique}
+C'est le cœur théorique du cours.
+
+\subsection{Définition de l'IPP(X, Y)}
+Deux variables aléatoires $X$ et $Y$ satisfont l'IPP si pour toute fonction test $\phi \in C_b^1$ :
+\[
+E[\phi'(X) Y] = E[\phi(X) \pi]
+\]
+Ici, $\pi$ est appelé le \textbf{poids de Malliavin}.
+
+\subsection{Subtilités des Preuves et Cas d'Usage}
+\begin{enumerate}
+    \item \textbf{Cas 1 (Payoff régulier)} : Si $f$ est dérivable, on utilise la \textit{chain rule} classique : $\partial_x E[f(X)] = E[f'(X) \partial_x X]$.
+    \item \textbf{Cas 2 (Payoff non-régulier)} : Si $f$ est discontinue, la formule précédente est inutilisable (la dérivée n'existe pas au sens classique). L'IPP permet de "transférer" la dérivation de $f$ vers le poids $\pi$, rendant le calcul possible numériquement : $\partial_x E[f(X^\theta)] = E[f(X^\theta) \pi]$.
+    \item \textbf{Optimalité du Poids} : Si on a plusieurs poids possibles $\pi_i$ tels que $E[f(X) \pi_i] = \text{Cst}$, le poids qui minimise la variance de l'estimateur Monte Carlo est l'espérance conditionnelle : $\pi^* = E[\pi | X]$.
+\end{enumerate}
+
+\section{Les Fondements pour la suite}
+Pour maîtriser la suite du cours, il faut retenir ces trois piliers :
+\begin{itemize}
+    \item \textbf{Opérateur de Dérivation ($D$)} : Agit sur des variables aléatoires (comme l'intégrale stochastique) pour mesurer leur sensibilité aux variations du chemin brownien.
+    \item \textbf{Opérateur de Skorohod ($\delta$)} : C'est l'adjoint de la dérivée de Malliavin. Il généralise l'intégrale d'Itô à des processus qui peuvent "anticiper" le futur.
+    \item \textbf{Théorème de Représentation} : La dérivée de Malliavin permettra d'écrire explicitement le processus de couverture comme $\phi_t = E[D_t F | \mathcal{F}_t]$.
+\end{itemize}
+
+\section{Astuce Technique (Cas Gaussien)}
+Pour prouver l'IPP, on utilise souvent le fait que pour une variable aléatoire normale $G \sim \mathcal{N}(0,1)$, sa densité $\rho(y)$ vérifie $\rho'(y) = -y \rho(y)$.
+Cela implique que pour toute fonction lisse $\phi$ :
+\[
+E[\phi'(G)] = E[\phi(G) G]
+\]
+Le poids de Malliavin pour une gaussienne standard est donc simplement la variable elle-même. C'est ce type de relation (Stein's Lemma) qui est généralisé par le calcul de Malliavin.
+
+\part{L'Opérateur de Dérivation et l'Espace de Sobolev}
+Cette partie formalise l'opérateur de dérivation, définit les classes de variables aléatoires "lisses" et introduit les premières règles de calcul fondamentales.
+
+\section{L'Opérateur de Dérivation de Malliavin (D)}
+C'est l'extension de la notion de dérivée aux variables aléatoires définies sur l'espace de Wiener.
+
+\subsection{Variables Aléatoires Cylindriques (S)}
+Pour définir $D$, on commence par un ensemble de variables "test" simples appelées cylindriques :
+\[
+F = f(B_{t_1}, B_{t_2}, \dots, B_{t_n})
+\]
+où $f \in C_b^\infty(\mathbb{R}^n)$ (fonctions lisses à dérivées bornées).
+
+\subsection{Définition de la Dérivée}
+Pour une variable $F \in S$, la dérivée de Malliavin est le processus aléatoire $(D_t F)_{t \in [0,T]}$ défini par :
+\[
+D_t F = \sum_{i=1}^n \frac{\partial f}{\partial x_i} (B_{t_1}, \dots, B_{t_n}) \mathbf{1}_{[0, t_i]}(t)
+\]
+\textbf{Interprétation} : $D_t F$ mesure l'impact d'un choc infinitésimal du mouvement brownien à l'instant $t$ sur la valeur finale de $F$.
+
+\textbf{Subtilité} : $D_t F$ n'est pas un nombre, mais un élément de $L^2(\Omega \times [0,T])$. On le voit souvent comme une fonction du temps $t$ pour chaque scénario $\omega$.
+
+\section{L'Espace de Sobolev Stochastique ($D^{1,2}$)}
+La dérivée $D$ est initialement définie sur $S$. Pour l'étendre à plus de variables (comme les intégrales d'Itô), on utilise une fermeture.
+
+On définit la norme :
+\[
+\|F\|_{1,2}^2 = E[F^2] + E\left[ \int_0^T (D_t F)^2 dt \right]
+\]
+$D^{1,2}$ est la fermeture de $S$ sous cette norme. C'est l'espace des variables "une fois dérivables" au sens de Malliavin.
+
+\section{Règles de Calcul (Propriétés Fondamentales)}
+Ces règles sont cruciales pour les examens et la pratique :
+
+\begin{itemize}
+    \item \textbf{Règle de la chaîne (Chain Rule)} : Si $F \in D^{1,2}$ et $\phi$ est Lipschitzienne, alors $\phi(F) \in D^{1,2}$ et :
+    \[
+    D_t \phi(F) = \phi'(F) D_t F
+    \]
+    \item \textbf{Règle du produit} :
+    \[
+    D_t (FG) = F D_t G + G D_t F
+    \]
+    \item \textbf{Dérivée d'une intégrale d'Itô} : Si $F = \int_0^T h_s dB_s$ avec $h$ déterministe, alors :
+    \[
+    D_t F = h_t
+    \]
+    C'est le résultat le plus intuitif : la sensibilité de l'intégrale au bruit à l'instant $t$ est exactement le poids $h_t$ de ce bruit.
+\end{itemize}
+
+\section{Interaction avec l'Information (Filtration)}
+Le document souligne deux points très subtils sur la relation entre $D$ et la filtration $(\mathcal{F}_s)$ :
+
+\begin{itemize}
+    \item \textbf{Variables Mesurables (Propriété de "Non-anticipation")} : Si $F$ est $\mathcal{F}_s$-mesurable, alors son futur n'est pas sensible aux chocs browniens.
+    \[
+    \text{Si } t > s, \text{ alors } D_t F = 0
+    \]
+    \item \textbf{Espérance Conditionnelle} : L'opérateur $D$ et l'espérance conditionnelle commutent de la manière suivante :
+    \[
+    D_t E[F | \mathcal{F}_s] = E[D_t F | \mathcal{F}_s] \mathbf{1}_{t \le s}
+    \]
+    \textbf{Subtilité} : On ne peut pas "voir" la sensibilité d'une espérance conditionnelle après l'instant $s$ car, par définition, l'information est figée à $s$.
+\end{itemize}
+
+\section{Pourquoi est-ce important pour la suite ?}
+Cette fiche pose les bases de la formule de Clark-Ocone. En finance, si vous avez un payoff $F$, le théorème de représentation d'Itô dit qu'il existe un processus de couverture $\theta_s$ tel que $F = E[F] + \int_0^T \theta_s dB_s$. Le calcul de Malliavin donne enfin la solution "miracle" pour trouver $\theta_s$ :
+\[
+\theta_t = E[D_t F | \mathcal{F}_t]
+\]
+C'est le lien direct entre la dérivée de Malliavin et la stratégie de couverture parfaite.
+
+\textbf{Points de vigilance pour les preuves} :
+\begin{itemize}
+    \item La linéarité de $D$ est évidente, mais son caractère "fermé" (closability) est la partie difficile de la preuve mathématique pour passer de $S$ à $D^{1,2}$.
+    \item Toujours vérifier que $t \le T$ dans les intégrales.
+\end{itemize}
+
+\part{Approfondissements sur les Poids de Malliavin}
+
+\section{Méthode d'Intégration par Parties pour les Grecques}
+
+On considère un payoff $\Phi_T = f(S_T)$. Le prix à l'instant $t$ est donné par :
+\[
+P_t = e^{-r(T-t)} E^* [ f(S_T) | \mathcal{F}_t ] = F(t, S_t)
+\]
+où la fonction $F$ est définie par :
+\[
+F(t, x) = e^{-r(T-t)} E^* [ f(S_{T-t}^x) ]
+\]
+
+\subsection{Proposition : Formules pour Delta et Gamma}
+On suppose que $\Phi_T = f(S_T)$. Le résultat suivant est \textbf{indépendant de $f$}.
+
+On a les expressions suivantes pour les Grecques (Delta et Gamma) en utilisant des poids de Malliavin :
+
+\begin{align*}
+\Delta_t(x) &= e^{-r(T-t)} E^* \left[ \frac{B_{T-t}}{x \sigma (T-t)} f(S_{T-t}^x) \right] \\
+\Gamma_t(x) &= e^{-r(T-t)} E^* \left[ \left( \frac{-B_{T-t}}{x^2 \sigma (T-t)} + \frac{B_{T-t}^2 - (T-t)}{(x \sigma (T-t))^2} \right) f(S_{T-t}^x) \right]
+\end{align*}
+
+Les termes entre crochets qui multiplient $f(S_{T-t}^x)$ sont souvent appelés les poids de Malliavin ($\pi$).
+Cela permet d'exprimer $\Delta_t(x)$ et $\Gamma_t(x)$ sous la forme :
+\[
+\text{Grecque} = E^* [ f(S_{T-t}^x) \pi ]
+\]
+L'avantage majeur est que ces formules ne font pas intervenir la dérivée de $f$, ce qui est utile pour des payoffs discontinus (comme les options digitales).
+
+\section{Minimisation de la Variance}
+
+À l'instant $t=0$ pour le payoff $f(S_T)$.
+On cherche à estimer une Grecque sous la forme :
+\[
+\text{Grecque} = E_Q [ f(S_T) \pi ]
+\]
+Il peut exister plusieurs poids $\pi$ possibles (par exemple $\pi_1, \pi_2, \dots$) qui donnent le même résultat en espérance pour tout $f$ :
+\[
+E_Q [ f(S_T) \pi_1 ] = E_Q [ f(S_T) \pi_2 ] \quad \forall f
+\]
+Cependant, leurs variances peuvent différer :
+\[
+\text{Var} [ f(S_T) \pi_1 ] \quad \text{vs} \quad \text{Var} [ f(S_T) \pi_2 ]
+\]
+
+\subsection{Théorème}
+On cherche à trouver le poids $\pi$ qui minimise la variance de l'estimateur.
+Le problème s'écrit :
+\[
+\min_{\pi} \text{Var} [ f(S_T) \pi ]
+\]
+sous la contrainte que $\pi$ donne le bon prix (la bonne Grecque) pour tout $f$ (ou du moins que l'espérance soit préservée).
+
+\textbf{Résultat :}
+Si une variable aléatoire $\pi$ satisfait la condition d'espérance, alors la solution optimale $\pi_0$ (celle qui minimise la variance) est donnée par l'espérance conditionnelle :
+\[
+\pi_0 = E [ \pi | S_T ]
+\]
+C'est la projection de $\pi$ sur l'espace engendré par $S_T$.
+
+\subsection{Remarque sur l'unicité de la projection}
+La relation suivante est une équivalence :
+\[
+E_Q [f(S_T) \pi_1] = E_Q [f(S_T) \pi_2] \quad \forall f \quad \Longleftrightarrow \quad E_Q [\pi_1 | S_T] = E_Q [\pi_2 | S_T]
+\]
+
+\subsection{Preuve du Théorème de Minimisation}
+On souhaite montrer que $\pi_0 = E[\pi | S_T]$ minimise la variance de l'estimateur $f(S_T)\pi$.
+
+On peut écrire :
+\[
+f(S_T)\pi - \text{Grecque} = \underbrace{f(S_T)(\pi - \pi_0)}_{A} + \underbrace{f(S_T)\pi_0 - \text{Grecque}}_{B}
+\]
+En élevant au carré et en prenant l'espérance (ce qui correspond à la variance puisque l'espérance est nulle si on recentre ou on regarde le second moment de l'erreur), on a :
+\[
+\text{Var}[f(S_T)\pi] = E \left[ (f(S_T)(\pi - \pi_0) + (f(S_T)\pi_0 - \text{Grecque}))^2 \right]
+\]
+En développant :
+\[
+\text{Var}[f(S_T)\pi] = E[(f(S_T)(\pi - \pi_0))^2] + \text{Var}[f(S_T)\pi_0] + 2 E \left[ f(S_T)(\pi - \pi_0) (f(S_T)\pi_0 - \text{Grecque}) \right]
+\]
+Le terme croisé (le dernier terme) est nul. En effet, en conditionnant par $S_T$ :
+\begin{align*}
+E [ f(S_T)(\pi - \pi_0) (f(S_T)\pi_0 - \text{Grecque}) | S_T ] &= (f(S_T)\pi_0 - \text{Grecque}) f(S_T) E [ (\pi - \pi_0) | S_T ] \\
+&= (f(S_T)\pi_0 - \text{Grecque}) f(S_T) ( E[\pi|S_T] - \pi_0 ) \\
+&= 0 \quad \text{car } \pi_0 = E[\pi|S_T]
+\end{align*}
+Comme l'espérance conditionnelle est nulle, l'espérance totale est nulle.
+Ainsi :
+\[
+\text{Var}[f(S_T)\pi] = \text{Var}[f(S_T)\pi_0] + E[(f(S_T)(\pi - \pi_0))^2]
+\]
+Le second terme étant positif, la variance est minimisée lorsque $\pi = \pi_0$.
+
+\subsection{Définition de l'Espérance Conditionnelle}
+Soit $X \in L^1(\Omega, \mathcal{A}, P)$ et $\mathcal{G} \subset \mathcal{A}$ une sous-tribu.
+
+L'espérance conditionnelle $E[X|\mathcal{G}]$ est l'\textbf{unique} variable aléatoire $Z$ telle que :
+\begin{itemize}
+    \item $Z$ est $\mathcal{G}$-mesurable.
+    \item Pour toute variable aléatoire $Y$, $\mathcal{G}$-mesurable et bornée :
+    \[
+    E[XY] = E[ZY]
+    \]
+\end{itemize}
+
+\end{document}

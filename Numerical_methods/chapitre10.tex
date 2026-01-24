@@ -5,15 +5,50 @@
 
 \subsection{Optimalité du problème primal}
 
-% TODO: Contenu à développer
+Considérons le problème de programmation linéaire (PL) sous sa forme standard :
+\begin{equation}
+    \min_{x \in \mathbb{R}^n} c^T x \quad \text{sujet à} \quad Ax = b, \quad x \geq 0,
+\end{equation}
+où $A$ est une matrice $m \times n$ de rang $m$, $c \in \mathbb{R}^n$ est le vecteur de coût et $b \in \mathbb{R}^m$.
+
+Une étape clé est d'identifier une \textbf{solution de base réalisable}. On partitionne la matrice $A$ en $A = [B \mid N]$ où $B$ est une matrice $m \times m$ inversible (la base) et $N$ contient les $n-m$ autres colonnes. De même, on partitionne $x = (x_B, x_N)$ et $c = (c_B, c_N)$.
+L'équation $Ax=b$ devient $Bx_B + Nx_N = b$, soit $x_B = B^{-1}b - B^{-1}Nx_N$.
+
+En fixant $x_N = 0$, on obtient la solution de base $x_B = B^{-1}b$. Si $x_B \ge 0$, la solution est dite réalisable.
+
+Le coût réduit ("reduced cost") est défini par le vecteur $s_N$:
+\begin{equation}
+    s_N = c_N - (B^{-1}N)^T c_B = c_N - N^T \lambda,
+\end{equation}
+avec $\lambda = B^{-T} c_B$ le vecteur des multiplicateurs (ou variables duales).
+
+\begin{theoreme}[Condition d'optimalité]
+    Une solution de base réalisable $(x_B, 0)$ est optimale si et seulement si le coût réduit est positif ou nul, c'est-à-dire $s_N \geq 0$ (pour toutes ses composantes).
+\end{theoreme}
 
 \subsection{Le problème dual}
 
-% TODO: Contenu à développer
+À tout problème primal (P) correspond un problème dual (D). Pour la forme standard ci-dessus, le dual est :
+\begin{equation}
+    \max_{\lambda \in \mathbb{R}^m} b^T \lambda \quad \text{sujet à} \quad A^T \lambda \leq c.
+\end{equation}
+
+Les relations fondamentales entre primal et dual sont :
+\begin{itemize}
+    \item \textbf{Dualité faible} : Pour tout $x$ réalisable pour (P) et tout $\lambda$ réalisable pour (D), on a $b^T \lambda \leq c^T x$.
+    \item \textbf{Dualité forte} : Si (P) admet une solution optimale $x^*$, alors (D) admet une solution optimale $\lambda^*$ et leurs valeurs sont égales : $c^T x^* = b^T \lambda^*$.
+\end{itemize}
 
 \section{Géométrie de l'ensemble réalisable}
 
-% TODO: Contenu à développer
+L'ensemble des solutions réalisables $\mathcal{F} = \{ x \in \mathbb{R}^n \mid Ax = b, x \geq 0 \}$ est un polyèdre convexe (intersection d'un sous-espace affine et de l'orthant positif).
+
+\begin{proposition}
+    Les sommets (ou points extrêmes) de ce polyèdre correspondent exactement aux solutions de base réalisables du problème linéaire.
+\end{proposition}
+
+La méthode du simplexe consiste géométriquement à se déplacer d'un sommet à un sommet adjacent du polyèdre, en suivant une arête qui améliore (diminue) la fonction objectif.
+Puisque le nombre de sommets est fini (au plus $\binom{n}{m}$), l'algorithme termine en un nombre fini d'étapes (sous réserve de précautions contre le cyclage, par exemple avec la règle de Bland).
 
 \section{Aperçu de la méthode du simplexe}
 
