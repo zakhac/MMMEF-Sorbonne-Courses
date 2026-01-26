@@ -211,8 +211,59 @@ De plus, la fonction
 \begin{equation}
     \mathcal{H}(\lambda) = \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \max\left( \pi_s (2\eta(X,S) - 1) - \lambda s, 0 \right) \right]
 \end{equation}
-est coercive, c'est-à-dire que $\lim_{|\lambda| \to +\infty} \mathcal{H}(\lambda) = +\infty$ (preuve en exercice).
-Ceci implique que le minimiseur $\lambda^*$ existe.
+est coercive, c'est-à-dire que $\lim_{|\lambda| \to +\infty} \mathcal{H}(\lambda) = +\infty$.
+
+\begin{exemple}[Exercice : Coercivité et bornes sur $\lambda^*$]
+    \textbf{Énoncé :}
+    Montrer que la fonction $\lambda \mapsto \mathcal{H}(\lambda)$ est coercive et que le paramètre optimal vérifie $\lambda^* \in [-1, 1]$.
+
+    \medskip
+    \textbf{Correction :}
+    \begin{enumerate}
+        \item \textbf{Coercivité de $\mathcal{H}(\lambda)$}
+        
+        Rappelons que $\mathcal{H}(\lambda) = \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ (\pi_s (2\eta(X,S) - 1) - \lambda s)_+ \right]$.
+        
+        Étudions le comportement quand $\lambda \to +\infty$ :
+        \begin{itemize}
+            \item Pour $s = 1$, le terme sous l'espérance est $(\pi_{1}(2\eta - 1) - \lambda)_+$. Puisque $2\eta - 1 \le 1$ et $\pi_1 \le 1$, on a $\pi_1(2\eta - 1) - \lambda \le 1 - \lambda$. Pour $\lambda > 1$, ce terme est négatif, donc la partie positive est nulle.
+            \item Pour $s = -1$, le terme est $(\pi_{-1}(2\eta - 1) + \lambda)_+$. Pour $\lambda$ assez grand, $\pi_{-1}(2\eta - 1) + \lambda > 0$ presque sûrement. Le terme se comporte comme $\lambda$.
+        \end{itemize}
+        Ainsi, $\lim_{\lambda \to +\infty} \mathcal{H}(\lambda) = +\infty$. Un raisonnement symétrique s'applique pour $\lambda \to -\infty$ (le terme $s=1$ domine). La fonction est donc coercive.
+        
+        \item \textbf{Bornes sur $\lambda^*$}
+        
+        Montrons que pour tout $\lambda \ge 1$, $\mathcal{H}(\lambda) \ge \mathcal{H}(1)$ (et par symétrie pour $\lambda \le -1$).
+        
+        Soit $\lambda \ge 1$.
+        \begin{itemize}
+            \item Si $s=1$ : Comme vu précédemment, $\pi_1(2\eta - 1) - \lambda \le \pi_1 - \lambda \le 1 - 1 = 0$. Donc la contribution est nulle.
+            \item Si $s=-1$ : Le terme est $(\pi_{-1}(2\eta - 1) + \lambda)_+$.
+            Or $2\eta - 1 \ge -1$, donc $\pi_{-1}(2\eta - 1) \ge -\pi_{-1}$.
+            Ainsi $\pi_{-1}(2\eta - 1) + \lambda \ge -\pi_{-1} + \lambda$.
+            Comme $\lambda \ge 1$ et $\pi_{-1} \le 1$, ce terme est positif.
+            La partie positive est donc simplement $\pi_{-1}(2\eta - 1) + \lambda$.
+        \end{itemize}
+        Ainsi, sur l'intervalle $[1, +\infty[$, $\mathcal{H}(\lambda) = \mathbb{E}_{X|S=-1}[\pi_{-1}(2\eta(X,S) - 1)] + \lambda$.
+        C'est une fonction affine strictement croissante de $\lambda$.
+        
+        Soit maintenant $\lambda \le -1$.
+        \begin{itemize}
+            \item Si $s=-1$ : Le terme est $(\pi_{-1}(2\eta - 1) + \lambda)_+$. Comme $\pi_{-1}(2\eta - 1) \le \pi_{-1} \le 1$ et $\lambda \le -1$, la somme est négative. La contribution est nulle.
+            \item Si $s=1$ : Le terme est $(\pi_{1}(2\eta - 1) - \lambda)_+$.
+            Or $\pi_{1}(2\eta - 1) \ge -\pi_{1}$ et $-\lambda \ge 1$.
+            Donc $\pi_{1}(2\eta - 1) - \lambda \ge 1 - \pi_{1} \ge 0$.
+            La partie positive est donc $\pi_{1}(2\eta - 1) - \lambda$.
+        \end{itemize}
+        Ainsi, sur l'intervalle $]-\infty, -1]$, $\mathcal{H}(\lambda) = \mathbb{E}_{X|S=1}[\pi_{1}(2\eta(X,S) - 1)] - \lambda$.
+        C'est une fonction affine strictement décroissante de $\lambda$.
+        
+        On en déduit que pour tout $|\lambda| > 1$, $\mathcal{H}(\lambda) > \min(\mathcal{H}(1), \mathcal{H}(-1))$.
+        Par conséquent, le minimum global $\lambda^*$ doit se trouver dans l'intervalle $[-1, 1]$.
+    \end{enumerate}
+\end{exemple}
+
+Ceci implique que le minimiseur $\lambda^*$ existe et $\lambda^* \in [-1, 1]$.
 
 Pour terminer la dérivation de $f^*_{fair}$, nous devons considérer l'hypothèse suivante :
 \begin{equation}
