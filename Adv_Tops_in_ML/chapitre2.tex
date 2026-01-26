@@ -263,6 +263,43 @@ est coercive, c'est-à-dire que $\lim_{|\lambda| \to +\infty} \mathcal{H}(\lambd
     \end{enumerate}
 \end{exemple}
 
+\begin{remarque}[Autre approche pour dériver le prédicteur équitable optimal]
+    Nous avons établi que pour tout $\lambda \in \mathbb{R}$, le minimiseur du lagrangien est donné par :
+    \[
+    f_\lambda \in \argmin_f \mathcal{L}(f, \lambda) \quad \text{et} \quad f_\lambda(X,S) = \indic_{\left\{\eta(X,S) \ge \frac{1}{2} + \frac{\lambda s}{2\pi_s}\right\}}
+    \]
+    
+    Nous cherchons maintenant $\lambda^*$ tel que $f_{\lambda^*}$ satisfasse la contrainte de Parité Démographique (DP). C'est-à-dire que nous devons trouver $\lambda^*$ tel que :
+    \[
+    \mathbb{P}(f_{\lambda^*}(X,S)=1 | S=1) = \mathbb{P}(f_{\lambda^*}(X,S)=1 | S=-1)
+    \]
+    
+    Notons par $F_s(t)$ la fonction de queue (ou survie) de $\eta(X,S)$ sachant $S=s$ :
+    \[
+    F_s(t) = \mathbb{P}(\eta(X,S) > t | S=s)
+    \]
+    
+    La condition $f_{\lambda^*}(X,s) = 1$ est équivalente à $\eta(X,s) \ge \frac{1}{2} + \frac{\lambda^* s}{2\pi_s}$.
+    
+    Si nous supposons que la distribution de $\eta(X,S)$ sachant $S=s$ est continue (pour éviter les problèmes aux bornes des indicatrices), alors :
+    \[
+    \mathbb{P}(f_{\lambda^*}(X,S)=1 | S=s) = F_s\left(\frac{1}{2} + \frac{\lambda^* s}{2\pi_s}\right)
+    \]
+    
+    Nous devons donc résoudre l'équation suivante en $\lambda$ :
+    \[
+    F_1\left(\frac{1}{2} + \frac{\lambda}{2\pi_1}\right) = F_{-1}\left(\frac{1}{2} - \frac{\lambda}{2\pi_{-1}}\right)
+    \]
+    
+    Remarquons que :
+    \begin{itemize}
+        \item Le terme de gauche, $\lambda \mapsto F_1\left(\frac{1}{2} + \frac{\lambda}{2\pi_1}\right)$, est décroissant (car $F_1$ est décroissante et $\lambda$ apparaît avec un signe $+$).
+        \item Le terme de droite, $\lambda \mapsto F_{-1}\left(\frac{1}{2} - \frac{\lambda}{2\pi_{-1}}\right)$, est croissant (car $F_{-1}$ est décroissante et $\lambda$ apparaît avec un signe $-$).
+    \end{itemize}
+    
+    Si l'on suppose de plus que les applications $t \mapsto F_s(t)$ sont continues, alors les deux membres de l'équation sont continus. L'existence et l'unicité de la solution (sous certaines conditions de support strictes) peuvent alors être étudiées via ces propriétés de monotonie, nous assurant de trouver le $\lambda^*$ optimal.
+\end{remarque}
+
 Ceci implique que le minimiseur $\lambda^*$ existe et $\lambda^* \in [-1, 1]$.
 
 Pour terminer la dérivation de $f^*_{fair}$, nous devons considérer l'hypothèse suivante :

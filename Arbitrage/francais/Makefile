@@ -1,4 +1,4 @@
-MAIN = main
+MAIN = ArbitrageTheoryFR
 
 .PHONY: all clean
 
