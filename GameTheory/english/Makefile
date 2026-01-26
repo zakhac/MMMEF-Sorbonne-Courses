@@ -1,4 +1,4 @@
-MAIN = MalliavinNotes
+MAIN = GameTheoryEN
 
 .PHONY: all clean
 

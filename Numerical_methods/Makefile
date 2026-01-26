@@ -1,10 +1,13 @@
-all: NumericalMethods.pdf
+MAIN = NumericalMethods
 
-NumericalMethods.pdf: NumericalMethods.tex chapitre*.tex references.bib
-	pdflatex NumericalMethods.tex
-	bibtex NumericalMethods
-	pdflatex NumericalMethods.tex
-	pdflatex NumericalMethods.tex
+.PHONY: all clean
+
+all:
+	pdflatex -interaction=nonstopmode $(MAIN).tex
+	bibtex $(MAIN)
+	pdflatex -interaction=nonstopmode $(MAIN).tex
+	pdflatex -interaction=nonstopmode $(MAIN).tex
+	rm -f *.aux *.log *.toc *.out *.bbl *.blg *.fls *.fdb_latexmk
 
 clean:
-	rm -f *.aux *.log *.out *.toc *.bbl *.blg *.fls *.fdb_latexmk NumericalMethods.pdf
+	rm -f *.aux *.log *.toc *.out *.bbl *.blg *.fls *.fdb_latexmk *.pdf

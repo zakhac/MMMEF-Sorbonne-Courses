@@ -1,4 +1,4 @@
-MAIN = MalliavinNotes
+MAIN = main
 
 .PHONY: all clean
 
