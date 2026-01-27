@@ -357,4 +357,54 @@ Puisque $\lambda^*$ est un minimum de $\mathcal{H}$ (fonction convexe différent
 \begin{equation}
     \frac{\partial \mathcal{H}}{\partial \lambda}(\lambda^*) = 0 \iff \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f^*_{\lambda^*}(X,S)=1) = 0
 \end{equation}
-Ceci montre que le classifieur $f^*_{\lambda^*}$ satisfait la contrainte de Parité Démographique.
+
+\section{Algorithme de Post-traitement pour la DP}
+
+\subsection*{Contexte et Objectifs}
+
+Rappelons que le prédicteur optimal équitable est donné par :
+\[
+f^*_{\lambda^*}(X,S) = \indic_{\left\{\eta(X,S) \ge \frac{1}{2} + \frac{\lambda^* s}{2\pi_s}\right\}}
+\]
+avec $\lambda^* \in \argmin_{\lambda} \mathcal{H}(\lambda)$. Sous l'hypothèse de continuité, on a $f^*_{\lambda^*} = f^*_{fair}$.
+
+En pratique, nous ne connaissons pas la distribution sous-jacente. Nous disposons d'un échantillon d'apprentissage :
+\[
+D_n = \{(X_i, S_i, Y_i), i=1, \dots, n\}
+\]
+Nous voulons construire un prédicteur empirique $\hat{f}$ tel que :
+\[
+\hat{f} \approx f^*_{\lambda^*}
+\]
+Nous exigeons deux propriétés pour $\hat{f}$ :
+\begin{enumerate}
+    \item $\hat{f}$ satisfait la contrainte de Parité Démographique (DP).
+    \item $R(\hat{f}) \approx R(f^*_{\lambda^*})$.
+\end{enumerate}
+
+Dans la suite, nous introduisons l'\textbf{injustice} (unfairness) d'un prédicteur $f$, définie par :
+\begin{equation}
+    \mathcal{U}(f) = \left| \sum_{s \in \{-1, 1\}} s \mathbb{P}(f(X,S)=1 | S=s) \right|
+\end{equation}
+Un prédicteur $f$ est dit équitable (fair) si et seulement si $\mathcal{U}(f) = 0$.
+Pour un prédicteur empirique $\hat{f}$, nous voulons $\mathcal{U}(\hat{f}) \approx 0$.
+
+\subsection*{Stratégie d'Estimation}
+
+À partir de l'échantillon d'apprentissage $D_n$, nous pouvons utiliser une approche "plug-in" :
+
+\begin{itemize}
+    \item Nous pouvons estimer la fonction de régression $\eta(X,S)$ par un estimateur $\hat{\eta}(X,S)$ (par exemple, obtenu par régression logistique, forêts aléatoires, réseaux de neurones, etc.).
+    \item Nous pouvons estimer les proportions $\pi_s = \mathbb{P}(S=s)$ par les fréquences empiriques :
+    \[
+    \hat{\pi}_s = \frac{1}{n} \sum_{i=1}^n \indic_{\{S_i = s\}} \xrightarrow[n \to +\infty]{} \pi_s \quad (\text{p.s.})
+    \]
+    \item Nous devons estimer le paramètre optimal $\lambda^*$ par un $\hat{\lambda}$.
+\end{itemize}
+
+Le prédicteur estimé sera alors de la forme :
+\begin{equation}
+    \hat{f}_{\hat{\lambda}}(X,S) = \indic_{\left\{ \hat{\eta}(X,S) \ge \frac{1}{2} + \frac{\hat{\lambda} s}{2\hat{\pi}_s} \right\}}
+\end{equation}
+où $\hat{\lambda}$ est choisi pour minimiser l'injustice empirique (ou maximiser l'équité).
+
