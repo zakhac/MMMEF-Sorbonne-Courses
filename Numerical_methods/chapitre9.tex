@@ -42,6 +42,15 @@ Soit $x \in \Omega$ un point réalisable. L'ensemble actif (\textit{active set})
 \label{fig:active-set}
 \end{figure}
 
+\begin{figureexplanation}
+\textbf{Interprétation géométrique :}
+\begin{itemize}
+    \item L'ensemble $\Omega$ est la région réalisable (en bleu).
+    \item Le point $x$ est sur la frontière. Les contraintes actives ($c_i(x)=0$) sont celles dont la frontière passe exactement par $x$.
+    \item Les autres contraintes (inactives) satisfont $c_i(x) > 0$ et ne limitent pas \emph{localement} les mouvements infinitésimaux autour de $x$.
+\end{itemize}
+\end{figureexplanation}
+
 \section{Exemples}
 
 \subsection{Une contrainte d'égalité}
@@ -158,9 +167,9 @@ Donc, pour rester sur la surface de contrainte (au premier ordre), le pas $s$ do
 
 De plus, le pas $s$ produit une diminution de la fonction objectif $f$ si :
 \begin{equation}
-    0 > f(x+s) - f(x) \approx \nabla f(x)^T s.
+    0 > f(x+s) - f(x) \approx \nabla f(x)^T s \quad \text{(au premier ordre)}.
 \end{equation}
-C'est-à-dire $\nabla f(x)^T s < 0$.
+C'est-à-dire $\nabla f(x)^T s < 0$ (pour un pas $s$ suffisamment petit).
 
 Si $x^*$ est un minimum local, il ne doit pas exister de direction $s$ qui soit à la fois réalisable (tangente à la contrainte) et de descente. Cela implique que le gradient $\nabla f(x^*)$ doit être aligné avec $\nabla c_1(x^*)$. Si $\nabla f(x^*)$ avait une composante non nulle dans l'espace tangent, on pourrait trouver un $s$ réduisant $f$.
 
@@ -242,7 +251,7 @@ La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2}$ e
 \end{figure}
 
 \begin{figureexplanation}
-\textbf{Ce qu'il faut observer :} La direction projetée $\bar{d}$ n'existe que si $\nabla f$ et $\nabla c_1$ ne sont pas colinéaires. Quand ils sont parallèles, toute composante tangente de $-\nabla f$ est nulle : on ne peut pas descendre en restant sur la contrainte.
+\textbf{Interprétation :} La direction projetée $\bar{d}$ n'existe que si $\nabla f$ et $\nabla c_1$ ne sont pas colinéaires. Quand ils sont parallèles, toute composante tangente de $-\nabla f$ est nulle : on ne peut pas descendre en restant sur la contrainte.
 \end{figureexplanation}
 
 \begin{figure}[H]
@@ -289,7 +298,7 @@ La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2}$ e
 \end{figure}
 
 \begin{figureexplanation}
-\textbf{Ce qu'il faut observer :} On cherche une direction $d$ telle que $\nabla f^T d < 0$ (descente) et $\nabla c_1^T d = 0$ (tangente). Si la droite tangente passe par la zone bleue, une telle direction existe et $x$ n'est pas optimal.
+\textbf{Interprétation :} On cherche une direction $d$ telle que $\nabla f^T d < 0$ (descente) et $\nabla c_1^T d = 0$ (tangente). Si la droite tangente passe par la zone bleue, une telle direction existe et $x$ n'est pas optimal.
 \end{figureexplanation}
 
 \paragraph{Fonction Lagrangienne}
@@ -374,7 +383,7 @@ Le fait que $\lambda_1^* > 0$ indique que la contrainte est \textbf{bloquante} :
 \end{figure}
 
 \begin{figureexplanation}
-\textbf{Ce qu'il faut observer :} Contrairement au cas d'égalité, les gradients pointent dans le \textbf{même sens}. Le multiplicateur $\lambda^* > 0$ traduit le fait que la contrainte "pousse" l'optimum : sans elle, on pourrait descendre davantage.
+\textbf{Interprétation :} Contrairement au cas d'égalité, les gradients pointent dans le \textbf{même sens}. Le multiplicateur $\lambda^* > 0$ traduit le fait que la contrainte "pousse" l'optimum : sans elle, on pourrait descendre davantage.
 \end{figureexplanation}
 
 \paragraph{Dérivation (Justification heuristique)}
@@ -456,6 +465,15 @@ On distingue alors deux cas :
 \label{fig:acceptable-directions-overlap}
 \end{figure}
 
+\begin{figureexplanation}
+\textbf{Interprétation géométrique :}
+\begin{itemize}
+    \item Pour qu'une direction $s$ soit \textbf{de descente}, elle doit faire un angle obtus avec le gradient de la fonction objectif $\nabla f$ (zone orange).
+    \item Pour qu'elle soit \textbf{réalisable} (au premier ordre), elle doit pointer vers l'intérieur du domaine par rapport à la contrainte active, donc faire un angle aigu avec le gradient de la contrainte $\nabla c_1$ (zone violette).
+    \item L'\textbf{intersection} (hachures vertes) contient les directions admissibles. Tant que cette intersection n'est pas vide, on peut améliorer la solution.
+\end{itemize}
+\end{figureexplanation}
+
 La question fondamentale devient alors : \textbf{Quand n'y a-t-il aucune direction admissible ?}
 
 \begin{figure}[H]
@@ -535,7 +553,7 @@ La question fondamentale devient alors : \textbf{Quand n'y a-t-il aucune directi
 \end{figure}
 
 \begin{figureexplanation}
-\textbf{Ce qu'il faut observer :}
+\textbf{Interprétation géométrique :}
 \begin{itemize}
     \item \textbf{Cas (a) :} Les zones de descente et de réalisabilité sont disjointes (aucun chevauchement). C'est la condition d'optimalité.
     \item \textbf{Cas (b) :} Les deux zones se chevauchent via la transparence des couleurs. L'intersection (plus foncée) donne les directions admissibles.
@@ -631,6 +649,15 @@ On s'attendrait à ce qu'une direction de descente réalisable $d$ satisfasse :
 \caption{Exemple avec deux contraintes actives. Les deux contraintes (disque et positivité) sont actives en $x^*$.}
 \label{fig:ex-two-inequalities}
 \end{figure}
+
+\begin{figureexplanation}
+\textbf{Situation avec plusieurs contraintes actives :}
+Ici, le point $x^*$ est à l'intersection de deux frontières ($c_1=0$ pour le cercle, $c_2=0$ pour la droite horizontale).
+\begin{itemize}
+    \item Le gradient $\nabla f$ doit être une combinaison linéaire à coefficients positifs des gradients des contraintes actives ($\nabla c_1$ et $\nabla c_2$).
+    \item Géométriquement, cela signifie que $-\nabla f$ (direction de descente souhaitée) pointe à l'extérieur du cône formé par les tangentes aux contraintes. On est "bloqué" par les deux murs à la fois.
+\end{itemize}
+\end{figureexplanation}
 
 \paragraph{Modification du Lagrangien}
 Pour ce problème à deux contraintes, on définit le Lagrangien :
@@ -1214,3 +1241,14 @@ Le problème dual s'écrit alors :
 \end{equation}
 
 Cela illustre comment le dual d'un problème de minimisation linéaire est un problème de maximisation linéaire.
+
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{Gradients :} Quelle est la condition géométrique sur $\nabla f$ et $\nabla c_i$ à l'optimum ? (Parallélisme).
+    \item \textbf{Lagrangien :} Définir la fonction Lagrangienne.
+    \item \textbf{Signe des multiplicateurs :} Pourquoi $\lambda \ge 0$ pour une inégalité ? (Contrainte bloquante).
+    \item \textbf{Complémentarité :} Que signifie $\lambda_i c_i(x) = 0$ ?
+\end{itemize}
+\end{checkpoint}
+

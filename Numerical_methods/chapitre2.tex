@@ -1294,3 +1294,135 @@ On peut modifier l’algorithme de Cholesky pour assurer que les éléments de $
 restent strictement positifs, ce qui fournit une méthode stable de construction
 de matrices $B_k$ définies positives. Voir par exemple \cite{gill2019practical}
 ou \cite{more1982newton} pour plus de détails.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exercices d'entraînement (Nocedal \& Wright)}
+\label{sec:2.exercises}
+
+\subsection*{Partie 1 : Questions de cours (Type Examen)}
+\bigskip
+\begin{exercice}[Questions de compréhension]
+\begin{enumerate}
+    \item \textbf{Recherche linéaire :} Décrire le principe de la recherche linéaire ("Line Search"). Expliquer graphiquement la condition d'Armijo et la condition de courbure (Wolfe).
+    \item \textbf{Newton vs Gradient :} Pourquoi préférerait-on la méthode de Newton à la méthode de plus forte pente ? Quel est le coût associé ?
+    \item \textbf{Hessienne mal conditionnée :} Que faire si l'on souhaite implémenter la méthode de Newton mais que la Hessienne est très grande ou singulière ? (Discussion sur Newton Modifié, Quasi-Newton, ou Trust Region).
+    \item \textbf{Taux de convergence :} Définir les taux de convergence linéaire, superlinéaire et quadratique. Donner un exemple de méthode pour chaque taux.
+    \item \textbf{Direction de descente :} Montrer mathématiquement que si $B_k$ est définie positive, la direction $-B_k^{-1} \nabla f_k$ est toujours une direction de descente.
+    \item \textbf{Scaling :} Expliquer comment le mauvais scaling des variables affecte la méthode de plus forte pente (Zig-zag).
+\end{enumerate}
+\end{exercice}
+
+\begin{correction}
+\begin{enumerate}
+    \item \textbf{Line Search :} On cherche un pas $\alpha_k > 0$ le long d'une direction de descente $p_k$. Armijo assure une décroissance suffisante (droite $f(x_k) + c_1 \alpha \nabla f_k^T p_k$). Courbure assure qu'on ne fait pas de trop petits pas (pente augmente). \textit{(Faire un dessin avec une courbe convexe et les droites sécantes).}
+    \item \textbf{Newton :} Convergence quadratique (très rapide) près de la solution vs convergence linéaire pour Gradient. Coût : Calcul et inversion (ou factorisation) de la Hessienne $O(n^3)$.
+    \item \textbf{Large/Singular Hessian :}
+    \begin{itemize}
+        \item \textit{Newton Modifié :} Ajouter $\tau I$ (Cholesky modifiée) pour la rendre définie positive.
+        \item \textit{Quasi-Newton (BFGS) :} Approximer $B_k$ itérativement (seulement gradients nécessaires, $O(n^2)$).
+        \item \textit{Trust Region :} Limiter le pas à une zone de confiance si le modèle quadratique n'est pas bon.
+        \item \textit{Newton-CG :} Résoudre le système linéaire par Gradient Conjugué tronqué (pas besoin de stocker la Hessienne explicite, juste produits matrice-vecteur).
+    \end{itemize}
+    \item \textbf{Définitions :} Voir Annexe A.
+    \item \textbf{Descente :} $p_k^T \nabla f_k = - (\nabla f_k)^T B_k^{-1} \nabla f_k$. Posons $v = \nabla f_k$. On a $- v^T B_k^{-1} v$. Si $B_k \succ 0$, alors $B_k^{-1} \succ 0$, donc $v^T B_k^{-1} v > 0$ pour $v \ne 0$. Donc produit scalaire $< 0$, c'est une descente.
+\end{enumerate}
+\end{correction}
+\bigskip
+
+\subsection*{Partie 2 : Exercices d'application}
+
+\bigskip
+\begin{exercice}[Fonction de Rosenbrock]
+Soit $f(x) = 100(x_2 - x_1^2)^2 + (1 - x_1)^2$.
+\begin{enumerate}
+    \item Calculer le gradient $\nabla f(x)$ et la Hessienne $\nabla^2 f(x)$.
+    \item Trouver les points critiques.
+    \item Vérifier les conditions suffisantes du second ordre (SOSC) pour confirmer la nature de ces points.
+\end{enumerate}
+\end{exercice}
+
+\begin{correction}
+\textbf{1. Calculs :}
+$$ \nabla f(x) = \begin{pmatrix} -400x_1(x_2 - x_1^2) - 2(1-x_1) \\ 200(x_2 - x_1^2) \end{pmatrix} $$
+$$ \nabla^2 f(x) = \begin{pmatrix} -400x_2 + 1200x_1^2 + 2 & -400x_1 \\ -400x_1 & 200 \end{pmatrix} $$
+
+\textbf{2. Points Critiques (FOC) :}
+$\nabla f(x) = 0$.
+(ii) $200(x_2 - x_1^2) = 0 \implies x_2 = x_1^2$.
+(i) $-400x_1(0) - 2(1-x_1) = 0 \implies x_1 = 1$.
+Unique point stationnaire : $x^* = (1, 1)^T$.
+
+\textbf{3. Conditions du Second Ordre (SOSC) :}
+Évaluons la Hessienne en $x^*=(1,1)$.
+$$ H = \nabla^2 f(1,1) = \begin{pmatrix} -400(1) + 1200(1) + 2 & -400 \\ -400 & 200 \end{pmatrix} = \begin{pmatrix} 802 & -400 \\ -400 & 200 \end{pmatrix} $$
+Pour vérifier qu'elle est définie positive :
+- Mineurs principaux : $M_1 = 802 > 0$.
+- Déterminant : $\det(H) = 802(200) - (-400)^2 = 160400 - 160000 = 400 > 0$.
+Les mineurs principaux dominants sont strictement positifs, donc $H \succ 0$.
+\end{correction}
+\bigskip
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{Optimalité :} Quelle est la condition nécessaire du premier ordre ($\nabla f = 0$) ? Et suffisante du second ordre ($\nabla^2 f \succ 0$) ?
+    \item \textbf{Taylor :} Savez-vous écrire le développement de Taylor d'ordre 2 pour une fonction multivariée ?
+    \item \textbf{Méthodes :} Quelle est la différence fondamentale entre la méthode de plus forte pente (Gradient Descent) et la méthode de Newton (utilisation de la courbure/Hessienne) ?
+    \item \textbf{Convergence :} Qu'est-ce qu'une convergence quadratique ? Laquelle des deux méthodes ci-dessus la possède ?
+\end{itemize}
+\end{checkpoint}
+
+
+\bigskip
+\begin{exercice}[Contre-exemple Conditions de Wolfe]
+Montrer que si $0 < c_2 < c_1 < 1$, il est possible qu'aucun pas $\alpha$ ne satisfasse les conditions de Wolfe.
+\end{exercice}
+
+\begin{correction}
+La condition de courbure (Wolfe 2) demande $\nabla f(x_k + \alpha p_k)^T p_k \ge c_2 \nabla f_k^T p_k$.
+Comme $\nabla f_k^T p_k < 0$ (direction de descente) et $c_2 < c_1$, la pente demandée est "moins négative" (plus plate) que celle permise par la condition d'Armijo stricte si la fonction est convexe/quadratique.
+Si on a une fonction convexe quadratique, la pente croit de manière monotone.
+La condition d'Armijo s'écrit $\phi(\alpha) \le \phi(0) + c_1 \alpha \phi'(0)$.
+Si $c_2 < c_1$, l'intervalle admissible pour la courbure peut être disjoint de l'intervalle admissible pour Armijo, spécifiquement si la fonction remonte "trop vite" ou si les paramètres sont mal choisis par rapport à la courbure réelle.
+(Voir Nocedal \& Wright Ex 3.2 pour les détails géométriques).
+\end{correction}
+\bigskip
+
+\bigskip
+\begin{exercice}[Méthode de plus forte pente sur une quadratique]
+Considérer la méthode de plus forte pente avec recherche linéaire exacte appliquée à la fonction quadratique convexe $f(x) = \frac{1}{2}x^T Q x - b^T x$. 
+Montrer que si le point initial est tel que $x_0 - x^*$ est parallèle à un vecteur propre de $Q$, alors la méthode trouve la solution en une seule étape.
+\end{exercice}
+
+\begin{correction}
+Soit $x_0 - x^* = v$ où $Qv = \lambda v$.
+Le gradient est $\nabla f(x) = Qx - b = Q(x - x^*) + (Qx^* - b) = Q(x-x^*)$.
+Donc $\nabla f(x_0) = Q(x_0 - x^*) = \lambda (x_0 - x^*)$.
+La direction de plus forte pente est $p_0 = -\nabla f(x_0) = -\lambda (x_0 - x^*)$.
+C'est donc exactement la direction vers la solution $x^*$.
+Une recherche linéaire exacte trouvera le minimum le long de cette ligne, qui est précisément $x^*$.
+\end{correction}
+\bigskip
+
+\bigskip
+\begin{exercice}[Taux de convergence - à discuter]
+(Voir Annexe A.2 du livre pour les définitions exactes). 
+\begin{enumerate}
+    \item Montrer que la suite $x_k = 1/k$ n'est pas Q-linéairement convergente, bien qu'elle converge vers zéro. (Convergence sublinéaire).
+    \item Montrer que la suite $x_k = 1 + (0.5)^{2^k}$ converge Q-quadratiquement vers 1.
+    \item La suite $x_k = 1/k!$ converge-t-elle Q-superlinéairement ? Q-quadratiquement ?
+\end{enumerate}
+\end{exercice}
+
+\begin{correction}
+\begin{enumerate}
+    \item Pour $x_k = 1/k$, le ratio $\frac{|x_{k+1}-0|}{|x_k-0|} = \frac{1/(k+1)}{1/k} = \frac{k}{k+1} \to 1$. Pour une convergence Q-linéaire, ce ratio doit être majoré par une constante $r < 1$. Ici ce n'est pas le cas.
+    \item Erreur $e_k = (0.5)^{2^k}$.
+    $e_{k+1} = (0.5)^{2^{k+1}} = (0.5)^{2 \cdot 2^k} = ((0.5)^{2^k})^2 = e_k^2$.
+    Donc $\frac{e_{k+1}}{e_k^2} = 1$. C'est une convergence Q-quadratique.
+    \item $x_k = 1/k!$. $e_k = 1/k!$.
+    Ratio : $\frac{e_{k+1}}{e_k} = \frac{1}{(k+1)!} \cdot k! = \frac{1}{k+1} \to 0$. C'est donc Q-superlinéaire.
+    Pour quadratique : $\frac{e_{k+1}}{e_k^2} = \frac{1}{(k+1)!} \cdot (k!)^2 = \frac{(k!)^2}{k!(k+1)} = \frac{k!}{k+1} \to \infty$.
+    Donc ça converge moins vite que quadratiquement.
+\end{enumerate}
+\end{correction}
+\bigskip

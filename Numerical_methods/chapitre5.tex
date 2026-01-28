@@ -443,4 +443,13 @@ Si $p_k = -B_k^{-1} \nabla f_k$ est une direction quasi-Newton, alors la conditi
 \[
     \lim_{k \to \infty} \frac{\| (B_k - \nabla^2 f(x_k)) p_k \|}{\| p_k \|} = 0.
 \]
-\textbf{Interprétation :} Cela signifie que $B_k$ approche suffisamment bien la Hessienne le long de la direction $p_k$. Il suffit que l'approximation soit suffisamment bonne dans cette direction, pas la peine qu'elle le soit dans tout l'espace.
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{Équation Sécante :} Quelle relation doit satisfaire $B_{k+1}$ (ou $H_{k+1}$) par rapport à $s_k$ et $y_k$ ?
+    \item \textbf{BFGS vs DFP :} Quelle est la méthode la plus robuste en pratique ?
+    \item \textbf{Mémoire Limitée :} Comment L-BFGS réduit-il la complexité spatiale de $O(n^2)$ à $O(mn)$ ?
+    \item \textbf{Convergence :} À quelle vitesse converge BFGS (Super-linéaire) ?
+\end{itemize}
+\end{checkpoint}
+

@@ -83,7 +83,8 @@
     pdftitle={Méthodes numériques en optimisation},
     pdfsubject={Cours complet},
     pdfcreator={LaTeX},
-    plainpages=false
+    plainpages=false,
+    pageanchor=false
 }
 
 % Correction des noms pour autoref
@@ -95,6 +96,14 @@
 \def\exempleautorefname{Exemple}
 \def\exerciceautorefname{Exercice}
 \def\remarqueautorefname{Remarque}
+
+%---------------------------
+% Couleurs pour les environnements
+%---------------------------
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{teal}{RGB}{0,165,145} % Vert plus prononcé
+\definecolor{darkred}{RGB}{139,0,0} % Rouge foncé unifié
 
 %---------------------------
 % Environnements théorèmes & Couleurs
@@ -110,75 +119,100 @@
 \theoremstyle{definition}
 \newtheorem{definition}[theoreme]{Définition}
 \newtheorem{exemple}[theoreme]{Exemple}
-\newtheorem{exercice}[theoreme]{Exercice}
+\newtheorem{exercice}{Exercice}[chapter] % Numérotation indépendante par chapitre
 
 \theoremstyle{remark}
+\newtheorem*{correction}{Correction suggérée}
 \newtheorem{remarque}[theoreme]{Remarque}
 
 % 2. Application des couleurs (tcolorbox)
 
-% --- Style pour les THÉORÈMES (Rouge) ---
+% --- Style pour les THÉORÈMES (Rouge pastel vif) ---
 \tcolorboxenvironment{theoreme}{
     enhanced,
-    colback=red!5!white,      % Fond rouge très pâle
-    colframe=red!75!black,    % Cadre rouge foncé
-    boxrule=0.5mm,            % Epaisseur du cadre
-    arc=2mm,                  % Coins arrondis
-    left=2mm, right=2mm, top=2mm, bottom=2mm, % Marges internes
-    drop fuzzy shadow         % Petite ombre portée
+    colback=red!20!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les PROPOSITIONS (Orange) ---
+% --- Style pour les PROPOSITIONS (Orange pastel vif) ---
 \tcolorboxenvironment{proposition}{
     enhanced,
-    colback=orange!5!white,
-    colframe=orange!80!black,
-    boxrule=0.5mm,
+    colback=orange!20!white,
+    frame hidden,
+    boxrule=0pt,
     arc=2mm,
     left=2mm, right=2mm, top=1mm, bottom=1mm,
-    drop fuzzy shadow
+    before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les DÉFINITIONS (Bleu) ---
+% --- Style pour les DÉFINITIONS (Bleu pastel vif transparent) ---
 \tcolorboxenvironment{definition}{
     enhanced,
-    colback=blue!5!white,
-    colframe=blue!75!black,
-    boxrule=0.5mm,
+    colback=blue!10!white,
+    frame hidden,
+    boxrule=0pt,
     arc=2mm,
     left=2mm, right=2mm, top=1mm, bottom=1mm,
-    drop fuzzy shadow
+    before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les EXEMPLES (Vert/Gris) ---
+% --- Style pour les EXEMPLES (Vert d'eau) ---
 \tcolorboxenvironment{exemple}{
-    blanker,                  % Pas de boîte fermée, juste une barre latérale
-    breakable,                % Peut se couper sur plusieurs pages
+    blanker,
+    breakable,
     left=5mm,
     before skip=10pt,
     after skip=10pt,
-    borderline west={3pt}{0pt}{green!60!black} % Barre verticale verte à gauche
+    borderline west={3pt}{0pt}{teal}
 }
 
 % --- Style pour les LEMMES (Violet) ---
 \tcolorboxenvironment{lemme}{
     enhanced,
-    colback=violet!5!white,
-    colframe=violet!75!black,
-    boxrule=0.5mm,
+    colback=violet!20!white,
+    frame hidden,
+    boxrule=0pt,
     arc=2mm,
-    drop fuzzy shadow
+    before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les EXPLICATIONS DE FIGURES (Gris / Anguleux) ---
+% --- Style pour les EXPLICATIONS DE FIGURES (Gris plat) ---
 \newtcolorbox{figureexplanation}{
     enhanced,
-    colback=gray!10!white,    % Fond gris clair
-    colframe=gray!50!black,   % Cadre gris foncé
-    boxrule=0.5mm,            % Epaisseur du cadre
-    sharp corners,            % Coins anguleux
-    left=2mm, right=2mm, top=2mm, bottom=2mm, % Marges internes
-    drop fuzzy shadow         % Petite ombre
+    colback=gray!10!white,
+    frame hidden,
+    boxrule=0pt,
+    sharp corners,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style pour les EXERCICES (Jaune plat plus léger) ---
+\tcolorboxenvironment{exercice}{
+    enhanced,
+    colback=yellow!5!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style pour les CHECKPOINTS (Teal plat) ---
+\newtcolorbox{checkpoint}{
+    enhanced,
+    colback=teal!10!white,
+    colframe=teal, % Couleur du titre si affiché
+    coltitle=white,
+    boxrule=0pt,   % Pas de contour
+    arc=2mm,
+    title=\textbf{Checkpoint : Avez-vous compris l'essentiel ?},
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
 }
 
 %---------------------------
@@ -204,6 +238,8 @@
 %===========================
 
 \maketitle
+\hypersetup{pageanchor=true}
+\frontmatter
 \tableofcontents
 \mainmatter
 

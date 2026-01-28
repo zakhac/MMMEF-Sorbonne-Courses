@@ -48,7 +48,58 @@ L'ensemble des solutions réalisables $\mathcal{F} = \{ x \in \mathbb{R}^n \mid 
 \end{proposition}
 
 La méthode du simplexe consiste géométriquement à se déplacer d'un sommet à un sommet adjacent du polyèdre, en suivant une arête qui améliore (diminue) la fonction objectif.
-Puisque le nombre de sommets est fini (au plus $\binom{n}{m}$), l'algorithme termine en un nombre fini d'étapes (sous réserve de précautions contre le cyclage, par exemple avec la règle de Bland).
+Puisque le nombre de sommets est fini (au plus $\binom{n}{m}$), l'algorithme termine en un nombre fini d'étapes.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=2, z={( -0.3, -0.2)}, line join=round]
+    % Coordinates for a simple truncated pyramid (polyhedron)
+    \coordinate (A) at (0,0,0);
+    \coordinate (B) at (2,0,0);
+    \coordinate (C) at (2,2,0);
+    \coordinate (D) at (0,2,0);
+    \coordinate (Top) at (1,1,2.5);
+    
+    % Faces (transparent)
+    \fill[blue!5, opacity=0.8] (A) -- (B) -- (Top) -- cycle;
+    \fill[blue!10, opacity=0.8] (B) -- (C) -- (Top) -- cycle;
+    
+    % Edges (Back - Dashed)
+    \draw[dashed, gray] (A) -- (D) -- (C);
+    \draw[dashed, gray] (D) -- (Top);
+    
+    % Edges (Front)
+    \draw[thick, black] (A) -- (B) -- (C);
+    \draw[thick, black] (B) -- (Top);
+    \draw[thick, black] (A) -- (Top);
+    \draw[thick, black] (C) -- (Top);
+    
+    % Vertices
+    \filldraw[black] (A) circle (1pt); % Start
+    \filldraw[black] (B) circle (1pt);
+    \filldraw[black] (C) circle (1pt);
+    \filldraw[black] (Top) circle (1pt); % Optimal
+    
+    % Path
+    \draw[->, red, very thick] (A) -- (B) node[midway, below] {Itération 1};
+    \draw[->, red, very thick] (B) -- (Top) node[midway, right] {Itération 2};
+    
+    % Labels
+    \node[below left] at (A) {$x_0$ (Départ)};
+    \node[right] at (B) {$x_1$};
+    \node[above] at (Top) {$x^*$ (Optimum)};
+    
+    \node[blue!50!black, align=center] at (1, -0.5, 0) {Polyèdre des contraintes \\ $\mathcal{F}$};
+\end{tikzpicture}
+\caption{Visualisation géométrique de la méthode du Simplexe. L'algorithme se déplace de sommet en sommet le long des arêtes du polyèdre jusqu'à trouver l'optimum.}
+\label{fig:simplex-path}
+\end{figure}
+
+\begin{figureexplanation}
+\textbf{Marche sur les arêtes :}
+L'ensemble des points admissibles forme un polyèdre. L'optimum se trouve toujours sur un sommet (ou une face).
+L'algorithme part d'un sommet $x_0$, regarde les arêtes adjacentes, et choisit celle qui fait descendre la fonction de coût le plus vite (le coût réduit le plus négatif). Il "glisse" le long de cette arête jusqu'au prochain sommet ($x_1$), et répète l'opération.
+\end{figureexplanation}
 
 \section{Aperçu de la méthode du simplexe}
 
@@ -70,3 +121,39 @@ Puisque le nombre de sommets est fini (au plus $\binom{n}{m}$), l'algorithme ter
     Update $x_B^+=x_B - d x_q^+$, $x_N^+=(0, \ldots, 0, x_q^+, 0, \ldots, 0)^\top$\;
     Change $\mathcal{B}$ by adding $q$ and removing the basic variable corresponding to column $p$ of $B$\;
 \end{algorithm}
+
+\section{Mise en œuvre et aspects pratiques}
+
+L'algorithme du simplexe présenté ci-dessus est conceptuel. Sa mise en œuvre efficace et robuste nécessite de traiter plusieurs points critiques (voir Nocedal \& Wright, Chapitre 13).
+
+\subsection{Algèbre linéaire et Simplexe révisé}
+Dans la pratique, calculer explicitement l'inverse de la base $B^{-1}$ est coûteux numériquement et instable. La méthode du \textbf{simplexe révisé} maintient plutôt une factorisation de la base (souvent LU) qui est mise à jour à chaque itération.
+\begin{itemize}
+    \item \textbf{Calcul des multiplicateurs (Pricing) :} On résout le système linéaire $B^T \lambda = c_B$ pour obtenir $\lambda$, puis on calcule $s_N = c_N - N^T \lambda$.
+    \item \textbf{Direction de déplacement :} On résout le système $Bd = A_q$ pour obtenir la direction $d$.
+\end{itemize}
+Ces résolutions sont rapides si l'on dispose d'une factorisation à jour de $B$.
+
+\subsection{Dégénérescence et Cyclage}
+Une base est dite \textbf{dégénérée} si une ou plusieurs variables de base sont nulles ($x_i = 0$ pour $i \in \mathcal{B}$). 
+Dans ce cas, le pas maximal possible peut être nul ($\alpha = 0$). L'algorithme effectue un changement de base sans changer de point géométrique ni améliorer la fonction objectif.
+Si une suite de tels pas ramène à une base déjà visitée, l'algorithme boucle indéfiniment : c'est le phénomène de \textbf{cyclage}.
+\begin{itemize}
+    \item \textbf{Règle de Bland :} Pour éviter le cyclage, une règle simple consiste à toujours choisir, parmi les candidats à l'entrée (coût réduit négatif) ou à la sortie (ratio minimal), celui qui a le \textbf{plus petit indice}. Cette règle garantit la terminaison de l'algorithme.
+\end{itemize}
+
+\subsection{Démarrage (Phase I et Phase II)}
+L'algorithme du simplexe nécessite une solution de base réalisable initiale. Celle-ci n'est pas toujours triviale à trouver. On procède souvent en deux phases :
+\begin{itemize}
+    \item \textbf{Phase I :} On introduit des variables artificielles $z$ et on résout un problème auxiliaire dont l'objectif est de minimiser la somme de ces variables (par exemple, $\min \sum z_i$ sous $Ax + Ez = b, x,z \ge 0$). Si le minimum est 0, on a trouvé une solution réalisable pour le problème initial.
+    \item \textbf{Phase II :} On utilise la solution trouvée en Phase I comme point de départ pour résoudre le problème original.
+\end{itemize}
+
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{Géométrie :} À quoi correspond une solution de base réalisable ? (Un sommet du polyèdre).
+    \item \textbf{Optimalité :} Quel vecteur doit être positif pour garantir l'optimalité ? (Coûts réduits).
+    \item \textbf{Dualité :} Énoncer le théorème de dualité forte.
+\end{itemize}
+\end{checkpoint}

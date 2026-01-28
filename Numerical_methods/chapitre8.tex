@@ -286,3 +286,110 @@ Update $x_B^+ = x_B - dx_q^+$, $x_N^+ = (0, \ldots, 0, x_q^+, 0, \ldots, 0)'$\;
 Change $\mathcal{B}$ by adding $q$ and removing the basic variable corresponding to column $p$ of $B$\;
 \end{algorithm}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exercices d'entraînement (Nocedal \& Wright)}
+\label{sec:8.exercises}
+
+\bigskip
+\begin{exercice}[Optimisation sous contrainte - Rigueur KKT]
+On considère le problème :
+$$ \min_{x \in \mathbb{R}^2} f(x) = x_1 + x_2 $$
+sous la contrainte $c_1(x) = x_1^2 + x_2^2 - 2 = 0$.
+\begin{enumerate}
+    \item Écrire le Lagrangien et les conditions KKT du premier ordre.
+    \item Trouver les points candidats $(x^*, \lambda^*)$.
+    \item Vérifier la qualification des contraintes (LICQ) en ces points.
+    \item Vérifier les conditions suffisantes du second ordre en explicitant le cône critique (tangent) $\mathcal{C}(x^*, \lambda^*)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{correction}
+\textbf{1. KKT (Premier Ordre) :}
+$L(x, \lambda) = x_1 + x_2 - \lambda(x_1^2 + x_2^2 - 2)$.
+Conditions (FONC) :
+$$ \nabla_x L = \begin{pmatrix} 1 - 2\lambda x_1 \\ 1 - 2\lambda x_2 \end{pmatrix} = 0 $$
+$$ c_1(x) = x_1^2 + x_2^2 - 2 = 0 $$
+
+\textbf{2. Points Candidats :}
+$1 = 2\lambda x_1 \implies x_1 = 1/(2\lambda)$ (si $\lambda \ne 0$).
+$1 = 2\lambda x_2 \implies x_2 = 1/(2\lambda)$.
+Donc $x_1 = x_2$.
+Contrainte : $2x_1^2 = 2 \implies x_1^2 = 1 \implies x_1 = \pm 1$.
+Deux candidats :
+- $P_1 = (1, 1)$. Alors $2\lambda = 1 \implies \lambda = 1/2$.
+- $P_2 = (-1, -1)$. Alors $-2\lambda = 1 \implies \lambda = -1/2$.
+
+\textbf{3. Qualification (LICQ) :}
+Gradient de la contrainte : $\nabla c_1(x) = (2x_1, 2x_2)^T$.
+- En $P_1(1,1)$ : $\nabla c_1 = (2, 2)^T \ne 0$. Vecteurs indépendants (1 seul vecteur non nul). LICQ OK.
+- En $P_2(-1,-1)$ : $\nabla c_1 = (-2, -2)^T \ne 0$. LICQ OK.
+
+\textbf{4. Second Ordre (SOSC) :}
+Hessienne du Lagrangien : $\nabla_{xx}^2 L(x, \lambda) = \nabla^2 f - \lambda \nabla^2 c_1$.
+$\nabla^2 f = 0$ (linéaire), $\nabla^2 c_1 = \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix} = 2I$.
+Donc $W = \nabla_{xx}^2 L = -2\lambda I$.
+
+\textbf{En $P_1(1,1)$ avec $\lambda = 1/2$ :}
+$W = -I$.
+Cône critique $C(P_1) = \ker(\nabla c_1^T) = \{ w \in \mathbb{R}^2 | (2, 2) \cdot w = 0 \} = \{ w | w_1 + w_2 = 0 \}$.
+Vecteur du cône : $w = (1, -1)^T$.
+Test : $w^T W w = (1, -1) (-I) \begin{pmatrix} 1 \\ -1 \end{pmatrix} = - (1^2 + (-1)^2) = -2 < 0$.
+Condition non satisfaite (courbure négative). Donc $P_1$ est un \textbf{maximum} local.
+
+\textbf{En $P_2(-1,-1)$ avec $\lambda = -1/2$ :}
+$W = -2(-1/2)I = I$.
+Cône critique $C(P_2) = \{ w | -2w_1 - 2w_2 = 0 \} = \{ w | w_1 + w_2 = 0 \}$.
+Test : $w^T W w = w^T I w = \|w\|^2 > 0$ pour tout $w \ne 0$.
+Condition suffisante satisfaite. $P_2$ est un \textbf{minimum} local strict.
+\end{correction}
+\bigskip
+
+\bigskip
+\begin{exercice}[Inégalités et Cône Critique]
+Considérer $\min (x_1 - 1)^2 + x_2^2$ s.c. $x_1 \ge 0, x_2 \ge 0$.
+Le point $x^* = (1, 0)$ est-il solution ?
+\begin{enumerate}
+    \item Vérifier KKT.
+    \item Expliciter le cône critique $\mathcal{C}(x^*, \lambda^*)$. (Attention aux multiplicateurs nuls/actifs).
+    \item Vérifier SOSC.
+\end{enumerate}
+\end{exercice}
+
+\begin{correction}
+$f(x) = (x_1-1)^2 + x_2^2$. Contraintes $c_1(x) = x_1 \ge 0, c_2(x) = x_2 \ge 0$.
+$\nabla f = \begin{pmatrix} 2(x_1-1) \\ 2x_2 \end{pmatrix}$.
+\textbf{1. KKT en $(1,0)$ :}
+$\nabla f(1,0) = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$.
+Contraintes actives : $c_2(x) = x_2 \ge 0$ est active ($x_2=0$). $c_1$ inactive ($x_1=1 > 0$).
+Relation : $\nabla f(x^*) = \lambda_1 \nabla c_1 + \lambda_2 \nabla c_2$.
+$\begin{pmatrix} 0 \\ 0 \end{pmatrix} = 0 \cdot \begin{pmatrix} 1 \\ 0 \end{pmatrix} + \lambda_2 \begin{pmatrix} 0 \\ 1 \end{pmatrix}$.
+$\implies \lambda_2 = 0$. $\lambda_1=0$ (car inactive).
+Les multiplicateurs sont $\ge 0$. KKT satisfait.
+Remarque : $\lambda_2 = 0$ alors que la contrainte est active (dégénérescence / complémentarité non stricte).
+
+\textbf{2. Cône Critique :}
+$\mathcal{A}(x^*) = \{2\}$.
+$C(x^*, \lambda^*) = \{ w \in \mathbb{R}^2 | \nabla c_i^T w = 0 \text{ si } \lambda_i > 0, \text{ et } \nabla c_i^T w \ge 0 \text{ si } \lambda_i = 0 \}$.
+Ici $\lambda_2 = 0$ pour contrainte 2 active.
+$\nabla c_2 = (0, 1)^T$.
+Donc conditions : $\nabla c_2^T w \ge 0 \implies w_2 \ge 0$.
+Le cône critique est le demi-plan supérieur $\{ w | w_2 \ge 0 \}$.
+(C'est beaucoup plus large que le simple noyau $\ker \nabla c$).
+
+\textbf{3. Second Ordre :}
+$\nabla^2 f = \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix}$. $W = \nabla^2 f$ (car $\lambda=0$).
+Pour tout $w \in C$ non nul : $w^T \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix} w = 2(w_1^2 + w_2^2) > 0$.
+SOSC satisfaite. C'est un minimum local strict.
+\end{correction}
+\bigskip
+
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{Définitions :} Qu'est-ce qu'une contrainte active ?
+    \item \textbf{Qualifications :} Que signifie LICQ ? (Indépendance linéaire des gradients des contraintes actives).
+    \item \textbf{Géométrie :} Quelle est la différence entre le cône tangent et le cône linéarisé ?
+\end{itemize}
+\end{checkpoint}
+

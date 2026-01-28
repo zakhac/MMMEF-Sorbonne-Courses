@@ -274,3 +274,13 @@ alors la suite des gradients converge vers zéro au sens suivant :
 \liminf_{k \to \infty} \|\nabla f_k\| = 0.
 \]
 \end{theoreme}
+
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{Adaptation :} Comment passe-t-on du CG linéaire au CG non-linéaire (remplacement du résidu par le gradient, $\alpha_k$ par Line Search) ?
+    \item \textbf{Formules $\beta$} : Quelle est la différence entre Fletcher-Reeves (FR) et Polak-Ribière (PR) ? Laquelle est généralement meilleure en pratique ?
+    \item \textbf{Restart :} Pourquoi redémarre-t-on l'algorithme (pas de plus forte pente) périodiquement ?
+    \item \textbf{Descente :} Le CG non-linéaire garantit-il toujours une direction de descente ? (Non pour PR sans modification, oui pour FR avec Strong Wolfe).
+\end{itemize}
+\end{checkpoint}
