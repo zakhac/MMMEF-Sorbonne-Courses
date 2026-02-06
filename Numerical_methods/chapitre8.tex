@@ -70,25 +70,20 @@ Un vecteur $x^*$ est une \textbf{solution locale isolée} si :
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.2]
-    % Feasible region (shaded)
     \draw[fill=blue!10, draw=blue!50, thick] (0,0) 
         .. controls (1,0.5) and (2,0.3) .. (3,0.8)
         .. controls (3.5,1.2) and (3.2,2) .. (2.5,2.5)
         .. controls (1.5,3) and (0.5,2.5) .. (0,2)
         .. controls (-0.3,1) and (-0.2,0.5) .. (0,0);
     
-    % Local solution point - positioned ON THE BOUNDARY to show N not fully in Omega
     \coordinate (xstar) at (2.8, 2.15);
     \filldraw[red] (xstar) circle (2.5pt) node[above left] {$x^*$};
     
-    % Neighborhood circle - extends outside Omega
     \draw[dashed, gray] (xstar) circle (0.7cm);
     \node[gray] at (3.6, 2.6) {$\mathcal{N}$};
     
-    % Labels
     \node[blue!70] at (1.5, 0.0) {$\Omega$};
     
-    % Caption for intersection
     \node at (1.5, -0.5) {$\mathcal{N} \cap \Omega$};
 \end{tikzpicture}
 \caption{Solution locale $x^*$ sur le bord de $\Omega$ : le voisinage $\mathcal{N}$ n'est pas nécessairement inclus dans $\Omega$.}
@@ -111,15 +106,9 @@ est équivalent au problème lisse et sous contraintes :
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.0]
-    % Axes - draw AFTER hatching so they are visible
-    % First, create the hatching region
     
     % g1 = 0.1*x^2 + 0.3, g2 = -0.5*x + 3.3
-    % Intersection: 0.1*x^2 + 0.5*x - 3 = 0 => x ≈ 3.5
-    % At x=3.5: g1 = g2 ≈ 1.525
     
-    % Draw hatching only in the region above the max envelope
-    % Start hatching from x=0.5 to avoid covering the y-axis
     \begin{scope}
         \clip (0.5, 0.1) rectangle (6.3, 4.6);
         \foreach \i in {-12,-11,...,25} {
@@ -127,7 +116,6 @@ est équivalent au problème lisse et sous contraintes :
         }
     \end{scope}
     
-    % White out below g2 for x < 3.5 (where g2 is max)
     \begin{scope}
         \clip (0.5, -0.5) rectangle (3.5, 4.8);
         \fill[white] (0.5, -0.5) 
@@ -135,7 +123,6 @@ est équivalent au problème lisse et sous contraintes :
             -- (3.5, -0.5) -- cycle;
     \end{scope}
     
-    % White out below g1 for x > 3.5 (where g1 is max)
     \begin{scope}
         \clip (3.5, -0.5) rectangle (6.3, 4.8);
         \fill[white] (3.5, -0.5) 
@@ -144,44 +131,33 @@ est équivalent au problème lisse et sous contraintes :
             -- (6.3, -0.5) -- cycle;
     \end{scope}
     
-    % Draw axes ON TOP of hatching
     \draw[->, thick] (-0.3,0) -- (7,0) node[right] {$x$};
     \draw[->, thick] (0,-0.3) -- (0,5) node[above] {$t$};
     
-    % Draw g1 (blue): parabola, increasing for x > 0
     \draw[blue, thick, domain=0.3:6.3, samples=100] 
         plot (\x, {0.1*\x*\x + 0.3});
     \node[blue] at (5.8, 3.0) {$g_1$};
     
-    % Draw g2 (green): decreasing line
     \draw[green!60!black, thick, domain=0.3:6.0, samples=50] 
         plot (\x, {-0.5*\x + 3.3});
     \node[green!60!black] at (0.7, 3.3) {$g_2$};
     
-    % Draw the max envelope in red
-    % For x < 3.5: g2 > g1, so max = g2
-    % For x > 3.5: g1 > g2, so max = g1
     \draw[red, very thick, domain=0.3:3.5, samples=50] 
         plot (\x, {-0.5*\x + 3.3});
     \draw[red, very thick, domain=3.5:6.3, samples=50] 
         plot (\x, {0.1*\x*\x + 0.3});
     
-    % Optimal point at intersection x* ≈ 3.5, t* ≈ 1.525
     \coordinate (xstar) at (3.5, 1.525);
     \draw[fill=white, thick] (xstar) circle (5pt);
     \filldraw[red] (xstar) circle (2.5pt);
     
-    % Vertical dashed line
     \draw[dashed, gray] (3.5, 0) -- (3.5, 1.525);
     \node[below] at (3.5, -0.1) {$x^*$};
     
-    % Label for optimal point - positioned clearly to the right
     \node[red] at (4.8, 1.7) {$(x^*, t^*)$};
     
-    % Label for max envelope - positioned to not overlap with g1
     \node at (5.2, 4.7) {$\max_\mu g_\mu(x)$};
     
-    % Indicate epigraph with arrow
     \draw[->, thick] (1.5, 4.3) -- (1.5, 3.6);
     \node at (1.5, 4.55) {\small épigraphe};
 \end{tikzpicture}
@@ -203,7 +179,7 @@ Pour le cas particulier de la programmation linéaire, on dispose d'un algorithm
 
 Un problème de programmation linéaire en forme standard s'écrit :
 \begin{equation}
-    \min_{x \in \mathbb{R}^n} c'x \quad \text{s.c.} \quad Ax = b, \; x \geq 0,
+    \min_{x \in \mathbb{R}^n} c^\top x \quad \text{s.c.} \quad Ax = b, \; x \geq 0,
 \end{equation}
 où $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$, $c \in \mathbb{R}^n$.
 
@@ -220,7 +196,6 @@ On a alors $B = A_{\mathcal{B}}$ (matrice de base, inversible) et $N = A_{\mathc
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.2]
-    % Polyhedron (feasible region) in 2D projection
     \coordinate (A) at (0, 0);
     \coordinate (B) at (3, 0);
     \coordinate (C) at (4, 1.5);
@@ -228,34 +203,27 @@ On a alors $B = A_{\mathcal{B}}$ (matrice de base, inversible) et $N = A_{\mathc
     \coordinate (E) at (1, 3.5);
     \coordinate (F) at (0, 2);
     
-    % Fill feasible region
     \fill[blue!10] (A) -- (B) -- (C) -- (D) -- (E) -- (F) -- cycle;
     \draw[blue!70, thick] (A) -- (B) -- (C) -- (D) -- (E) -- (F) -- cycle;
     
-    % Vertices (basic feasible solutions)
     \foreach \point/\name/\pos in {A/$v_1$/below left, B/$v_2$/below right, C/$v_3$/right, D/$v_4$/above right, E/$v_5$/above, F/$v_6$/left} {
         \filldraw[red] (\point) circle (2.5pt) node[\pos] {\name};
     }
     
-    % Objective function direction
     \draw[->, very thick, green!60!black] (2, 1.5) -- (3.2, 2.3);
-    \node[green!60!black] at (2.6, 2.6) {$\nabla c'x$};
+    \node[green!60!black] at (2.6, 2.6) {$\nabla c^\top x$};
     
-    % Optimal vertex - label positioned further right to avoid overlap
     \draw[orange, very thick] (C) circle (5pt);
     \node[orange] at (5.8, 1.5) {\textbf{optimum} ($v_3$)};
     
-    % Edge movement arrows
     \draw[->, thick, purple] (A) -- ($(A)!0.3!(B)$);
     \draw[->, thick, purple] (B) -- ($(B)!0.3!(C)$);
     
-    % Labels
     \node at (2, 1.2) {$\Omega$ (réalisable)};
     
-    % Legend
     \node[red, right] at (5, 3) {\small $\bullet$ Sommets = solutions de base};
     \node[purple, right] at (5, 2.5) {\small $\rightarrow$ Déplacement le long des arêtes};
-    \node[green!60!black, right] at (5, 2) {\small Direction de diminution de $c'x$};
+    \node[green!60!black, right] at (5, 2) {\small Direction de diminution de $c^\top x$};
 \end{tikzpicture}
 \caption{Géométrie de la programmation linéaire. L'ensemble réalisable $\Omega$ est un polyèdre. Les sommets correspondent aux solutions de base réalisables. La méthode du simplexe se déplace de sommet en sommet le long des arêtes.}
 \label{fig:simplex-geometry}
@@ -271,8 +239,8 @@ La figure~\ref{fig:simplex-geometry} illustre la géométrie du problème de pro
 \caption{Une étape de la méthode du Simplexe}
 \label{alg:simplex}
 Given $\mathcal{B}$, $\mathcal{N}$, $x_B = B^{-1}b \ge 0$, $x_N = 0$\;
-Solve $B'\lambda = c_B$ for $\lambda$\;
-Compute $s_N = c_N - N'\lambda$\; \Comment*[r]{Pricing}
+Solve $B^\top\lambda = c_B$ for $\lambda$\;
+Compute $s_N = c_N - N^\top\lambda$\; \Comment*[r]{Pricing}
 \If{$s_N \ge 0$}{
     \Stop \Comment*[r]{optimal point found}
 }
@@ -282,7 +250,7 @@ Solve $Bd = A_q$ for $d$\;
     \Stop \Comment*[r]{problem is unbounded}
 }
 Calculate $x_q^+ = \min_{i|d_i>0}\left(\frac{(x_B)_i}{d_i}\right)$, use $p$ to denote the minimizing $i$\;
-Update $x_B^+ = x_B - dx_q^+$, $x_N^+ = (0, \ldots, 0, x_q^+, 0, \ldots, 0)'$\;
+Update $x_B^+ = x_B - dx_q^+$, $x_N^+ = (0, \ldots, 0, x_q^+, 0, \ldots, 0)^\top$\;
 Change $\mathcal{B}$ by adding $q$ and removing the basic variable corresponding to column $p$ of $B$\;
 \end{algorithm}
 
@@ -321,9 +289,9 @@ Deux candidats :
 - $P_2 = (-1, -1)$. Alors $-2\lambda = 1 \implies \lambda = -1/2$.
 
 \textbf{3. Qualification (LICQ) :}
-Gradient de la contrainte : $\nabla c_1(x) = (2x_1, 2x_2)^T$.
-- En $P_1(1,1)$ : $\nabla c_1 = (2, 2)^T \ne 0$. Vecteurs indépendants (1 seul vecteur non nul). LICQ OK.
-- En $P_2(-1,-1)$ : $\nabla c_1 = (-2, -2)^T \ne 0$. LICQ OK.
+Gradient de la contrainte : $\nabla c_1(x) = (2x_1, 2x_2)^\top$.
+- En $P_1(1,1)$ : $\nabla c_1 = (2, 2)^\top \ne 0$. Vecteurs indépendants (1 seul vecteur non nul). LICQ OK.
+- En $P_2(-1,-1)$ : $\nabla c_1 = (-2, -2)^\top \ne 0$. LICQ OK.
 
 \textbf{4. Second Ordre (SOSC) :}
 Hessienne du Lagrangien : $\nabla_{xx}^2 L(x, \lambda) = \nabla^2 f - \lambda \nabla^2 c_1$.
@@ -332,15 +300,15 @@ Donc $W = \nabla_{xx}^2 L = -2\lambda I$.
 
 \textbf{En $P_1(1,1)$ avec $\lambda = 1/2$ :}
 $W = -I$.
-Cône critique $C(P_1) = \ker(\nabla c_1^T) = \{ w \in \mathbb{R}^2 | (2, 2) \cdot w = 0 \} = \{ w | w_1 + w_2 = 0 \}$.
-Vecteur du cône : $w = (1, -1)^T$.
-Test : $w^T W w = (1, -1) (-I) \begin{pmatrix} 1 \\ -1 \end{pmatrix} = - (1^2 + (-1)^2) = -2 < 0$.
+Cône critique $C(P_1) = \ker(\nabla c_1^\top) = \{ w \in \mathbb{R}^2 | (2, 2) \cdot w = 0 \} = \{ w | w_1 + w_2 = 0 \}$.
+Vecteur du cône : $w = (1, -1)^\top$.
+Test : $w^\top W w = (1, -1) (-I) \begin{pmatrix} 1 \\ -1 \end{pmatrix} = - (1^2 + (-1)^2) = -2 < 0$.
 Condition non satisfaite (courbure négative). Donc $P_1$ est un \textbf{maximum} local.
 
 \textbf{En $P_2(-1,-1)$ avec $\lambda = -1/2$ :}
 $W = -2(-1/2)I = I$.
 Cône critique $C(P_2) = \{ w | -2w_1 - 2w_2 = 0 \} = \{ w | w_1 + w_2 = 0 \}$.
-Test : $w^T W w = w^T I w = \|w\|^2 > 0$ pour tout $w \ne 0$.
+Test : $w^\top W w = w^\top I w = \|w\|^2 > 0$ pour tout $w \ne 0$.
 Condition suffisante satisfaite. $P_2$ est un \textbf{minimum} local strict.
 \end{correction}
 \bigskip
@@ -370,16 +338,16 @@ Remarque : $\lambda_2 = 0$ alors que la contrainte est active (dégénérescence
 
 \textbf{2. Cône Critique :}
 $\mathcal{A}(x^*) = \{2\}$.
-$C(x^*, \lambda^*) = \{ w \in \mathbb{R}^2 | \nabla c_i^T w = 0 \text{ si } \lambda_i > 0, \text{ et } \nabla c_i^T w \ge 0 \text{ si } \lambda_i = 0 \}$.
+$C(x^*, \lambda^*) = \{ w \in \mathbb{R}^2 | \nabla c_i^\top w = 0 \text{ si } \lambda_i > 0, \text{ et } \nabla c_i^\top w \ge 0 \text{ si } \lambda_i = 0 \}$.
 Ici $\lambda_2 = 0$ pour contrainte 2 active.
-$\nabla c_2 = (0, 1)^T$.
-Donc conditions : $\nabla c_2^T w \ge 0 \implies w_2 \ge 0$.
+$\nabla c_2 = (0, 1)^\top$.
+Donc conditions : $\nabla c_2^\top w \ge 0 \implies w_2 \ge 0$.
 Le cône critique est le demi-plan supérieur $\{ w | w_2 \ge 0 \}$.
 (C'est beaucoup plus large que le simple noyau $\ker \nabla c$).
 
 \textbf{3. Second Ordre :}
 $\nabla^2 f = \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix}$. $W = \nabla^2 f$ (car $\lambda=0$).
-Pour tout $w \in C$ non nul : $w^T \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix} w = 2(w_1^2 + w_2^2) > 0$.
+Pour tout $w \in C$ non nul : $w^\top \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix} w = 2(w_1^2 + w_2^2) > 0$.
 SOSC satisfaite. C'est un minimum local strict.
 \end{correction}
 \bigskip

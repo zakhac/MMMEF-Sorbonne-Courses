@@ -17,24 +17,17 @@ Soit $x \in \Omega$ un point réalisable. L'ensemble actif (\textit{active set})
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.5]
-    % Draw the feasible set Omega (irregular shape)
     \draw[thick, fill=blue!5] plot [smooth cycle, tension=0.7] coordinates {(-1,0) (0,1.5) (2,1) (2,-1) (0,-1)};
     \node at (0.5, 0) {$\Omega$};
     
-    % Draw "feasible set" label with arrow
     \node (feasible) at (-2, 0.5) {\textit{feasible set}};
     \draw[->] (feasible) -- (-0.8, 0.2);
     
-    % Draw a point x on the boundary
     \coordinate (x) at (1.2, 0.82); % Approximate boundary point
     \filldraw[red] (x) circle (2pt) node[above right] {$x$};
     
-    % Indicate active constraints intersection conceptually
-    % Drawing a small circle around x to indicate local inspection
     \draw[dashed] (x) circle (0.5cm);
     
-    % Annotations based on the blackboard drawing
-    % The drawing shows c_i(x)=0 for active, c_i(x)>0 for inactive inside
     \draw[->] (1.5, 1.5) node[right] {$c_i(x)=0, i \in \mathcal{E}$} -- (x);
     
 \end{tikzpicture}
@@ -76,30 +69,21 @@ On remarque que $\nabla f(x)$ est constant (le même en tout point), contraireme
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.5]
-    % Axes
     \draw[->] (-2.5,0) -- (2.5,0) node[right] {$x_1$};
     \draw[->] (0,-2.5) -- (0,2.5) node[above] {$x_2$};
     
-    % Circle (Feasible set)
     \draw[thick, blue] (0,0) circle (1.414);
     \node[blue] at (1.1, 1.1) {$\sqrt{2}$};
     \node[blue, right] at (1.45, 0.5) {$x_1^2+x_2^2=2$};
     
-    % Scaling for visualization: 
-    % Real norms: ||grad f|| = sqrt(2) approx 1.414. ||grad c1|| = 2*sqrt(2) approx 2.828.
-    % We visually scale them down by factor 0.5 to fit.
-    % Visual lengths: grad f -> 0.7 units. grad c1 -> 1.4 units.
     
-    % Point 1 (1, 1)
     \coordinate (P1) at (1,1);
     \draw[dashed] (0,0) -- (P1);
     % grad f = (1,1) -> visual (0.5, 0.5)
     \draw[->, orange, thick] (P1) -- ++(0.5, 0.5) node[right] {$\nabla f$};
     % grad c1 = (2,2) -> visual (1, 1) -> 2x larger
-    % Shifted slightly to distinguish
     \draw[->, purple, thick] (P1) -- ++(1.0, 1.0) node[above] {$\nabla c_1$};
     
-    % Point 2 (-1, 1)
     \coordinate (P2) at (-1,1);
     \draw[dashed] (0,0) -- (P2);
     % grad f = (1,1) -> visual (0.5, 0.5)
@@ -107,12 +91,10 @@ On remarque que $\nabla f(x)$ est constant (le même en tout point), contraireme
     % grad c1 = (-2,2) -> visual (-1, 1) -> 2x larger
     \draw[->, purple, thick] (P2) -- ++(-1.0, 1.0) node[left] {$\nabla c_1$};
     
-    % Optimal Point (-1, -1)
     \coordinate (Opt) at (-1,-1);
     \filldraw[red] (Opt) circle (2pt);
     \node[red, below right] at (-1, -1) {$x^* = (-1, -1)$};
     
-    % Gradients at Opt
     % grad f = (1,1) -> visual (0.5, 0.5)
     \draw[->, orange, thick] (Opt) -- ++(0.5, 0.5) node[right] {$\nabla f$};
     % grad c1 = (-2,-2) -> visual (-1, -1) -> 2x larger
@@ -129,7 +111,6 @@ On remarque que $\nabla f(x)$ est constant (le même en tout point), contraireme
     % grad c1 = (0, 2*sqrt(2)) -> direction (0,1)
     % Just showing f here to unclutter
     
-    % Legend
     \matrix [draw, fill=white, right] at (2.5, 2) {
       \node[orange] {$\to \nabla f$}; \\
       \node[purple] {$\to \nabla c_1$}; \\
@@ -161,23 +142,23 @@ Dans cet exemple, on trouve $\lambda_1^* = -1/2$.
 \paragraph{Dérivation (Justification heuristique)}
 Soit $x$ un point réalisable. Un petit pas $s$ partant de $x$ reste réalisable si, au premier ordre :
 \begin{equation}
-    0 = c_1(x+s) \approx \underbrace{c_1(x)}_{=0} + \nabla c_1(x)^T s.
+    0 = c_1(x+s) \approx \underbrace{c_1(x)}_{=0} + \nabla c_1(x)^\top s.
 \end{equation}
-Donc, pour rester sur la surface de contrainte (au premier ordre), le pas $s$ doit être orthogonal au gradient de la contrainte : $\nabla c_1(x)^T s = 0$.
+Donc, pour rester sur la surface de contrainte (au premier ordre), le pas $s$ doit être orthogonal au gradient de la contrainte : $\nabla c_1(x)^\top s = 0$.
 
 De plus, le pas $s$ produit une diminution de la fonction objectif $f$ si :
 \begin{equation}
-    0 > f(x+s) - f(x) \approx \nabla f(x)^T s \quad \text{(au premier ordre)}.
+    0 > f(x+s) - f(x) \approx \nabla f(x)^\top s \quad \text{(au premier ordre)}.
 \end{equation}
-C'est-à-dire $\nabla f(x)^T s < 0$ (pour un pas $s$ suffisamment petit).
+C'est-à-dire $\nabla f(x)^\top s < 0$ (pour un pas $s$ suffisamment petit).
 
 Si $x^*$ est un minimum local, il ne doit pas exister de direction $s$ qui soit à la fois réalisable (tangente à la contrainte) et de descente. Cela implique que le gradient $\nabla f(x^*)$ doit être aligné avec $\nabla c_1(x^*)$. Si $\nabla f(x^*)$ avait une composante non nulle dans l'espace tangent, on pourrait trouver un $s$ réduisant $f$.
 
 Cela suggère qu'on cherche une direction $d$ (par exemple avec $\|d\|=1$) telle que :
 \begin{equation}
     \begin{cases}
-    \nabla c_1(x)^T d = 0 \quad \text{(tangente à la surface)} \\
-    \nabla f(x)^T d < 0 \quad \text{(descente)}
+    \nabla c_1(x)^\top d = 0 \quad \text{(tangente à la surface)} \\
+    \nabla f(x)^\top d < 0 \quad \text{(descente)}
     \end{cases}
 \end{equation}
 S'il n'existe pas de tel $d$, alors il est probable que $x$ soit un minimiseur local.
@@ -189,12 +170,12 @@ Cela ne peut être le cas que si $\nabla f(x)$ et $\nabla c_1(x)$ sont parallèl
 
 Sinon, on peut construire explicitement une direction de descente \textit{projetée} par la formule suivante :
 \begin{equation}
-    \bar{d} = - \left( I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2} \right) \nabla f(x).
+    \bar{d} = - \left( I - \frac{\nabla c_1(x) \nabla c_1(x)^\top}{\|\nabla c_1(x)\|^2} \right) \nabla f(x).
 \end{equation}
-En normalisant $d = \frac{\bar{d}}{\|\bar{d}\|}$ (si $\bar{d} \neq 0$), cette direction satisfait $\nabla c_1(x)^T d = 0$ et $\nabla f(x)^T d < 0$.
+En normalisant $d = \frac{\bar{d}}{\|\bar{d}\|}$ (si $\bar{d} \neq 0$), cette direction satisfait $\nabla c_1(x)^\top d = 0$ et $\nabla f(x)^\top d < 0$.
 
 \begin{remarque}[Projecteur orthogonal]
-La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2}$ est le \textbf{projecteur orthogonal} sur le noyau de $\nabla c_1(x)^T$, c'est-à-dire sur l'espace tangent à la surface de contrainte en $x$. Ainsi, $\bar{d}$ est la projection de $-\nabla f(x)$ (direction de plus forte descente) sur cet espace tangent.
+La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^\top}{\|\nabla c_1(x)\|^2}$ est le \textbf{projecteur orthogonal} sur le noyau de $\nabla c_1(x)^\top$, c'est-à-dire sur l'espace tangent à la surface de contrainte en $x$. Ainsi, $\bar{d}$ est la projection de $-\nabla f(x)$ (direction de plus forte descente) sur cet espace tangent.
 \end{remarque}
 
 \begin{figure}[H]
@@ -202,16 +183,12 @@ La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2}$ e
 \begin{subfigure}[b]{0.45\textwidth}
     \centering
     \begin{tikzpicture}[scale=1.2]
-        % Constraint boundary (vertical line)
         \draw[thick] (0,-1.5) -- (0,1.5);
-        % Feasible region hatching (left side)
         \fill[pattern=north east lines, pattern color=gray!30] (-1.5,-1.5) rectangle (0,1.5);
         
-        % Point x
         \coordinate (x) at (0,0);
         \filldraw (x) circle (1.5pt) node[below right] {$x$};
         
-        % Gradients - Non parallel
         \draw[->, purple, thick] (x) -- (1,0) node[right] {$\nabla c_1$};
         \draw[->, orange, thick] (x) -- (1,1) node[right] {$\nabla f$};
         
@@ -227,16 +204,12 @@ La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2}$ e
 \begin{subfigure}[b]{0.45\textwidth}
     \centering
     \begin{tikzpicture}[scale=1.2]
-        % Constraint boundary (vertical line)
         \draw[thick] (0,-1.5) -- (0,1.5);
-        % Feasible region hatching (left side)
         \fill[pattern=north east lines, pattern color=gray!30] (-1.5,-1.5) rectangle (0,1.5);
         
-        % Point x
         \coordinate (x) at (0,0);
         \filldraw (x) circle (1.5pt) node[below right] {$x$};
         
-        % Gradients - Parallel
         \draw[->, purple, thick] (x) -- (1.5,0) node[right] {$\nabla c_1$};
         \draw[->, orange, thick] (x) -- (0.75,0) node[above] {$\nabla f$};
         
@@ -257,11 +230,9 @@ La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2}$ e
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.5]
-    % Point x
     \coordinate (x) at (0,0);
     \filldraw (x) circle (1.5pt) node[below left] {$x$};
     
-    % Gradients
     \draw[->, orange, thick] (x) -- (1, 1) node[right] {$\nabla f(x)$};
     \draw[->, purple, thick] (x) -- (1, 0) node[right] {$\nabla c_1(x)$};
     
@@ -269,19 +240,16 @@ La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2}$ e
     % Normal to grad f is (-1, 1). Line passing through origin.
     \begin{scope}
         \clip (-2, -1.5) rectangle (2, 1.5);
-        % Fill region "opposite" to grad f
         % Rotate coordinate system so x-axis aligns with grad f? No, simpler.
         % Just fill a large rectangle rotated.
         \fill[blue!10, rotate=-135] (-3, 0) rectangle (3, 3);
     \end{scope}
     
-    % Draw boundary of descent zone (orthogonal to grad f)
     \draw[dashed, orange] (-1.5, 1.5) -- (1.5, -1.5);
     \node[blue!60!black] at (-1, -0.5) {Zone de descente ($s$)};
-    \node[blue!60!black, scale=0.8] at (-1, -0.8) {$\nabla f(x)^T s < 0$};
+    \node[blue!60!black, scale=0.8] at (-1, -0.8) {$\nabla f(x)^\top s < 0$};
     
-    % Tangent line (orthogonal to grad c1) -> Vertical line x=0
-    \draw[thick, purple] (0, -1.5) -- (0, 1.5) node[above] {Tangente ($\nabla c_1^T d = 0$)};
+    \draw[thick, purple] (0, -1.5) -- (0, 1.5) node[above] {Tangente ($\nabla c_1^\top d = 0$)};
     
     % In this specific drawing, the tangent line DOES intersect the blue zone (at the bottom)
     % grad f is at 45 deg, Blue zone is roughly 135 to 315 deg.
@@ -298,7 +266,7 @@ La matrice $P = I - \frac{\nabla c_1(x) \nabla c_1(x)^T}{\|\nabla c_1(x)\|^2}$ e
 \end{figure}
 
 \begin{figureexplanation}
-\textbf{Interprétation :} On cherche une direction $d$ telle que $\nabla f^T d < 0$ (descente) et $\nabla c_1^T d = 0$ (tangente). Si la droite tangente passe par la zone bleue, une telle direction existe et $x$ n'est pas optimal.
+\textbf{Interprétation :} On cherche une direction $d$ telle que $\nabla f^\top d < 0$ (descente) et $\nabla c_1^\top d = 0$ (tangente). Si la droite tangente passe par la zone bleue, une telle direction existe et $x$ n'est pas optimal.
 \end{figureexplanation}
 
 \paragraph{Fonction Lagrangienne}
@@ -347,32 +315,26 @@ Le fait que $\lambda_1^* > 0$ indique que la contrainte est \textbf{bloquante} :
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.5]
-    % Axes
     \draw[->] (-2.5,0) -- (2.5,0) node[right] {$x_1$};
     \draw[->] (0,-2.5) -- (0,2.5) node[above] {$x_2$};
     
-    % Feasible region (Disk)
     \filldraw[fill=blue!10, draw=blue, thick] (0,0) circle (1.414);
     \node[blue] at (0.5, -0.5) {$\Omega$};
     \node[blue] at (1.1, 1.1) {$\sqrt{2}$};
     
-    % Optimal Point (-1, -1)
     \coordinate (Opt) at (-1,-1);
     \filldraw[red] (Opt) circle (2pt);
     \node[red, below right] at (-1, -1) {$x^* = (-1, -1)$};
     
-    % Gradients at Opt
     % grad f is (1,1) -> visual (0.5, 0.5) points "inward" (towards origin)
     \draw[->, orange, thick] (Opt) -- ++(0.5, 0.5) node[right] {$\nabla f$};
     
     % grad c1 is (2,2) -> visual (1, 1) points "inward" (same direction)
-    % Shifted slightly for visibility
     \draw[->, purple, thick] (Opt) -- ++(1.0, 1.0) node[above] {$\nabla c_1$};
     
     % Tangent line
     \draw[green!60!black, thin] (-2, 0) -- (0, -2);
     
-    % Legend
     \matrix [draw, fill=white, right] at (2.5, 2) {
       \node[orange] {$\to \nabla f$}; \\
       \node[purple] {$\to \nabla c_1$}; \\
@@ -390,26 +352,26 @@ Le fait que $\lambda_1^* > 0$ indique que la contrainte est \textbf{bloquante} :
 Soit $x$ un point réalisable.
 Un petit pas $s$ partant de $x$ produit une diminution de la fonction objectif si, au premier ordre :
 \begin{equation}
-    \nabla f(x)^T s < 0.
+    \nabla f(x)^\top s < 0.
 \end{equation}
 Ce pas conserve la réalisabilité par rapport à la contrainte $c_1$ si :
 \begin{equation}
-    0 \le c_1(x+s) \approx c_1(x) + \nabla c_1(x)^T s.
+    0 \le c_1(x+s) \approx c_1(x) + \nabla c_1(x)^\top s.
 \end{equation}
 Ainsi, au premier ordre, on doit avoir :
 \begin{equation}
-    c_1(x) + \nabla c_1(x)^T s \ge 0.
+    c_1(x) + \nabla c_1(x)^\top s \ge 0.
 \end{equation}
 
 On distingue alors deux cas :
 \begin{enumerate}
     \item \textbf{$x$ est strictement à l'intérieur du domaine} (i.e. $c_1(x) > 0$). \\
-    Tout pas $s$ suffisamment petit garantira que $c_1(x) + \nabla c_1(x)^T s \ge 0$. Par exemple, on peut choisir la direction de la plus forte pente $s = -\alpha \nabla f(x)$ avec $\alpha > 0$ petit (si $\nabla f(x) \neq 0$). Dans ce cas, la contrainte n'est pas \textit{active} et ne limite pas localement la minimisation.
+    Tout pas $s$ suffisamment petit garantira que $c_1(x) + \nabla c_1(x)^\top s \ge 0$. Par exemple, on peut choisir la direction de la plus forte pente $s = -\alpha \nabla f(x)$ avec $\alpha > 0$ petit (si $\nabla f(x) \neq 0$). Dans ce cas, la contrainte n'est pas \textit{active} et ne limite pas localement la minimisation.
     
     \item \textbf{$x$ est sur la frontière de l'ensemble réalisable} (i.e. $c_1(x) = 0$). \\
     Dans ce cas, les conditions de diminution de la fonction et de réalisabilité deviennent :
     \begin{equation}
-        \nabla f(x)^T s < 0 \quad \text{et} \quad \nabla c_1(x)^T s \ge 0.
+        \nabla f(x)^\top s < 0 \quad \text{et} \quad \nabla c_1(x)^\top s \ge 0.
     \end{equation}
     À l'optimum, il ne doit pas exister de tel $s$. Cela implique une relation spécifique entre les gradients (voir condition KKT plus loin).
 \end{enumerate}
@@ -419,7 +381,6 @@ On distingue alors deux cas :
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.5]
-    % Point x
     \coordinate (x) at (0,0);
     \filldraw (x) circle (1.5pt) node[above left] {$x$};
     
@@ -434,18 +395,15 @@ On distingue alors deux cas :
     \begin{scope}
         \fill[orange!20, opacity=0.7] (0,0) -- (150:2.5) arc (150:330:2.5) -- cycle;
     \end{scope}
-     \node[orange!80!black] at (220:2.0) {Zone de descente ($\nabla f^T s < 0$)};
+     \node[orange!80!black] at (220:2.0) {Zone de descente ($\nabla f^\top s < 0$)};
 
-    % Half-Plane 2: Feasible (Purple)
     % Perpendicular to grad c1 (normal at 10 deg -> boundary at 100/280).
     % Valid region is same side as grad c1 -> Angles [-80, 100] i.e. [280, 460].
     \begin{scope}
         \fill[purple!20, opacity=0.7] (0,0) -- (100:2.5) arc (100:-80:2.5) -- cycle;
     \end{scope}
-    \node[purple!80!black] at (0:2.0) {Zone réalisable ($\nabla c_1^T s \geq 0$)};
+    \node[purple!80!black] at (0:2.0) {Zone réalisable ($\nabla c_1^\top s \geq 0$)};
 
-    % Intersection (Green hatching)
-    % Intersection of [150, 330] and [280, 460] is [280, 330].
     % Width = 50 degrees (tighter than 90).
     \begin{scope}
         \clip (0,0) -- (280:2.5) arc (280:330:2.5) -- cycle;
@@ -456,7 +414,6 @@ On distingue alors deux cas :
     \draw[dashed, orange, thick] (150:2.5) -- (330:2.5);
     \draw[dashed, purple, thick] (100:2.5) -- (280:2.5); % Boundary for grad c1 at 10 deg
 
-    % Label Acceptable Directions
     \node[green!40!black, font=\bfseries] at (305:2.2) {Intersection};
     \draw[->, green!40!black, thick] (305:2.0) -- (305:1.5);
     
@@ -493,18 +450,14 @@ La question fondamentale devient alors : \textbf{Quand n'y a-t-il aucune directi
         % Boundary line
         \draw[thick, black] (0,-1.5) -- (0,1.5);
         
-        % Point
         \filldraw (x) circle (1.5pt) node[above left] {$x$};
         
-        % Gradients (parallel, same direction)
         \draw[->, orange!80!black, very thick] (x) -- (0.7, 0) node[above] {$\nabla f$};
         \draw[->, purple!80!black, very thick] (x) -- (1.3, 0) node[above] {$\nabla c_1$};
         
-        % Labels at bottom, well separated
         \node[orange!70!black, font=\footnotesize] at (-0.75, -1.3) {Descente};
         \node[purple!70!black, font=\footnotesize] at (0.75, -1.3) {Réalisable};
         
-        % "Intersection vide" label
         \node[red, font=\small\bfseries, fill=white, draw=red, inner sep=3pt, rounded corners] at (0, 1.0) {$\emptyset$};
         
     \end{tikzpicture}
@@ -531,14 +484,11 @@ La question fondamentale devient alors : \textbf{Quand n'y a-t-il aucune directi
         \draw[dashed, orange!80!black, thick] (0, -1.5) -- (0, 1.5);
         \draw[dashed, purple!80!black, thick] (30:1.5) -- (210:1.5);
         
-        % Point
         \filldraw (x) circle (1.5pt) node[below right] {$x$};
         
-        % Gradients
         \draw[->, orange!80!black, very thick] (x) -- (1, 0) node[right] {$\nabla f$};
         \draw[->, purple!80!black, very thick] (x) -- (120:1.0) node[above] {$\nabla c_1$};
         
-        % Labels positioned OUTSIDE overlap
         \node[orange!70!black, font=\footnotesize] at (-0.7, -1.3) {Descente};
         \node[purple!70!black, font=\footnotesize] at (0.9, 0.9) {Réalisable};
         
@@ -609,39 +559,31 @@ Remarquons que les deux contraintes sont actives en $x^*$ ($c_1(x^*) = 0$ et $c_
 On s'attendrait à ce qu'une direction de descente réalisable $d$ satisfasse :
 \begin{equation}
     \begin{cases}
-        \nabla c_i(x^*)^T d \ge 0 \quad \text{pour } i=1, 2 \quad \text{(réalisable)}, \\
-        \nabla f(x^*)^T d < 0 \quad \text{(descente)}.
+        \nabla c_i(x^*)^\top d \ge 0 \quad \text{pour } i=1, 2 \quad \text{(réalisable)}, \\
+        \nabla f(x^*)^\top d < 0 \quad \text{(descente)}.
     \end{cases}
 \end{equation}
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.5]
-    % Axes
     \draw[->] (-2.5,0) -- (2.5,0) node[right] {$x_1$};
     \draw[->] (0,-0.5) -- (0,2.5) node[above] {$x_2$};
     
-    % Feasible region: Upper semi-disk
     \fill[blue!10] (1.414, 0) arc (0:180:1.414) -- cycle;
     \draw[blue, thick] (1.414, 0) arc (0:180:1.414);
     \draw[blue, thick] (-1.414, 0) -- (1.414, 0);
     
-    % Optimal point
     \coordinate (Opt) at (-1.414, 0);
     \filldraw[red] (Opt) circle (1.5pt) node[below left] {$x^* = (-\sqrt{2}, 0)$};
     
-    % Gradients at Opt
-    % grad f = (1, 1). Visual scaled 0.7
     \draw[->, orange, thick] (Opt) -- ++(0.7, 0.7) node[right] {$\nabla f$};
     
-    % grad c1 = (2sqrt(2), 0) approx (2.8, 0). Points Right. Visual scaled 1.0
     \draw[->, purple, thick] (Opt) -- ++(1.0, 0) node[below right] {$\nabla c_1$};
     
-    % grad c2 = (0, 1). Points Up. Visual scaled 1.0
     \draw[->, purple, thick] (Opt) -- ++(0, 1.0) node[left] {$\nabla c_2$};
     
     % Cone of feasible directions?
-    % Feasible directions roughly Right-Up sector
     % Descent directions roughly Left-Down sector
     % No interaction.
     
@@ -746,8 +688,8 @@ L'ensemble des vecteurs tangents à $\Omega$ en $x$ est noté $T_\Omega(x)$ et e
     \begin{equation}
         \mathcal{F}(x) = \left\{ d \in \mathbb{R}^n \mid 
         \begin{aligned}
-            d^T \nabla c_i(x) &= 0 \quad \forall i \in \mathcal{E}, \\
-            d^T \nabla c_i(x) &\ge 0 \quad \forall i \in \mathcal{I} \cap \mathcal{A}(x)
+            d^\top \nabla c_i(x) &= 0 \quad \forall i \in \mathcal{E}, \\
+            d^\top \nabla c_i(x) &\ge 0 \quad \forall i \in \mathcal{I} \cap \mathcal{A}(x)
         \end{aligned}
         \right\}.
     \end{equation}
@@ -779,22 +721,18 @@ L'ensemble des vecteurs tangents à $\Omega$ en $x$ est noté $T_\Omega(x)$ et e
 
     \begin{center}
     \begin{tikzpicture}[scale=1.5]
-        % Circle
         \draw[thick] (0,0) circle (1.414);
         \node at (0.8, 0.8) {$x_1^2+x_2^2=2$};
         
-        % Axes
         \draw[->, gray] (-2,0) -- (2,0) node[right] {$x_1$};
         \draw[->, gray] (0,-2) -- (0,2) node[above] {$x_2$};
         
-        % Point x
         \coordinate (x) at (-1.414, 0);
         \filldraw[red] (x) circle (1.5pt) node[below left] {$x = (-\sqrt{2}, 0)$};
         
         % Tangent line (vertical)
         \draw[green!60!black, thick] (-1.414, -1.2) -- (-1.414, 1.2) node[above] {Tangente};
         
-        % Converging arrows (Feasible sequences) (Red and Blue)
         % From top (z_k): Blue arrows approaching 180 deg from 150 deg
         \draw[->, blue, thick] (150:1.414) arc (150:170:1.414);
         \draw[->, blue, thick] (160:1.414) arc (160:175:1.414);
@@ -820,15 +758,15 @@ Calculons maintenant $\mathcal{F}(x)$ en $x = (-\sqrt{2}, 0)$.
     \end{equation}
     L'ensemble des directions réalisables linéarisées est :
     \begin{equation}
-        \mathcal{F}(x) = \left\{ d = \begin{pmatrix} d_1 \\ d_2 \end{pmatrix} \in \mathbb{R}^2 \mid d^T \nabla c_1(x) = 0 \right\}.
+        \mathcal{F}(x) = \left\{ d = \begin{pmatrix} d_1 \\ d_2 \end{pmatrix} \in \mathbb{R}^2 \mid d^\top \nabla c_1(x) = 0 \right\}.
     \end{equation}
-    La condition $d^T \nabla c_1(x) = 0$ donne :
+    La condition $d^\top \nabla c_1(x) = 0$ donne :
     \begin{equation}
-        \begin{pmatrix} d_1 \\ d_2 \end{pmatrix}^T \begin{pmatrix} -2\sqrt{2} \\ 0 \end{pmatrix} = -2\sqrt{2} d_1 = 0 \implies d_1 = 0.
+        \begin{pmatrix} d_1 \\ d_2 \end{pmatrix}^\top \begin{pmatrix} -2\sqrt{2} \\ 0 \end{pmatrix} = -2\sqrt{2} d_1 = 0 \implies d_1 = 0.
     \end{equation}
     Donc :
     \begin{equation}
-        \mathcal{F}(x) = \left\{ (0, d_2)^T \mid d_2 \in \mathbb{R} \right\} = T_\Omega(x).
+        \mathcal{F}(x) = \left\{ (0, d_2)^\top \mid d_2 \in \mathbb{R} \right\} = T_\Omega(x).
     \end{equation}
 
 \begin{remarque}[Cas où $\mathcal{F}(x) \neq T_\Omega(x)$]
@@ -837,11 +775,11 @@ Calculons maintenant $\mathcal{F}(x)$ en $x = (-\sqrt{2}, 0)$.
         
         En effet, le gradient de cette nouvelle contrainte en $x$ s'annule :
         \[ \nabla \left[ (x_1^2 + x_2^2 - 2)^2 \right] = 2(x_1^2 + x_2^2 - 2) \cdot \begin{pmatrix} 2x_1 \\ 2x_2 \end{pmatrix} = 0 \text{ sur le cercle.} \]
-        Donc la condition $d^T \nabla c(x) = 0$ est toujours satisfaite, d'où $\mathcal{F}(x) = \mathbb{R}^2$.
+        Donc la condition $d^\top \nabla c(x) = 0$ est toujours satisfaite, d'où $\mathcal{F}(x) = \mathbb{R}^2$.
         
         \item Si on change la contrainte pour $2 - x_1^2 - x_2^2 \geq 0$ (inégalité), alors :
         \begin{equation}
-            T_\Omega(x) = \left\{ (d_1, d_2)^T \in \mathbb{R}^2 \mid d_1 \geq 0 \right\} = \mathcal{F}(x).
+            T_\Omega(x) = \left\{ (d_1, d_2)^\top \in \mathbb{R}^2 \mid d_1 \geq 0 \right\} = \mathcal{F}(x).
         \end{equation}
     \end{itemize}
 \end{remarque}
@@ -940,7 +878,7 @@ Dans cette section, nous formalisons les conditions d'optimalité pour les probl
 \begin{definition}[Cône critique]
     Étant donné $\mathcal{A}(x^*)$ et des multiplicateurs de Lagrange $\lambda^*$ satisfaisant les conditions KKT, le \textbf{cône critique} $\mathcal{C}(x^*, \lambda^*)$ est défini par :
     \begin{equation}
-        \mathcal{C}(x^*, \lambda^*) = \left\{ w \in \mathcal{F}(x^*) \mid \nabla c_i(x^*)^T w = 0 \ \text{pour tout } i \in \mathcal{I} \cap \mathcal{A}(x^*) \ \text{avec } \lambda_i^* > 0 \right\}.
+        \mathcal{C}(x^*, \lambda^*) = \left\{ w \in \mathcal{F}(x^*) \mid \nabla c_i(x^*)^\top w = 0 \ \text{pour tout } i \in \mathcal{I} \cap \mathcal{A}(x^*) \ \text{avec } \lambda_i^* > 0 \right\}.
     \end{equation}
 \end{definition}
 
@@ -955,9 +893,9 @@ Dans cette section, nous formalisons les conditions d'optimalité pour les probl
     \begin{equation}
         w \in \mathcal{C}(x^*, \lambda^*) \iff 
         \begin{cases}
-            \nabla c_i(x^*)^T w = 0 & \text{pour tout } i \in \mathcal{E}, \\
-            \nabla c_i(x^*)^T w \geq 0 & \text{pour tout } i \in \mathcal{I} \cap \mathcal{A}(x^*) \text{ avec } \lambda_i^* = 0, \\
-            \nabla c_i(x^*)^T w = 0 & \text{pour tout } i \in \mathcal{I} \cap \mathcal{A}(x^*) \text{ avec } \lambda_i^* > 0.
+            \nabla c_i(x^*)^\top w = 0 & \text{pour tout } i \in \mathcal{E}, \\
+            \nabla c_i(x^*)^\top w \geq 0 & \text{pour tout } i \in \mathcal{I} \cap \mathcal{A}(x^*) \text{ avec } \lambda_i^* = 0, \\
+            \nabla c_i(x^*)^\top w = 0 & \text{pour tout } i \in \mathcal{I} \cap \mathcal{A}(x^*) \text{ avec } \lambda_i^* > 0.
         \end{cases}
     \end{equation}
     Autrement dit, les directions du cône critique ``adhèrent'' aux contraintes d'égalité et aux contraintes d'inégalité actives lorsqu'on perturbe légèrement la fonction objectif.
@@ -965,19 +903,19 @@ Dans cette section, nous formalisons les conditions d'optimalité pour les probl
     \paragraph{Propriété fondamentale.}
     On a la propriété importante suivante :
     \begin{equation}
-        w \in \mathcal{C}(x^*, \lambda^*) \implies \lambda_i^* \nabla c_i(x^*)^T w = 0 \quad \forall i \in \mathcal{E} \cup \mathcal{I}.
+        w \in \mathcal{C}(x^*, \lambda^*) \implies \lambda_i^* \nabla c_i(x^*)^\top w = 0 \quad \forall i \in \mathcal{E} \cup \mathcal{I}.
     \end{equation}
     En effet :
     \begin{itemize}
-        \item Pour $i \in \mathcal{E}$, on a $\nabla c_i(x^*)^T w = 0$ par définition de $\mathcal{F}(x^*)$.
-        \item Pour $i \in \mathcal{I} \cap \mathcal{A}(x^*)$ avec $\lambda_i^* > 0$, on a $\nabla c_i(x^*)^T w = 0$ par définition de $\mathcal{C}(x^*, \lambda^*)$.
-        \item Pour $i \in \mathcal{I} \cap \mathcal{A}(x^*)$ avec $\lambda_i^* = 0$, le produit $\lambda_i^* \nabla c_i(x^*)^T w = 0$.
+        \item Pour $i \in \mathcal{E}$, on a $\nabla c_i(x^*)^\top w = 0$ par définition de $\mathcal{F}(x^*)$.
+        \item Pour $i \in \mathcal{I} \cap \mathcal{A}(x^*)$ avec $\lambda_i^* > 0$, on a $\nabla c_i(x^*)^\top w = 0$ par définition de $\mathcal{C}(x^*, \lambda^*)$.
+        \item Pour $i \in \mathcal{I} \cap \mathcal{A}(x^*)$ avec $\lambda_i^* = 0$, le produit $\lambda_i^* \nabla c_i(x^*)^\top w = 0$.
         \item Pour $i \in \mathcal{I} \setminus \mathcal{A}(x^*)$ (contraintes inactives), on a $\lambda_i^* = 0$ par complémentarité.
     \end{itemize}
     
     \paragraph{Conséquence.} Puisque $\nabla_x \mathcal{L}(x^*, \lambda^*) = 0$ par la condition KKT de stationnarité, on a :
     \begin{equation}
-        w \in \mathcal{C}(x^*, \lambda^*) \implies w^T \nabla f(x^*) = w^T \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i^* \nabla c_i(x^*) = \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i^* \nabla c_i(x^*)^T w = 0.
+        w \in \mathcal{C}(x^*, \lambda^*) \implies w^\top \nabla f(x^*) = w^\top \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i^* \nabla c_i(x^*) = \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i^* \nabla c_i(x^*)^\top w = 0.
     \end{equation}
     Ainsi, le cône critique rassemble les directions le long desquelles, à partir de l'information du premier ordre seulement, on ne peut pas déterminer si $f$ va augmenter ou diminuer.
 \end{remarque}
@@ -985,7 +923,7 @@ Dans cette section, nous formalisons les conditions d'optimalité pour les probl
 \begin{theoreme}[Conditions nécessaires du second ordre]
     Soit $x^*$ un minimum local. Supposons que LICQ soit satisfaite en $x^*$. Soit $\lambda^*$ le vecteur des multiplicateurs de Lagrange satisfaisant les conditions KKT. Alors, pour tout $w \in \mathcal{C}(x^*, \lambda^*)$ :
     \begin{equation}
-        w^T \nabla_{xx}^2 \mathcal{L}(x^*, \lambda^*) w \geq 0.
+        w^\top \nabla_{xx}^2 \mathcal{L}(x^*, \lambda^*) w \geq 0.
     \end{equation}
     Autrement dit, la Hessienne du Lagrangien est \textbf{semi-définie positive} sur le cône critique.
 \end{theoreme}
@@ -993,7 +931,7 @@ Dans cette section, nous formalisons les conditions d'optimalité pour les probl
 \begin{theoreme}[Conditions suffisantes du second ordre]
     Soit $x^*$ un point réalisable satisfaisant les conditions KKT avec multiplicateurs $\lambda^*$. Supposons que pour tout $w \in \mathcal{C}(x^*, \lambda^*) \setminus \{0\}$ :
     \begin{equation}
-        w^T \nabla_{xx}^2 \mathcal{L}(x^*, \lambda^*) w > 0.
+        w^\top \nabla_{xx}^2 \mathcal{L}(x^*, \lambda^*) w > 0.
     \end{equation}
     Alors $x^*$ est un \textbf{minimum local strict} du problème d'optimisation.
 \end{theoreme}
@@ -1093,7 +1031,7 @@ Dans cette section, nous formalisons les conditions d'optimalité pour les probl
     \end{equation}
     qui est définie positive. Donc pour tout $w \neq 0$ dans le cône critique :
     \begin{equation}
-        w^T \nabla_{xx}^2 \mathcal{L}(x^*, \lambda^*) w = \|w\|^2 > 0.
+        w^\top \nabla_{xx}^2 \mathcal{L}(x^*, \lambda^*) w = \|w\|^2 > 0.
     \end{equation}
     Par le théorème des conditions suffisantes, $x^* = (-1, -1)$ est un \textbf{minimum local strict}.
 \end{exemple}
@@ -1110,12 +1048,12 @@ Le problème primal est défini par :
 \begin{equation}
     (P) \quad \min_{x \in \mathbb{R}^n} f(x) \quad \text{sujet à} \quad c(x) \geq 0,
 \end{equation}
-où $c(x) = (c_1(x), \dots, c_m(x))^T$.
+où $c(x) = (c_1(x), \dots, c_m(x))^\top$.
 
 \subsection{Fonction Duale et Problème Dual}
 
 \begin{definition}[Fonction objective duale]
-    On définit le Lagrangien par $\mathcal{L}(x, \lambda) = f(x) - \lambda^T c(x)$.
+    On définit le Lagrangien par $\mathcal{L}(x, \lambda) = f(x) - \lambda^\top c(x)$.
     La \textbf{fonction objective duale} $q: \mathbb{R}^m \to \mathbb{R}$ est définie par :
     \begin{equation}
         q(\lambda) = \inf_x \mathcal{L}(x, \lambda).
@@ -1222,22 +1160,22 @@ Le point $x^* = (1, 0)$ est bien la projection de l'origine sur le demi-plan $x_
 
 Considérons le programme linéaire primal suivant :
 \begin{equation}
-    (P) \quad \min_{x \in \mathbb{R}^n} c^T x \quad \text{sujet à} \quad Ax - b \geq 0.
+    (P) \quad \min_{x \in \mathbb{R}^n} c^\top x \quad \text{sujet à} \quad Ax - b \geq 0.
 \end{equation}
 Ici, la fonction objective est linéaire (donc convexe) et les contraintes sont affines. La fonction objective duale est :
 \begin{align}
-    q(\lambda) &= \inf_{x \in \mathbb{R}^n} \left[ c^T x - \lambda^T (Ax - b) \right] \\
-    &= \inf_{x \in \mathbb{R}^n} \left[ (c - A^T \lambda)^T x + \lambda^T b \right].
+    q(\lambda) &= \inf_{x \in \mathbb{R}^n} \left[ c^\top x - \lambda^\top (Ax - b) \right] \\
+    &= \inf_{x \in \mathbb{R}^n} \left[ (c - A^\top \lambda)^\top x + \lambda^\top b \right].
 \end{align}
 L'infimum de cette fonction affine par rapport à $x$ vaut $-\infty$, sauf si le coefficient de $x$ est nul.
 \begin{equation}
-    \inf_x (c - A^T \lambda)^T x = \begin{cases} 0 & \text{si } c - A^T \lambda = 0, \\ -\infty & \text{sinon.} \end{cases}
+    \inf_x (c - A^\top \lambda)^\top x = \begin{cases} 0 & \text{si } c - A^\top \lambda = 0, \\ -\infty & \text{sinon.} \end{cases}
 \end{equation}
-Donc, pour être dans le domaine $\mathcal{D}$ (où $q > -\infty$), nous devons imposer $c = A^T \lambda$. Dans ce cas, $q(\lambda) = \lambda^T b$.
+Donc, pour être dans le domaine $\mathcal{D}$ (où $q > -\infty$), nous devons imposer $c = A^\top \lambda$. Dans ce cas, $q(\lambda) = \lambda^\top b$.
 
 Le problème dual s'écrit alors :
 \begin{equation}
-    (D) \quad \max_{\lambda} \lambda^T b \quad \text{sujet à} \quad c = A^T \lambda, \quad \lambda \geq 0.
+    (D) \quad \max_{\lambda} \lambda^\top b \quad \text{sujet à} \quad c = A^\top \lambda, \quad \lambda \geq 0.
 \end{equation}
 
 Cela illustre comment le dual d'un problème de minimisation linéaire est un problème de maximisation linéaire.

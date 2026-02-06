@@ -7,7 +7,7 @@
 
 Considérons le problème de programmation linéaire (PL) sous sa forme standard :
 \begin{equation}
-    \min_{x \in \mathbb{R}^n} c^T x \quad \text{sujet à} \quad Ax = b, \quad x \geq 0,
+    \min_{x \in \mathbb{R}^n} c^\top x \quad \text{sujet à} \quad Ax = b, \quad x \geq 0,
 \end{equation}
 où $A$ est une matrice $m \times n$ de rang $m$, $c \in \mathbb{R}^n$ est le vecteur de coût et $b \in \mathbb{R}^m$.
 
@@ -18,7 +18,7 @@ En fixant $x_N = 0$, on obtient la solution de base $x_B = B^{-1}b$. Si $x_B \ge
 
 Le coût réduit ("reduced cost") est défini par le vecteur $s_N$:
 \begin{equation}
-    s_N = c_N - (B^{-1}N)^T c_B = c_N - N^T \lambda,
+    s_N = c_N - (B^{-1}N)^\top c_B = c_N - N^\top \lambda,
 \end{equation}
 avec $\lambda = B^{-T} c_B$ le vecteur des multiplicateurs (ou variables duales).
 
@@ -30,13 +30,13 @@ avec $\lambda = B^{-T} c_B$ le vecteur des multiplicateurs (ou variables duales)
 
 À tout problème primal (P) correspond un problème dual (D). Pour la forme standard ci-dessus, le dual est :
 \begin{equation}
-    \max_{\lambda \in \mathbb{R}^m} b^T \lambda \quad \text{sujet à} \quad A^T \lambda \leq c.
+    \max_{\lambda \in \mathbb{R}^m} b^\top \lambda \quad \text{sujet à} \quad A^\top \lambda \leq c.
 \end{equation}
 
 Les relations fondamentales entre primal et dual sont :
 \begin{itemize}
-    \item \textbf{Dualité faible} : Pour tout $x$ réalisable pour (P) et tout $\lambda$ réalisable pour (D), on a $b^T \lambda \leq c^T x$.
-    \item \textbf{Dualité forte} : Si (P) admet une solution optimale $x^*$, alors (D) admet une solution optimale $\lambda^*$ et leurs valeurs sont égales : $c^T x^* = b^T \lambda^*$.
+    \item \textbf{Dualité faible} : Pour tout $x$ réalisable pour (P) et tout $\lambda$ réalisable pour (D), on a $b^\top \lambda \leq c^\top x$.
+    \item \textbf{Dualité forte} : Si (P) admet une solution optimale $x^*$, alors (D) admet une solution optimale $\lambda^*$ et leurs valeurs sont égales : $c^\top x^* = b^\top \lambda^*$.
 \end{itemize}
 
 \section{Géométrie de l'ensemble réalisable}
@@ -53,38 +53,29 @@ Puisque le nombre de sommets est fini (au plus $\binom{n}{m}$), l'algorithme ter
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=2, z={( -0.3, -0.2)}, line join=round]
-    % Coordinates for a simple truncated pyramid (polyhedron)
     \coordinate (A) at (0,0,0);
     \coordinate (B) at (2,0,0);
     \coordinate (C) at (2,2,0);
     \coordinate (D) at (0,2,0);
     \coordinate (Top) at (1,1,2.5);
     
-    % Faces (transparent)
     \fill[blue!5, opacity=0.8] (A) -- (B) -- (Top) -- cycle;
     \fill[blue!10, opacity=0.8] (B) -- (C) -- (Top) -- cycle;
     
-    % Edges (Back - Dashed)
     \draw[dashed, gray] (A) -- (D) -- (C);
     \draw[dashed, gray] (D) -- (Top);
     
-    % Edges (Front)
     \draw[thick, black] (A) -- (B) -- (C);
     \draw[thick, black] (B) -- (Top);
     \draw[thick, black] (A) -- (Top);
     \draw[thick, black] (C) -- (Top);
     
-    % Vertices
-    \filldraw[black] (A) circle (1pt); % Start
     \filldraw[black] (B) circle (1pt);
     \filldraw[black] (C) circle (1pt);
-    \filldraw[black] (Top) circle (1pt); % Optimal
     
-    % Path
     \draw[->, red, very thick] (A) -- (B) node[midway, below] {Itération 1};
     \draw[->, red, very thick] (B) -- (Top) node[midway, right] {Itération 2};
     
-    % Labels
     \node[below left] at (A) {$x_0$ (Départ)};
     \node[right] at (B) {$x_1$};
     \node[above] at (Top) {$x^*$ (Optimum)};
@@ -104,22 +95,22 @@ L'algorithme part d'un sommet $x_0$, regarde les arêtes adjacentes, et choisit 
 \section{Aperçu de la méthode du simplexe}
 
 \begin{algorithm}[H]
-    \caption{One step of the Simplex method}
+    \caption{Une étape de la méthode du Simplexe}
     \SetAlgoLined
-    Given $\mathcal{B}$, $\mathcal{N}$, $x_B=B^{-1}b\geq 0$, $x_N=0$\;
-    Solve $B^\top\lambda = c_B$ for $\lambda$\;
-    Compute $s_N=c_N - N^\top\lambda$\; \Comment{Pricing}
+    Données : $\mathcal{B}$, $\mathcal{N}$, $x_B=B^{-1}b\geq 0$, $x_N=0$\;
+    Résoudre $B^\top\lambda = c_B$ pour $\lambda$\;
+    Calculer $s_N=c_N - N^\top\lambda$\; \Comment{Pricing}
     \If{$s_N\geq 0$}{
-        \Stop \Comment{optimal point found}
+        \Stop \Comment{point optimal trouvé}
     }
-    Select $q\in\mathcal{N}$ with $s_q<0$ as the entering index\;
-    Solve $Bd=A_q$ for $d$\;
+    Sélectionner $q\in\mathcal{N}$ avec $s_q<0$ comme indice entrant\;
+    Résoudre $Bd=A_q$ pour $d$\;
     \If{$d\leq 0$}{
-        \Stop \Comment{problem is unbounded}
+        \Stop \Comment{problème non borné}
     }
-    Calculate $x_q^+=\min_{i \mid d_i> 0}\left(\frac{(x_B)_i}{d_i}\right)$, use $p$ to denote the minimizing $i$\;
-    Update $x_B^+=x_B - d x_q^+$, $x_N^+=(0, \ldots, 0, x_q^+, 0, \ldots, 0)^\top$\;
-    Change $\mathcal{B}$ by adding $q$ and removing the basic variable corresponding to column $p$ of $B$\;
+    Calculer $x_q^+=\min_{i \mid d_i> 0}\left(\frac{(x_B)_i}{d_i}\right)$, utiliser $p$ pour noter l'indice minimisant $i$\;
+    Mettre à jour $x_B^+=x_B - d x_q^+$, $x_N^+=(0, \ldots, 0, x_q^+, 0, \ldots, 0)^\top$\;
+    Changer $\mathcal{B}$ en ajoutant $q$ et en retirant la variable de base correspondant à la colonne $p$ de $B$\;
 \end{algorithm}
 
 \section{Mise en œuvre et aspects pratiques}
@@ -129,7 +120,7 @@ L'algorithme du simplexe présenté ci-dessus est conceptuel. Sa mise en œuvre 
 \subsection{Algèbre linéaire et Simplexe révisé}
 Dans la pratique, calculer explicitement l'inverse de la base $B^{-1}$ est coûteux numériquement et instable. La méthode du \textbf{simplexe révisé} maintient plutôt une factorisation de la base (souvent LU) qui est mise à jour à chaque itération.
 \begin{itemize}
-    \item \textbf{Calcul des multiplicateurs (Pricing) :} On résout le système linéaire $B^T \lambda = c_B$ pour obtenir $\lambda$, puis on calcule $s_N = c_N - N^T \lambda$.
+    \item \textbf{Calcul des multiplicateurs (Pricing) :} On résout le système linéaire $B^\top \lambda = c_B$ pour obtenir $\lambda$, puis on calcule $s_N = c_N - N^\top \lambda$.
     \item \textbf{Direction de déplacement :} On résout le système $Bd = A_q$ pour obtenir la direction $d$.
 \end{itemize}
 Ces résolutions sont rapides si l'on dispose d'une factorisation à jour de $B$.
