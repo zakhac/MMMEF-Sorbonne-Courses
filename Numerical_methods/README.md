@@ -41,4 +41,4 @@ Pour générer le document complet `NumericalMethods.pdf` avec la bibliographie 
 ## État des Chapitres
 
 *   **Chapitres 1-8** : Contenu complet, algorithmes en anglais (comme fourni par le professeur) ou français selon le contexte initial.
-*   **Chapitres 9-12** : Structure créée avec titres et algorithmes du professeur (en anglais). Les sections de contenu théorique (`% TODO`) restent à remplir.
+*   **Chapitres 9-12** : Contenu théorique et algorithmes (Conditions d'optimalité, Simplexe, NON-linéaire, Pénalité) intégrés. En cours de révision et normalisation.

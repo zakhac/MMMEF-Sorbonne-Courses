@@ -17,3 +17,7 @@
 # System files
 .DS_Store
 Thumbs.db
+
+# Numerical Methods
+Numerical_methods/individual_chapters/
+Numerical_methods/generate_chapters.sh

@@ -5,7 +5,7 @@ MAIN = Adv_Tops_in_ML
 all:
 	pdflatex -interaction=nonstopmode $(MAIN).tex
 	pdflatex -interaction=nonstopmode $(MAIN).tex
-	rm -f *.aux *.log *.toc *.out
+	rm -f *.aux *.bbl *.blg *.log *.out *.toc *.fls *.fdb_latexmk *.synctex.gz *.nav *.snm *.vrb
 
 clean:
-	rm -f *.aux *.log *.toc *.out *.pdf
+	rm -f *.aux *.bbl *.blg *.log *.out *.toc *.fls *.fdb_latexmk *.synctex.gz *.nav *.snm *.vrb *.pdf
