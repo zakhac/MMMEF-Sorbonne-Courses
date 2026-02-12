@@ -526,6 +526,14 @@ c’est-à-dire
 Cela exclut les valeurs de $\alpha$ pour lesquelles la pente est trop positive.
 \end{definition}
 
+\begin{remarque}[Comparaison Wolfe standard vs forte]
+    La condition de Wolfe forte renforce la condition standard par un encadrement.
+    \begin{itemize}
+        \item \textbf{Wolfe standard :} $\varphi'(\alpha) \ge c_2 \varphi'(0)$. Elle interdit les pentes trop négatives, mais autorise les pentes très positives (dépassement du minimum).
+        \item \textbf{Wolfe forte :} $|\varphi'(\alpha)| \le -c_2 \varphi'(0) \iff c_2 \varphi'(0) \le \varphi'(\alpha) \le -c_2 \varphi'(0)$. Elle interdit aussi les pentes trop positives, forçant $\alpha$ à rester dans un voisinage où la dérivée est proche de zéro.
+    \end{itemize}
+\end{remarque}
+
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.0]
