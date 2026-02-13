@@ -13,7 +13,7 @@ Below you will find direct links to the PDF files for the available courses, alo
   *Covers advanced theoretical and practical aspects of machine learning, including risk minimization, optimization, and learning theory.*
 
 ### Arbitrage Theory
-- **[Course Notes (French) (PDF)](Arbitrage/ArbitrageTheoryFR.pdf)**
+- **[Course Notes (French) (PDF)](Arbitrage/francais/ArbitrageTheoryFR.pdf)**
 - **[Course Notes (English) (PDF)](Arbitrage/english/ArbitrageTheoryEN.pdf)**
   *Detailed notes on the mathematical theory of arbitrage, asset pricing, and financial markets derivatives.*
 
