@@ -32,3 +32,7 @@ Below you will find direct links to the PDF files for the available courses, alo
 ### Monte Carlo & Malliavin Calculus
 - **[Course Notes & Synthesis (PDF)](Malliavin/MalliavinNotes.pdf)**
   *A comprehensive guide covering Monte Carlo foundations, infinite-dimensional analysis (Malliavin Calculus), and applications to sensitivity analysis (Greeks) and hedging.*
+
+### Quantitative Credit Strategies
+- **[Course Notes (French) (PDF)](StratQuantCredit/StratQuantCredit.pdf)**
+  *Notes on credit risk modeling, bond pricing, default intensity models, and credit derivatives (CDS).*

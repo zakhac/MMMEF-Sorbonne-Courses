@@ -1,0 +1,147 @@
+%===========================
+% Fichier : StratQuantCredit.tex
+%===========================
+\documentclass[11pt,a4paper,oneside]{book}
+
+%---------------------------
+% Encodage & langue
+%---------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+
+%---------------------------
+% Mathématiques
+%---------------------------
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+
+\usepackage{float}
+\numberwithin{equation}{chapter}
+
+%---------------------------
+% Figures & illustrations
+%---------------------------
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,patterns}
+\graphicspath{{images/}}
+
+%---------------------------
+% Boites colorées (tcolorbox)
+%---------------------------
+\usepackage[most]{tcolorbox} 
+
+%---------------------------
+% Mise en page & style
+%---------------------------
+\usepackage{geometry}
+\geometry{margin=2.5cm, headheight=14pt, footskip=50pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\thepage}
+\fancyfoot[L]{\footnotesize 2025-2026 \textperiodcentered{} Stratégie Quantitative de Crédit - M2 Probas et Finance}
+\fancyfoot[R]{\footnotesize Rédigé par Zakari Hachemi}
+
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet,leftmargin=1.5em}
+
+%---------------------------
+% Liens hypertexte
+%---------------------------
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=teal,
+    urlcolor=magenta,
+    pdfauthor={Zakari Hachemi},
+    pdftitle={Stratégie Quantitative de Crédit},
+    pdfsubject={Cours complet},
+    pdfcreator={LaTeX},
+    plainpages=false,
+    pageanchor=false
+}
+
+% Correction des noms pour autoref
+\def\theoremeautorefname{Théorème}
+\def\propositionautorefname{Proposition}
+\def\lemmeautorefname{Lemme}
+\def\corollaireautorefname{Corollaire}
+\def\definitionautorefname{Définition}
+\def\exempleautorefname{Exemple}
+\def\exerciceautorefname{Exercice}
+\def\remarqueautorefname{Remarque}
+
+%---------------------------
+% Couleurs pour les environnements
+%---------------------------
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{teal}{RGB}{0,165,145}
+\definecolor{darkred}{RGB}{139,0,0}
+
+%---------------------------
+% Environnements théorèmes & Couleurs
+%---------------------------
+
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[chapter]
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Définition}
+\newtheorem{exemple}[theoreme]{Exemple}
+\newtheorem{exercice}{Exercice}[chapter]
+
+\theoremstyle{remark}
+\newtheorem{remarque}[theoreme]{Remarque}
+
+% Styles tcolorbox
+\tcolorboxenvironment{theoreme}{enhanced, colback=red!20!white, frame hidden, arc=2mm, left=2mm, right=2mm, top=2mm, bottom=2mm, before skip=10pt, after skip=10pt}
+\tcolorboxenvironment{proposition}{enhanced, colback=orange!20!white, frame hidden, arc=2mm, left=2mm, right=2mm, top=1mm, bottom=1mm, before skip=10pt, after skip=10pt}
+\tcolorboxenvironment{definition}{enhanced, colback=blue!10!white, frame hidden, arc=2mm, left=2mm, right=2mm, top=1mm, bottom=1mm, before skip=10pt, after skip=10pt}
+\tcolorboxenvironment{exemple}{blanker, breakable, left=5mm, before skip=10pt, after skip=10pt, borderline west={3pt}{0pt}{teal}}
+\tcolorboxenvironment{lemme}{enhanced, colback=violet!20!white, frame hidden, arc=2mm, before skip=10pt, after skip=10pt}
+
+%---------------------------
+% Macros utiles
+%---------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\eps}{\varepsilon}
+
+%---------------------------
+% Informations
+%---------------------------
+\title{\textbf{Stratégie Quantitative de Crédit}\\[0.5em]
+       \large Introduction et Fondamentaux}
+\author{Zakari HACHEMI}
+\date{Basé sur le cours de Raphael DANDO \\ 2025-2026}
+
+%===========================
+\begin{document}
+%===========================
+
+\maketitle
+\hypersetup{pageanchor=true}
+\frontmatter
+\tableofcontents
+\mainmatter
+
+%---------------------------
+% Corps du cours
+%---------------------------
+\include{chapitre1}
+
+
+\end{document}
+%===========================
