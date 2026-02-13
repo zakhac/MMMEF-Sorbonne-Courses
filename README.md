@@ -1,6 +1,6 @@
 # MMMEF Sorbonne Courses
 
-This repository hosts course materials and documents for the MMMEF Master's program at Sorbonne University.
+This repository hosts course materials and documents I wrote during my MMMEF Master's program at Sorbonne University (Paris).
 
 > **Disclaimer**: This repository contains my personal lecture notes, transcriptions, and additional remarks. It represents my personal version of the courses and is intended for study purposes. It is not an official publication of the university or the professors.
 
@@ -32,6 +32,9 @@ Below you will find direct links to the PDF files for the available courses, alo
 ### Monte Carlo & Malliavin Calculus
 - **[Course Notes & Synthesis (PDF)](Malliavin/MalliavinNotes.pdf)**
   *A comprehensive guide covering Monte Carlo foundations, infinite-dimensional analysis (Malliavin Calculus), and applications to sensitivity analysis (Greeks) and hedging.*
+
+
+# El Karoui Courses
 
 ### Quantitative Credit Strategies
 - **[Course Notes (French) (PDF)](StratQuantCredit/StratQuantCredit.pdf)**
