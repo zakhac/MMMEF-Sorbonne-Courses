@@ -402,9 +402,338 @@ Pour un prédicteur empirique $\hat{f}$, nous voulons $\mathcal{U}(\hat{f}) \app
     \item Nous devons estimer le paramètre optimal $\lambda^*$ par un $\hat{\lambda}$.
 \end{itemize}
 
-Le prédicteur estimé sera alors de la forme :
+Le prédicteur estimé (prédicteur équitable $\hat{f}$) sera alors de la forme :
 \begin{equation}
-    \hat{f}_{\hat{\lambda}}(X,S) = \indic_{\left\{ \hat{\eta}(X,S) \ge \frac{1}{2} + \frac{\hat{\lambda} s}{2\hat{\pi}_s} \right\}}
+    \hat{f}(x, s) = \indic_{\left\{ \bar{\eta}(x, s) \ge \frac{1}{2} + \frac{\hat{\lambda} s}{2\hat{\pi}_s} \right\}}
 \end{equation}
-où $\hat{\lambda}$ est choisi pour minimiser l'injustice empirique (ou maximiser l'équité).
+avec un estimateur lissé pour assurer la continuité :
+\begin{equation}
+    \bar{\eta}(x, s) = \hat{\eta}(x, s) + \xi \quad \text{avec} \quad \xi \sim \mathcal{U}_{[0, \nu]}
+\end{equation}
+où $\hat{\eta}$ est un estimateur de $\eta$ (avec $\eta(x,s) = \mathbb{P}(Y=1|X=x,S=s)$) appris sur un ensemble de données labellisées (\textit{labeled data set}).
 
+Le terme $\frac{\hat{\lambda} s}{2\hat{\pi}_s}$ contrôle le compromis (\textit{trade-off}) entre précision (\textit{accuracy}) et équité (\textit{fairness}).
+
+\subsection*{Équité Approximative ($\varepsilon$-équité)}
+
+Au lieu de se restreindre à une équité parfaite $\mathcal{U}(f) = 0$ (où $f$ est strictement DP-équitable), nous pouvons considérer une \textbf{équité approximative} ou \textbf{$\varepsilon$-équité}.
+Nous disons qu'un prédicteur $f$ est $\varepsilon$-équitable si et seulement si :
+\begin{equation}
+    \mathcal{U}(f) \le \varepsilon
+\end{equation}
+Rappelons que l'injustice d'un prédicteur scalaire est définie par :
+\begin{equation}
+    \mathcal{U}(f) = \left| \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f(X, S) = 1) \right|
+\end{equation}
+Le prédicteur $\varepsilon$-équitable optimal est alors logiquement défini par :
+\begin{equation}
+    f_\varepsilon^* \in \argmin_{f} \left\{ R(f) \;\middle|\; f \text{ est } \varepsilon\text{-équitable} \right\}
+\end{equation}
+
+\subsection*{Garanties Théoriques pour le Prédicteur Équitable $\hat{f}$}
+
+\begin{theoreme}[Injustice]
+    Il existe une constante $C$ (qui dépend des probabilités a priori $(\pi_s)_{s \in \mathcal{S}}$) telle que :
+    \begin{equation}
+        \mathbb{E}[\mathcal{U}(\hat{f})] \le C \times N^{-1/2}
+    \end{equation}
+\end{theoreme}
+
+\begin{proof}
+    \textbf{Notations :} 
+    Soit $\hat{\eta}$ l'estimateur de $\eta$ (où $\eta(x,s) = \mathbb{P}(Y=1|X=x,S=s)$) appris sur un ensemble de données labellisées (\textit{labeled data set}) de taille $N_L$.
+    Soit un ensemble de données non labellisées (\textit{unlabeled data set}) de taille $N$, avec pour chaque groupe $N_s = \sum_{i=1}^N \indic_{\{S_i = s\}}$. 
+    Nous notons $(X_i^s)_{i=1}^{N_s}$ les descripteurs des observations du groupe $S=s$ dans cet ensemble non labellisé.
+    
+    Nous définissons la probabilité empirique conditionnelle pour un groupe $s$ et un événement $A$ par :
+    \begin{equation}
+        \hat{\mathbb{P}}_{X|S=s}(A) = \frac{1}{N_s} \sum_{i=1}^{N_s} \indic_A(X_i^s)
+    \end{equation}
+    
+    L'injustice du prédicteur s'écrit par définition :
+    \begin{equation}
+        \mathcal{U}(\hat{f}) = \left| \mathbb{P}_{X|S=1}(\hat{f}(X, S)=1) - \mathbb{P}_{X|S=-1}(\hat{f}(X, S)=1) \right| = \left| \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(\hat{f}(X, S)=1) \right|
+    \end{equation}
+    
+    En introduisant la probabilité empirique $\hat{\mathbb{P}}$, nous pouvons utiliser l'inégalité triangulaire :
+    \begin{align}
+        \mathcal{U}(\hat{f}) &= \left| \sum_{s \in \{-1, 1\}} s \left( \mathbb{P}_{X|S=s}(\hat{f}(X, S)=1) - \hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, S)=1) \right) + \sum_{s \in \{-1, 1\}} s \hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, S)=1) \right| \nonumber \\
+        &\le \sum_{s \in \{-1, 1\}} \left| \mathbb{P}_{X|S=s}(\hat{f}(X, S)=1) - \hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, S)=1) \right| + \left| \sum_{s \in \{-1, 1\}} s \hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, S)=1) \right|
+    \end{align}
+    Le dernier terme correspond à l'injustice empirique du prédicteur, notée $\hat{\mathcal{U}}(\hat{f})$.
+    
+    Pour analyser le premier terme de la somme (pour un $s$ fixé), rappelons que la probabilité d'une prédiction positive s'écrit :
+    \begin{equation}
+        \mathbb{P}_{X|S=s}(\hat{f}(X, s) = 1) = \mathbb{P}_{X|S=s}\left( \hat{\eta}(X, s) \ge \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right)
+    \end{equation}
+    Si la loi de la variable aléatoire $\hat{\eta}(X, s)$ est sans atome (\textit{non-atomic}), alors aucune valeur ponctuelle n'a de masse de probabilité :
+    \begin{equation}
+        \mathbb{P}_{X|S=s}\left( \hat{\eta}(X, s) \ge \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right) = 1 - \mathbb{P}_{X|S=s}\left( \hat{\eta}(X, s) \le \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right)
+    \end{equation}
+    En utilisant la même propriété pour la probabilité empirique, on réécrit la différence absolue entre l'estimation théorique et empirique à l'aide des fonctions de répartition :
+    \begin{align}
+        &\left| \mathbb{P}_{X|S=s}(\hat{f}(X, s)=1) - \hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, s)=1) \right| \nonumber \\
+        &\qquad = \left| \mathbb{P}_{X|S=s} \left( \hat{\eta}(X, s) \le \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right) - \hat{\mathbb{P}}_{X|S=s} \left( \hat{\eta}(X, s) \le \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right) \right|
+    \end{align}
+    
+    Par définition, la quantité empirique est :
+    \begin{equation}
+        \hat{\mathbb{P}}_{X|S=s} \left( \hat{\eta}(X, s) \le \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right) = \frac{1}{N_s} \sum_{i=1}^{N_s} \indic_{\left\{ \hat{\eta}(X_i^s, s) \le \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right\}}
+    \end{equation}
+    
+    Afin de maîtriser la différence en espérance, nous travaillons conditionnellement à l'échantillon labellisé (\textit{labeled sample}).
+    Sous ce conditionnement, l'estimateur appris $\hat{\eta}$ devient une variable (ou fonction) déterministe sur les $N_s$ observations.
+    
+    De plus, le calcul est conditionné par rapport à la taille aléatoire des classes $N_s \sim \mathcal{B}(N, \pi_s)$, et sur l'ensemble $\{N_s \ge 1\}$.
+    \begin{remarque}
+        La probabilité d'avoir une classe vide décroît exponentiellement avec la taille de l'échantillon $N$ :
+        \begin{equation*}
+            \mathbb{P}(N_s = 0) = (1 - \pi_s)^N = \exp(N \log(1 - \pi_s))
+        \end{equation*}
+        pourvu que $\pi_s \in (0, 1)$.
+    \end{remarque}
+    
+    Nous voulons alors contrôler l'espérance suivante, appelée $(I)$ :
+    \begin{equation}
+        \mathbb{E} \left[ \left| \mathbb{P}_{X|S=s} \left( \hat{\eta}(X,s) \le \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right) - \frac{1}{N_s} \sum_{i=1}^{N_s} \indic_{\left\{ \hat{\eta}(X_i^s, s) \le \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right\}} \right| \right] := (I)
+    \end{equation}
+    
+    Nous pouvons majorer ce terme en considérant le supremum sur toutes les valeurs de seuil possibles $t \in \mathbb{R}$ :
+    \begin{equation}
+        (I) \le \mathbb{E} \left[ \sup_{t \in \mathbb{R}} \left| F_s(t) - \hat{F}_s(t) \right| \right]
+    \end{equation}
+    où nous définissons les fonctions de répartition théorique et empirique des scores $\hat{\eta}$ par :
+    \begin{align}
+        F_s(t) &= \mathbb{P}_{X|S=s}(\hat{\eta}(X, s) \le t) \\
+        \hat{F}_s(t) &= \frac{1}{N_s} \sum_{i=1}^{N_s} \indic_{\{\hat{\eta}(X_i^s, s) \le t\}}
+    \end{align}
+
+    \begin{remarque}
+        D'après le théorème de Glivenko-Cantelli, nous savons que la fonction de répartition empirique converge uniformément presque sûrement vers la fonction de répartition théorique :
+        \begin{equation*}
+            \sup_{t \in \mathbb{R}} \left| F_s(t) - \hat{F}_s(t) \right| \xrightarrow[N_s \to +\infty]{p.s.} 0
+        \end{equation*}
+    \end{remarque}
+
+    Pour obtenir une borne quantitative à taille finie $N_s$, nous utilisons l'\textbf{inégalité de Dvoretzky-Kiefer-Wolfowitz (D-K-W)}. Celle-ci énonce que pour tout $\varepsilon > 0$ :
+    \begin{equation}
+        \mathbb{P} \left( \sup_{t \in \mathbb{R}} \left| F_s(t) - \hat{F}_s(t) \right| \ge \varepsilon \right) \le 2 \exp(-2 N_s \varepsilon^2)
+    \end{equation}
+    \textit{(Note : La constante serrée $2$ a été obtenue par Massart en 1990).}
+    
+    Pour calculer l'espérance d'une variable aléatoire positive $Z \ge 0$, nous pouvons l'intégrer sur ses probabilités de queue :
+    \begin{equation}
+        \mathbb{E}[Z] = \int_{0}^{+\infty} \mathbb{P}(Z \ge \varepsilon) \, d\varepsilon
+    \end{equation}
+    En posant $Z = \sup_{t \in \mathbb{R}} \left| F_s(t) - \hat{F}_s(t) \right|$ et en appliquant l'inégalité de D-K-W, l'intégration conduit à borner $(I)$ de la manière suivante (conditionnellement à $\{N_s \ge 1\}$) :
+    \begin{equation}
+        \mathbb{P}((I)) \le \frac{C}{\sqrt{N_s}}
+    \end{equation}
+    où $C$ est une constante (qui ne dépend ni de $N$, ni de l'échantillon).
+    
+    Par conséquent, en prenant l'espérance globale sur les variations de $N_s$, nous obtenons :
+    \begin{equation}
+        \Rightarrow \mathbb{E}[(I)] \le C \, \mathbb{E}\left[ \frac{\indic_{\{N_s \ge 1\}}}{\sqrt{N_s}} \right] \le \frac{C}{\sqrt{N \pi_s}}
+    \end{equation}
+    Ce dernier passage utilise le lemme classique suivant sur la loi binomiale, combiné à l'inégalité de Jensen.
+    \textbf{Lemme :} Si $Z \sim \mathcal{B}(N, p)$, alors :
+    \begin{equation*}
+        \mathbb{E} \left[ \frac{\indic_{\{Z > 0\}}}{Z} \right] \le \frac{C}{N p}
+    \end{equation*}
+
+    \begin{proof}[Preuve du Lemme]
+        Nous commençons par borner le terme d'intérêt :
+        \begin{equation}
+            \frac{\indic_{\{Z > 0\}}}{Z} \le \frac{2}{Z + 1}
+        \end{equation}
+        Nous pouvons alors calculer l'espérance de ce majorant de manière exacte :
+        \begin{equation}
+            \mathbb{E}\left[ \frac{1}{Z + 1} \right] = \sum_{k=0}^N \frac{1}{k+1} \binom{N}{k} p^k (1-p)^{N-k}
+        \end{equation}
+        L'astuce consiste à observer que le facteur $\frac{1}{k+1}$ s'écrit comme une intégrale :
+        \begin{equation*}
+            \frac{1}{k+1} = \int_{0}^1 x^k \, dx
+        \end{equation*}
+        En substituant cette identité dans la somme et en intervertissant somme et intégrale par linéarité :
+        \begin{align}
+            \mathbb{E}\left[ \frac{1}{Z + 1} \right] &= \int_{0}^1 \sum_{k=0}^N \binom{N}{k} (px)^k (1-p)^{N-k} \, dx \nonumber \\
+            &= \int_{0}^1 (px + (1-p))^N \, dx
+        \end{align}
+        où nous avons reconnu le développement du binôme de Newton $(px + (1-p))^N$.
+        
+        Pour calculer cette intégrale, on effectue le changement de variable $y = px + (1-p)$, d'où $dy = p \, dx$ :
+        \begin{equation}
+            \mathbb{E}\left[ \frac{1}{Z + 1} \right] = \frac{1}{p} \int_{1-p}^1 y^N \, dy \le \frac{1}{p} \int_{0}^1 y^N \, dy = \frac{1}{(N+1)p}
+        \end{equation}
+        On en déduit donc la première borne voulue (avec la constante $C=2$) :
+        \begin{equation}
+            \mathbb{E} \left[ \frac{\indic_{\{Z > 0\}}}{Z} \right] \le \mathbb{E}\left[ \frac{2}{Z + 1} \right] \le \frac{2}{(N+1)p}
+        \end{equation}
+    \end{proof}
+    
+    Enfin, pour conclure la preuve du théorème initial, nous remarquons que par l'inégalité de Jensen (la fonction $x \mapsto 1/\sqrt{x}$ étant convexe, ou de manière équivalente par l'inégalité de Cauchy-Schwarz d'après la majoration au carré) :
+    \begin{equation*}
+        \mathbb{E} \left[ \frac{\indic_{\{Z > 0\}}}{\sqrt{Z}} \right] \le \sqrt{ \mathbb{E} \left[ \frac{\indic_{\{Z > 0\}}}{Z} \right] } \le \sqrt{ \frac{2}{(N+1)p} } \le \frac{C}{\sqrt{Np}}
+    \end{equation*}
+
+    Enfin, nous revenons à l'expression de l'injustice attendue de notre prédicteur. En prenant l'espérance de l'injustice globale :
+    \begin{align}
+        \mathbb{E}[\mathcal{U}(\hat{f})] &\le \mathbb{E} \left[ \sum_{s \in \mathcal{S}} \mathbb{E} \left[ \left| \mathbb{P}_{X|S=s}(\hat{f}(X, S)=1) - \hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, S)=1) \right| \right] \right] \nonumber \\
+        &\quad + \mathbb{E} \left[ \left| \sum_{s \in \mathcal{S}} s \hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, S)=1) \right| \right]
+        % Le premier terme de droite est contrôlé par les bornes en C / sqrt(N),
+        % Et le second terme est contrôlé algorithmiquement par notre choix de \hat{\lambda} minimisant l'injustice empirique.
+    \end{align}
+    Cela conclut l'esquisse de la preuve prouvant que $\mathbb{E}[\mathcal{U}(\hat{f})] \le C \times N^{-1/2}$.
+\end{proof}
+
+\section{Algorithmique et Sous-gradients}
+
+Afin de trouver le paramètre empirique optimal $\hat{\lambda}$, nous devons résoudre le problème d'optimisation suivant :
+\begin{equation}
+    \hat{\lambda} \in \argmin_{\lambda} \sum_{s \in \mathcal{S}} \frac{1}{N_s} \sum_{i=1}^{N_s} \max \left( \hat{\pi}_s (2\hat{\eta}(X_i^s, s) - 1) - s\lambda, 0 \right)
+\end{equation}
+
+Pour minimiser cette fonction objectif qui n'est pas différentiable partout (à cause de la fonction $\max$), nous introduisons la notion de \textbf{sous-gradient} (sub-gradient).
+
+\subsection*{Rappels : Sous-gradient}
+
+Soit $f : \mathbb{R}^d \to \mathbb{R}$ une fonction convexe. Le domaine de $f$ est $\mathcal{D}_f = \mathbb{R}^d$.
+
+\begin{definition}[Sous-gradient]
+    Un vecteur $b \in \mathbb{R}^d$ est un sous-gradient de $f$ au point $x$ si :
+    \begin{equation}
+        f(z) \ge f(x) + b^\top (z - x), \quad \forall z \in \mathbb{R}^d
+    \end{equation}
+\end{definition}
+
+Si, au point $x \in \mathbb{R}^d$, il existe au moins un sous-gradient, alors on dit que $f$ est \textbf{sous-différentiable} en $x$.
+
+Nous notons $\partial f(x)$ l'ensemble des sous-gradients de $f$ en $x$.
+\begin{align*}
+    \partial f(x) \neq \emptyset &\iff f \text{ est sous-différentiable en } x \\
+    \partial f(x) = \{b\} &\iff f \text{ est différentiable en } x
+\end{align*}
+(où la dernière équivalence s'applique car $f$ est supposée convexe, et le sous-gradient unique $b$ est alors $\nabla f(x)$).
+
+\begin{exemple}[Sous-différentiel de la valeur absolue]
+    Considérons la fonction $x \mapsto |x|$. Son sous-différentiel en zéro est :
+    \begin{equation}
+        \partial f(0) = [-1, 1]
+    \end{equation}
+    On vérifie facilement que pour tout $b \in [-1, 1]$ et pour tout $z \in \mathbb{R}$, on a $|z| \ge b z$, ce qui correspond à la définition au point $x=0$ (puisque $|0|=0$).
+\end{exemple}
+
+\begin{theoreme}[Propriété d'optimalité]
+    $x^*$ est un minimiseur de $f \iff f$ est sous-différentiable en $x^*$ et $0 \in \partial f(x^*)$.
+\end{theoreme}
+
+\subsection*{Propriétés opératoires}
+
+\begin{itemize}
+    \item Si $f = f_1 + \dots + f_m$, où $f_i : \mathbb{R}^d \to \mathbb{R}$ sont convexes, alors le sous-différentiel de la somme est la somme de Minkowski des sous-différentiels :
+    \begin{equation}
+        \partial f(x) = \partial f_1(x) + \dots + \partial f_m(x)
+    \end{equation}
+    
+    \item Si $f(x) = \max_{i=1, \dots, m} (f_i(x))$ avec des $f_i : \mathbb{R}^d \to \mathbb{R}$ convexes et différentiables, alors :
+    \begin{equation}
+        \partial f(x) = \text{Conv} \left\{ \nabla f_i(x) \;\middle|\; f_i(x) = f(x) \right\}
+    \end{equation}
+    où $\text{Conv}$ désigne l'enveloppe convexe. En d'autres termes, le sous-différentiel du maximum en un point $x$ est l'enveloppe convexe des gradients des fonctions "actives" en ce point (celles qui atteignent le maximum).
+\end{itemize}
+
+\subsection*{Application à la minimisation empirique de $\hat{\lambda}$}
+
+Revenons à notre fonction objectif empirique :
+\begin{equation}
+    \hat{\mathcal{H}}(\lambda) = \sum_{s \in \mathcal{S}} \frac{1}{N_s} \sum_{i=1}^{N_s} \max \left( \hat{\pi}_s (2\hat{\eta}(X_i^s, s) - 1) - s\lambda, 0 \right)
+\end{equation}
+Nous cherchons $\hat{\lambda} \in \argmin_{\lambda} \hat{\mathcal{H}}(\lambda)$.
+
+Posons pour un point $X_i^s$ fixé :
+\begin{equation*}
+    f(\lambda) = \max \left( \underbrace{\hat{\pi}_s (2\hat{\eta}(X_i^s, s) - 1) - s\lambda}_{:= f_1(\lambda)}, \, \underbrace{0}_{:= f_2(\lambda)} \right)
+\end{equation*}
+
+Un élément $b \in \partial f(\lambda)$ dépend des valeurs relatives de $f_1(\lambda)$ et $f_2(\lambda)$ :
+\begin{itemize}
+    \item Si $f_1(\lambda) > f_2(\lambda)$ c'est-à-dire $\hat{\pi}_s (2\hat{\eta}(X_i^s, s) - 1) - s\lambda > 0 \iff 2\hat{\eta}(X_i^s, s) > 1 + \frac{s\lambda}{\hat{\pi}_s}$, alors la fonction est différentiable en $\lambda$ et $\partial f(\lambda) = \{f'_1(\lambda)\} = \{-s\}$.
+    \item Si $f_1(\lambda) < f_2(\lambda)$ c'est-à-dire $2\hat{\eta}(X_i^s, s) < 1 + \frac{s\lambda}{\hat{\pi}_s}$, alors la fonction est différentiable en $\lambda$ et $\partial f(\lambda) = \{f'_2(\lambda)\} = \{0\}$.
+    \item Si $f_1(\lambda) = f_2(\lambda)$ c'est-à-dire $2\hat{\eta}(X_i^s, s) = 1 + \frac{s\lambda}{\hat{\pi}_s}$, alors le sous-différentiel est l'enveloppe convexe des deux gradients :
+    \begin{equation*}
+        \partial f(\lambda) = \text{Conv}(\{-s, 0\}) = \{ \alpha_i^s (-s) + (1 - \alpha_i^s) 0 \mid \alpha_i^s \in [0, 1] \} = \{ -\alpha_i^s s \mid \alpha_i^s \in [0, 1] \}
+    \end{equation*}
+\end{itemize}
+
+Nous pouvons résumer cela de manière plus condensée. Dire que $b \in \partial f(\lambda)$ implique qu'il existe $\alpha_i^s \in [0, 1]$ (spécifique à l'observation $i$ du groupe $s$) tel que :
+\begin{equation}
+    b = -s \, \indic_{\left\{ \hat{\pi}_s (2\hat{\eta}(X_i^s, s) - 1) - s\lambda > 0 \right\}} + (-\alpha_i^s s) \, \indic_{\left\{ \hat{\pi}_s (2\hat{\eta}(X_i^s, s) - 1) - s\lambda = 0 \right\}} + 0 \cdot \indic_{\{ \dots < 0 \}}
+\end{equation}
+
+Puisque $\hat{\lambda}$ est choisi dans $\argmin_{\lambda \in \mathbb{R}} \hat{\mathcal{H}}(\lambda)$, la propriété d'optimalité stipule que $0 \in \partial \hat{\mathcal{H}}(\hat{\lambda})$.
+Par linéarité du sous-différentiel, cela implique qu'il existe des coefficients $\alpha_i^s \in [0, 1]$ pour tout $(i,s)$ tels que :
+\begin{equation}
+    0 = \sum_{s \in \mathcal{S}} \frac{1}{N_s} \sum_{i=1}^{N_s} -s \left[ \indic_{\left\{ \hat{\eta}(X_i^s, s) > \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right\}} + \alpha_i^s \indic_{\left\{ \hat{\eta}(X_i^s, s) = \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right\}} \right]
+\end{equation}
+
+En réorganisant cette équation de point fixe par rapport aux classes $S=1$ et $S=-1$, on obtient l'égalité d'équilibre (noter que $\sum (-s)(\dots) = 0 \Rightarrow (\dots)_{s=1} = (\dots)_{s=-1}$) :
+\begin{equation}
+    \Rightarrow \sum_{s \in \mathcal{S}} \frac{s}{N_s} \sum_{i=1}^{N_s} \left[ \indic_{\left\{ \hat{\eta}(X_i^s, s) > \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right\}} + \alpha_i^s \indic_{\left\{ \hat{\eta}(X_i^s, s) = \frac{1}{2} + \frac{s\hat{\lambda}}{2\hat{\pi}_s} \right\}} \right] = 0
+\end{equation}
+
+Ceci revient exactement à tenter d'égaliser les taux de prédiction positive $\hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, S)=1)$ pour les deux groupes. Le terme en $\alpha_i^s$ sert algorithmiquement à résoudre de manière exacte l'égalité si de multiples observations tombent exactement sur le seuil, ce qui est appelé la randomisation (une prédiction probabiliste $\alpha$ au lieu de déterministe) pour casser les égalités sur la frontière de décision.
+
+\section{Consistance du Risque de Classification}
+
+Nous considérons la fonction de risque suivante pour un classifieur $f$ :
+\begin{equation}
+    R_{\lambda^*}(f) = \underbrace{\mathbb{P}(f(X, S) \neq Y)}_{\text{Risque de classification}} + \underbrace{\lambda^* \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f(X, S) = 1)}_{\text{Injustice (\textit{Unfairness})}}
+\end{equation}
+
+Soit $f^*$ le prédicteur équitable optimal.
+Nous avons que $f^*(x, s) = \indic_{\left\{ \eta(x, s) \ge \frac{1}{2} + \frac{\lambda^* s}{2\pi_s} \right\}}$.
+
+Plus formellement, ce prédicteur optimal s'écrit comme un minimax :
+\begin{align}
+    f^* &\in \argmin_{f \text{ prédicteur}} R_{\lambda^*}(f) \nonumber \\
+    f^* &:= f^*_{\lambda^*} \quad \text{où pour chaque } \lambda \in \mathbb{R},  \nonumber \\
+    f^*_\lambda(x, s) &= \indic_{\left\{ \eta(x, s) \ge \frac{1}{2} + \frac{s\lambda}{2\pi_s} \right\}} \\
+    \lambda^* &\in \argmax_{\lambda} R_\lambda(f^*_\lambda) \nonumber
+\end{align}
+avec $R_\lambda(f) = \mathbb{P}(f(X, S) \neq Y) + \lambda \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f(X, S) = 1)$.
+
+On notera que pour tout $\lambda \in \mathbb{R}$, le risque $R_\lambda(f)$ est minimisé par ce prédicteur paramétrique $f^*_\lambda$ :
+\begin{equation}
+    f^*_\lambda \in \argmin_{f \text{ prédicteur}} R_\lambda(f)
+\end{equation}
+
+Nous étudions l'erreur d'estimation introduite par notre classifieur plug-in $\hat{f}$, basé sur des probabilités empiriques.
+
+\begin{theoreme}[Consistance du risque]
+    L'excès de risque converge vers zéro quant le nombre d'échantillons grandit :
+    \begin{equation}
+        \mathbb{E} \left[ R_{\lambda^*}(\hat{f}) - R_{\lambda^*}(f^*) \right] \xrightarrow[n, N \to \infty]{} 0
+    \end{equation}
+    pourvu que les probabilités conditionnelles estimées soient consistantes :
+    \begin{equation}
+        \mathbb{E} \left[ |\hat{\eta}(X, S) - \eta(X, S)| \right] \xrightarrow[n \to \infty]{} 0
+    \end{equation}
+\end{theoreme}
+
+\begin{proof}
+    Nous reprenons l'expression du risque $R_\lambda(f)$ :
+    \begin{equation*}
+        R_\lambda(f) = \mathbb{P}(f(X, S) \neq Y) + \lambda \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f(X, S) = 1)
+    \end{equation*}
+
+    Pour évaluer le saut de risque de notre estimateur $R_{\lambda^*}(\hat{f}) - R_{\lambda^*}(f^*)$, nous pouvons le décomposer en ajoutant et soustrayant le terme intermédiaire $R_{\hat{\lambda}}(\hat{f})$ :
+    \begin{align}
+        R_{\lambda^*}(\hat{f}) - R_{\lambda^*}(f^*) = \underbrace{R_{\lambda^*}(\hat{f}) - R_{\hat{\lambda}}(\hat{f})}_{(I)} + \underbrace{R_{\hat{\lambda}}(\hat{f}) - R_{\lambda^*}(f^*)}_{(II)}
+    \end{align}
+
+    En développant le terme $(I)$ (risque d'estimation de $\lambda^*$), nous obtenons l'écart pénalisé uniquement par la différence de $\lambda$, puisque la probabilité d'erreur de classification s'annule :
+    \begin{equation}
+        R_{\lambda^*}(\hat{f}) - R_{\hat{\lambda}}(\hat{f}) = (\lambda^* - \hat{\lambda}) \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(\hat{f}(X, S) = 1)
+    \end{equation}
+    % La suite de la démonstration consiste à montrer que (I) et (II) tendent vers zéro.
+\end{proof}
