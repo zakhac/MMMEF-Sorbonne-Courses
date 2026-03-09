@@ -1,0 +1,282 @@
+%===========================
+% Fichier : main.tex
+%===========================
+\documentclass[11pt,a4paper,oneside]{book}
+
+%---------------------------
+% Encodage & langue
+%---------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french,english]{babel}
+\usepackage{lmodern}
+\usepackage{algorithmicx}
+
+%---------------------------
+% Mathématiques
+%---------------------------
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+
+% Algorithm2e with professor's style (replaces algorithm/algpseudocode)
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\SetAlgorithmName{Algorithm}{Algorithm}{List of Algorithms}
+\SetKwComment{Comment}{$\triangleright$\ }{}
+\SetKwInput{KwInput}{Input}
+\SetKwInput{KwOutput}{Output}
+
+% Blue keywords - exactly like professor's slides
+\SetKwIF{If}{ElseIf}{Else}{\textcolor{blue}{\textbf{if}}}{\textcolor{blue}{\textbf{then}}}{\textcolor{blue}{\textbf{else if}}}{\textcolor{blue}{\textbf{else}}}{}
+\SetKwFor{For}{\textcolor{blue}{\textbf{for}}}{\textcolor{blue}{\textbf{do}}}{}
+\SetKwFor{While}{\textcolor{blue}{\textbf{while}}}{\textcolor{blue}{\textbf{do}}}{}
+\SetKwRepeat{Repeat}{\textcolor{blue}{\textbf{repeat}}}{\textcolor{blue}{\textbf{until}}}
+\SetKw{Stop}{\textcolor{blue}{\textbf{stop}}}
+\SetKw{And}{\textcolor{blue}{\textbf{and}}}
+\SetKw{Or}{\textcolor{blue}{\textbf{or}}}
+\SetKw{Return}{\textbf{return}}
+
+\usepackage{float}
+\numberwithin{equation}{chapter}
+
+%---------------------------
+% Figures & illustrations
+%---------------------------
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,patterns}
+\graphicspath{{images/}}
+
+%---------------------------
+% Boites colorées (tcolorbox)
+%---------------------------
+% C'est le package magique pour les blocs de couleur
+\usepackage[most]{tcolorbox} 
+
+%---------------------------
+% Mise en page & style
+%---------------------------
+\usepackage{geometry}
+\geometry{margin=2.5cm, headheight=14pt, footskip=50pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\thepage}
+\fancyfoot[L]{\footnotesize 2025-2026 \textperiodcentered{} Topics in Machine Learning - MMMEF}
+\fancyfoot[R]{\footnotesize Rédigé par Zakari Hachemi}
+
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet,leftmargin=1.5em}
+
+%---------------------------
+% Liens hypertexte
+%---------------------------
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=teal,
+    urlcolor=magenta,
+    pdfauthor={Zakari Hachemi},
+    pdftitle={Topics in Machine Learning},
+    pdfsubject={Cours complet},
+    pdfcreator={LaTeX},
+    plainpages=false,
+    pageanchor=false
+}
+
+% Correction des noms pour autoref
+\def\theoremeautorefname{Théorème}
+\def\propositionautorefname{Proposition}
+\def\lemmeautorefname{Lemme}
+\def\corollaireautorefname{Corollaire}
+\def\definitionautorefname{Définition}
+\def\exempleautorefname{Exemple}
+\def\exerciceautorefname{Exercice}
+\def\remarqueautorefname{Remarque}
+
+%---------------------------
+% Couleurs pour les environnements
+%---------------------------
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{teal}{RGB}{0,165,145} % Vert plus prononcé
+\definecolor{darkred}{RGB}{139,0,0} % Rouge foncé unifié
+
+%---------------------------
+% Environnements théorèmes & Couleurs
+%---------------------------
+
+% 1. Définition standard des environnements (comme avant)
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[chapter]
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Définition}
+\newtheorem{exemple}[theoreme]{Exemple}
+\newtheorem{exercice}{Exercice}[chapter] % Numérotation indépendante par chapitre
+
+\theoremstyle{remark}
+\newtheorem*{correction}{Correction suggérée}
+\newtheorem{remarque}[theoreme]{Remarque}
+
+% 2. Application des couleurs (tcolorbox)
+
+% --- Style pour les THÉORÈMES (Rouge pastel vif) ---
+\tcolorboxenvironment{theoreme}{
+    enhanced,
+    colback=red!20!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style pour les PROPOSITIONS (Orange pastel vif) ---
+\tcolorboxenvironment{proposition}{
+    enhanced,
+    colback=orange!20!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style pour les DÉFINITIONS (Bleu pastel vif transparent) ---
+\tcolorboxenvironment{definition}{
+    enhanced,
+    colback=blue!10!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style pour les EXEMPLES (Vert d'eau) ---
+\tcolorboxenvironment{exemple}{
+    blanker,
+    breakable,
+    left=5mm,
+    before skip=10pt,
+    after skip=10pt,
+    borderline west={3pt}{0pt}{teal}
+}
+
+% --- Style pour les LEMMES (Violet) ---
+\tcolorboxenvironment{lemme}{
+    enhanced,
+    colback=violet!20!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style pour les EXPLICATIONS DE FIGURES (Gris plat) ---
+\newtcolorbox{figureexplanation}{
+    enhanced,
+    colback=gray!10!white,
+    frame hidden,
+    boxrule=0pt,
+    sharp corners,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style pour les EXERCICES (Jaune plat plus léger) ---
+\tcolorboxenvironment{exercice}{
+    enhanced,
+    colback=yellow!5!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style pour les CHECKPOINTS (Teal plat) ---
+\newtcolorbox{checkpoint}{
+    enhanced,
+    colback=teal!10!white,
+    colframe=teal, % Couleur du titre si affiché
+    coltitle=white,
+    boxrule=0pt,   % Pas de contour
+    arc=2mm,
+    title=\textbf{Checkpoint : Avez-vous compris l'essentiel ?},
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+%---------------------------
+% Macros utiles
+%---------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\grad}{\nabla}
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+
+%---------------------------
+% Configuration des codes (listings)
+%---------------------------
+\usepackage{listings}
+
+\lstset{
+    language=R,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true
+}
+
+%---------------------------
+% Informations
+%---------------------------
+\title{\textbf{Topics in Machine Learning}\\[0.5em]
+       \large Cours complet}
+\author{Zakari HACHEMI}
+\date{Topics in ML - MMMEF \\ 2025-2026}
+
+%===========================
+\begin{document}
+%===========================
+
+\maketitle
+\hypersetup{pageanchor=true}
+\frontmatter
+\tableofcontents
+\mainmatter
+
+%---------------------------
+% Corps du cours
+%---------------------------
+\include{chapitre1}
+\include{chapitre2}
+\include{chapitre4}
+\include{chapitre6}
+\include{chapitre7}
+\include{lab}
+
+\appendix
+
+%---------------------------
+% Bibliographie
+%---------------------------
+%\bibliographystyle{plain}
+%\bibliography{references}
+
+\end{document}
+%===========================

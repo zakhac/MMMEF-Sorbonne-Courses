@@ -1,0 +1,76 @@
+\chapter{Fiche de Révision : Modélisation Statistique et Régression sous R (TP)}
+\textit{Synthèse des TP}
+
+\section*{Introduction : Prise en main de R}
+\textbf{Ce qu'il faut savoir (Prérequis) :}
+\begin{itemize}
+    \item Connaître l'environnement de travail R et RStudio.
+    \item Savoir manipuler les types de base (vecteurs, matrices, dataframes).
+    \item Savoir installer et charger des packages (\texttt{install.packages()}, \texttt{library()}).
+    \item Comprendre l'aide intégrée (\texttt{?fonction}).
+\end{itemize}
+
+\hrulefill
+
+\section{TP 1 : Méthodes de sélection de variables (Subset Selection)}
+
+\subsection{Connaissances préalables}
+\begin{itemize}
+    \item \textbf{Régression linéaire multiple} : Comprendre le principe d'estimation par les moindres carrés (minimisation du RSS - \textit{Residual Sum of Squares}).
+    \item \textbf{Critères de sélection} : Savoir que le $R^2$ a tendance à augmenter avec le nombre de variables. Il faut donc utiliser des critères pénalisant la complexité du modèle :
+    \begin{itemize}
+        \item Le $C_p$ de Mallows et le critère d'information bayésien ($BIC$). Plus ils sont faibles, meilleur est le modèle.
+        \item Le $R^2$ ajusté (\textit{Adjusted $R^2$}). Plus il est élevé, meilleur est le modèle.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Ce qu'il faut retenir (Théorie et Pratique)}
+\begin{itemize}
+    \item \textbf{Sélection du meilleur sous-ensemble (\textit{Best Subset Selection})} : Consiste à tester toutes les combinaisons possibles de variables. Cela garantit de trouver le meilleur modèle, mais devient impossible à calculer si le nombre de variables $p$ est trop grand (complexité en $2^p$).
+    \item \textbf{Algorithmes gloutons (\textit{Stepwise Selection})} :
+    \begin{itemize}
+        \item \textit{Forward} : On part du modèle vide et on ajoute itérativement la variable qui améliore le plus le modèle.
+        \item \textit{Backward} : On part du modèle complet et on retire itérativement la variable la moins utile.
+        \item Ces méthodes sont plus rapides mais ne garantissent pas de trouver le modèle global optimal.
+    \end{itemize}
+    \item \textbf{L'approche par ensemble de validation (\textit{Validation Set Approach})} :
+    \begin{itemize}
+        \item Consiste à diviser les données en un ensemble d'apprentissage (\textit{Train}) et un ensemble de test (\textit{Test / Validation}).
+        \item \textbf{Inconvénients majeurs} : L'estimation de l'erreur est très variable (dépendante de la séparation des données) et le modèle est entraîné sur moins de données, ce qui peut surestimer le taux d'erreur du modèle complet.
+    \end{itemize}
+    \item \textbf{Code R essentiel} : L'utilisation de la fonction \texttt{regsubsets()} du package \texttt{leaps}.
+\end{itemize}
+
+\begin{lstlisting}
+# Exemple de selection forward
+library(leaps)
+regfit.best <- regsubsets(Y ~ ., data=PhyWeight, method="forward", nvmax=10)
+summary_best <- summary(regfit.best)
+
+# Trouver le modele minimisant le BIC
+best_bic <- which.min(summary_best$bic)
+coef(regfit.best, best_bic)
+\end{lstlisting}
+
+\hrulefill
+
+\section{TP 2 : Régression Polynomiale et Sélection de Modèle}
+
+\subsection{Connaissances préalables}
+\begin{itemize}
+    \item \textbf{Régression polynomiale} : Ajustement d'un modèle de la forme $f(x) = \beta_0 + \beta_1 x + \dots + \beta_m x^m$. 
+    \item \textbf{Risque quadratique} : L'erreur quadratique d'estimation peut se décomposer mathématiquement en trois composantes : le \textbf{Biais} au carré, la \textbf{Variance}, et une erreur incompressible due à la variance du bruit.
+    $$ R(m) = \text{Biais}^2(\hat{f}_m) + \mathbb{V}(\hat{f}_m) + \text{Bruit irréductible} (\sigma^2) $$
+\end{itemize}
+
+\subsection{Ce qu'il faut retenir (Théorie et Pratique)}
+\begin{itemize}
+    \item \textbf{Compromis Biais-Variance (\textit{Bias-Variance Tradeoff})} :
+    \begin{itemize}
+        \item Lorsque le degré $m$ du polynôme \textbf{augmente} (modèle plus complexe), le modèle s'ajuste de plus en plus aux données d'entraînement. Le \textbf{biais diminue}.
+        \item Cependant, un modèle trop complexe devient très sensible aux variations de l'échantillon d'entraînement. La \textbf{variance augmente}.
+        \item \textbf{L'objectif} : Trouver le degré optimal $m^*$ qui minimise l'erreur totale $R(m)$, évitant ainsi le sous-apprentissage (\textit{underfitting}, $m$ trop petit) et le surapprentissage (\textit{overfitting}, $m$ trop grand).
+    \end{itemize}
+    \item \textbf{Évaluation empirique} : L'erreur empirique des moindres carrés (calculée sur les mêmes données qui ont servi à entraîner le modèle) va toujours diminuer quand $m$ augmente. C'est pourquoi on ne peut pas l'utiliser pour choisir $m$ (le modèle "naïf" choisira toujours le polynôme de degré maximum).
+    \item \textbf{Méthode d'estimation} : On utilise la technique de Monte-Carlo (simulation de $S$ jeux de données) pour approximer numériquement le Biais au carré, la Variance, et le Risque total afin d'identifier visuellement (ou par le calcul) le minimum du risque $R(m)$.
+\end{itemize}
