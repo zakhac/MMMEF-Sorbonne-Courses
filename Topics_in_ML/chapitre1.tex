@@ -20,6 +20,14 @@
     \caption{Exemple de tâche de classification (Prédire le Default de paiement en fonction du solde et des revenus)}
     \label{fig:default_data}
 \end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/decision_boundary.png}
+    \caption{Illustration d'une frontière de décision pour un problème de classification binaire}
+    \label{fig:decision_boundary}
+\end{figure}
+
     \item Le modèle général se formule par $Y = f(X) + \epsilon$ , où $f$ est une fonction inconnue de $X$ et $\epsilon$ un terme d'erreur indépendant de $X$. Le but est d'estimer $f$ à partir des observations.
     \item Le modèle linéaire suppose que $f$ est une fonction linéaire : $f(X) = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$. L'estimation de $f$ est grandement simplifiée puisqu'il suffit d'estimer $p+1$ coefficients au lieu d'une fonction en $p$ dimensions.
     \item Bien que les relations réelles soient rarement strictement linéaires, la régression linéaire reste extrêmement utile sur les plans conceptuel et pratique. Elle offre de nets avantages en matière d'interprétabilité et de performances prédictives (faible biais si la relation réelle est quasi-linéaire).
@@ -32,6 +40,13 @@
     \includegraphics[width=0.6\textwidth]{images/income_lm.pdf}
     \caption{Exemple de relation quasi-linéaire ($Income \approx \beta_0 + \beta_1 Education$)}
     \label{fig:income_lm}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/regression_fit.png}
+    \caption{Ajustement d'un modèle de régression linéaire simple sur un nuage de points}
+    \label{fig:regression_fit}
 \end{figure}
 
 \section{Modèles Linéaires (Multiple Linear Regression)}
