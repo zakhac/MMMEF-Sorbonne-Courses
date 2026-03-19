@@ -1,0 +1,923 @@
+\chapter{Programmation quadratique}
+\label{chap:quadratic-programming}
+
+\section{Introduction}
+
+Un programme quadratique (QP) général s'écrit sous la forme :
+\begin{equation}
+    \min_{x \in \mathbb{R}^n} q(x) = \frac{1}{2} x^\top G x + c^\top x,
+\end{equation}
+sujet aux contraintes :
+\begin{align}
+    a_i^\top x &= b_i, \quad i \in \mathcal{E}, \\
+    a_i^\top x &\geq b_i, \quad i \in \mathcal{I},
+\end{align}
+où $G$ est une matrice symétrique $n \times n$, $c \in \mathbb{R}^n$, $a_i \in \mathbb{R}^n$ et $b_i \in \mathbb{R}$.
+
+\begin{remarque}
+    Pour les QP, une quantité finie de calculs est nécessaire pour les résoudre ou pour déclarer qu'ils sont irréalisables ("infeasible").
+    \begin{itemize}
+        \item On parle de \textbf{QP convexe} lorsque $G$ est semi-définie positive.
+        \item On parle de \textbf{QP strictement convexe} lorsque $G$ est définie positive.
+    \end{itemize}
+\end{remarque}
+
+\section{QP avec contraintes d'égalité}
+
+Considérons les problèmes de la forme :
+\begin{equation}
+    \min_{x \in \mathbb{R}^n} \frac{1}{2} x^\top G x + c^\top x, \quad \text{sujet à} \quad Ax = b,
+\end{equation}
+où $A \in \mathbb{R}^{m \times n}$ (avec $m < n$) est la Jacobienne des contraintes. Ses lignes sont les vecteurs $a_i$. Le vecteur $b \in \mathbb{R}^m$ rassemble les scalaires $b_i$.
+On suppose que la matrice $A$ est de \textbf{rang plein} ("full rank").
+
+\subsection{Propriétés}
+
+Les conditions d'optimalité du premier ordre (KKT) s'écrivent :
+\begin{equation}
+    \begin{cases}
+        G x^* + c - A^\top \lambda^* = 0 \\
+        A x^* = b
+    \end{cases}
+\end{equation}
+Cela est équivalent au système matriciel suivant :
+\begin{equation}
+    \begin{pmatrix}
+        G & -A^\top \\
+        A & 0
+    \end{pmatrix}
+    \begin{pmatrix}
+        x^* \\
+        \lambda^*
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        -c \\
+        b
+    \end{pmatrix}
+\end{equation}
+
+\begin{remarque}
+    Si l'on réécrit $x^*$ comme $x + p$, où $x$ est un candidat pour la solution et $p$ est un pas ("step"), le système devient :
+    \begin{equation}
+        \begin{pmatrix}
+            G & A^\top \\
+            A & 0
+        \end{pmatrix}
+        \begin{pmatrix}
+            -p \\
+            \lambda^*
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            g \\
+            h
+        \end{pmatrix}
+    \end{equation}
+    où $g = c + Gx$ est le gradient de la fonction objectif au point $x$, $h = Ax - b$ est le résidu des contraintes, et $p = x^* - x$.
+    
+    La matrice $\begin{pmatrix} G & A^\top \\ A & 0 \end{pmatrix}$ est appelée la \textbf{matrice KKT}.
+\end{remarque}
+
+Soit $Z$ une matrice de taille $n \times (n-m)$ dont les colonnes forment une base de l'espace nul ("null-space") de $A$. C'est-à-dire que $AZ = 0$ et $A$ est de rang plein.
+
+\begin{lemme}
+    Supposons que $A$ soit de rang plein (sur les lignes). Supposons que la matrice Hessienne réduite $Z^\top G Z$ soit définie positive.
+    Alors la matrice KKT $\begin{pmatrix} G & A^\top \\ A & 0 \end{pmatrix}$ est non-singulière.
+\end{lemme}
+
+\begin{proof}
+    Soient les vecteurs $w$ et $v$ tels que :
+    \begin{equation}
+        \begin{pmatrix}
+            G & A^\top \\
+            A & 0
+        \end{pmatrix}
+        \begin{pmatrix}
+            w \\
+            v
+        \end{pmatrix}
+        = 0
+    \end{equation}
+    La deuxième ligne nous donne $Aw = 0$. Ainsi, $w$ appartient à l'espace nul de $A$, donc il existe un vecteur $u$ tel que $w = Zu$.
+    
+    Multiplions la première ligne par $w^\top$ à gauche :
+    \begin{align*}
+        0 &= \begin{pmatrix} w \\ v \end{pmatrix}^\top \begin{pmatrix} G & A^\top \\ A & 0 \end{pmatrix} \begin{pmatrix} w \\ v \end{pmatrix} \\
+          &= w^\top G w + w^\top A^\top v + v^\top A w
+    \end{align*}
+    Puisque $Aw = 0$, on a $v^\top A w = 0$. De même, $w^\top A^\top v = (Aw)^\top v = 0$.
+    On obtient donc $0 = w^\top G w$.
+    En remplaçant $w$ par $Zu$, on a :
+    \begin{equation}
+        0 = (Zu)^\top G (Zu) = u^\top (Z^\top G Z) u
+    \end{equation}
+    Puisque $Z^\top G Z$ est définie positive, cela implique que $u = 0$, et par conséquent $w = Zu = 0$.
+    
+    La première ligne devient alors $G \cdot 0 + A^\top v = 0$, soit $A^\top v = 0$.
+    Comme $A$ est de rang plein (sur les lignes), $A^\top$ est de rang plein (sur les colonnes), ce qui implique que $v = 0$.
+    
+    Ainsi, le seul vecteur solution est le vecteur nul $\begin{pmatrix} w \\ v \end{pmatrix} = 0$, ce qui prouve que la matrice est non-singulière.
+\end{proof}
+
+Nous allons prouver que sous les mêmes conditions, $x^*$ est un minimiseur local strict, et même une solution globale.
+
+\begin{theoreme}
+    Supposons que $A$ soit de rang plein (sur les lignes). Supposons que la matrice Hessienne réduite $Z^\top G Z$ soit définie positive.
+    Alors le vecteur $x^*$ satisfaisant
+    \begin{equation}
+        \begin{pmatrix}
+            G & -A^\top \\
+            A & 0
+        \end{pmatrix}
+        \begin{pmatrix}
+            x^* \\
+            \lambda^*
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            -c \\
+            b
+        \end{pmatrix}
+    \end{equation}
+    est l'unique solution globale.
+\end{theoreme}
+
+\begin{proof}
+    Soit $x$ un autre point réalisable : $Ax = b$.
+    Soit $p = x^* - x$.
+    Puisque $Ax = b$ et $Ax^* = b$, nous avons
+    \begin{equation}
+        Ap = A(x^* - x) = 0.
+    \end{equation}
+    Substituons dans $q(x)$ :
+    \begin{align*}
+        q(x) = q(x^* - p) &= \frac{1}{2} (x^* - p)^\top G (x^* - p) + c^\top (x^* - p) \\
+                          &= \frac{1}{2} p^\top G p - p^\top G x^* + \frac{1}{2} (x^*)^\top G x^* - c^\top p + c^\top x^* \\
+                          &= \frac{1}{2} p^\top G p - p^\top G x^* - c^\top p + q(x^*) \quad (*)
+    \end{align*}
+    Utilisons maintenant la première ligne du système KKT :
+    \begin{equation}
+        G x^* + c - A^\top \lambda^* = 0 \implies G x^* + c = A^\top \lambda^*
+    \end{equation}
+    Multiplions à gauche par $p^\top$ :
+    \begin{equation}
+        p^\top (G x^* + c) = p^\top A^\top \lambda^* = (Ap)^\top \lambda^*
+    \end{equation}
+    Or, nous avons vu que $Ap = 0$, donc le terme de droite est nul. Ainsi :
+    \begin{equation}
+        p^\top G x^* + p^\top c = 0 \implies -p^\top G x^* - c^\top p = 0
+    \end{equation}
+    En substituant cela dans l'équation (*), nous obtenons :
+    \begin{equation}
+        q(x) = q(x^*) + \frac{1}{2} p^\top G p
+    \end{equation}
+    Puisque $p$ est dans l'espace nul de $A$, il existe un vecteur $u \in \mathbb{R}^{n-m}$ tel que $p = Zu$. Alors :
+    \begin{equation}
+        p^\top G p = (Zu)^\top G (Zu) = u^\top (Z^\top G Z) u
+    \end{equation}
+    Comme la matrice Hessienne réduite $Z^\top G Z$ est supposée définie positive, on a $u^\top Z^\top G Z u > 0$ pour tout $u \neq 0$.
+    Or $u \neq 0 \iff p \neq 0 \iff x \neq x^*$.
+    
+    Par conséquent, pour tout $x \neq x^*$ réalisable,
+    \begin{equation}
+        q(x) = q(x^*) + \frac{1}{2} u^\top Z^\top G Z u > q(x^*)
+    \end{equation}
+    Ce qui prouve que $x^*$ est l'unique minimiseur global.
+\end{proof}
+
+\subsection{Résolution directe du système KKT}
+
+\begin{remarque}
+    On peut prouver (Forsgren et al.) que la matrice KKT est toujours indéfinie lorsque $m \ge 1$. Autrement dit, il existe des vecteurs $x$ et $y$ tels que $x^\top K x > 0$ et $y^\top K y < 0$ (où $K$ désigne la matrice KKT).
+\end{remarque}
+
+\subsubsection{Factorisation du système KKT complet}
+
+Nous ne pouvons pas utiliser la factorisation de Cholesky à cause de la nature indéfinie de la matrice.
+Une décomposition LU est faisable, mais elle ignore la symétrie du système.
+
+Ainsi, nous utilisons la \textbf{factorisation symétrique indéfinie} pour $K$ (matrice symétrique) :
+\begin{equation}
+    P K P^\top = L B L^\top,
+\end{equation}
+où :
+\begin{itemize}
+    \item $P$ est une matrice de permutation;
+    \item $L$ est une matrice triangulaire inférieure unitaire ("unit lower triangular");
+    \item $B$ est une matrice diagonale par blocs, avec des blocs de taille $1 \times 1$ ou $2 \times 2$.
+\end{itemize}
+
+Pour résoudre le système KKT $K \begin{pmatrix} -p \\ \lambda^* \end{pmatrix} = \begin{pmatrix} g \\ h \end{pmatrix}$ :
+\begin{enumerate}
+    \item Résoudre $Lz = P^\top \begin{pmatrix} g \\ h \end{pmatrix}$ pour $z$ (descente).
+    \item Résoudre $B\hat{z} = z$ pour $\hat{z}$ (résolution bloc-diagonale).
+    \item Résoudre $L^\top \bar{z} = \hat{z}$ pour $\bar{z}$ (remontée).
+    \item Poser $\begin{pmatrix} -p \\ \lambda^* \end{pmatrix} = P \bar{z}$.
+\end{enumerate}
+
+\subsubsection{Méthode du complément de Schur}
+
+Cette méthode est applicable si $G$ est \textbf{définie positive} (et donc inversible).
+Partons du système KKT :
+\begin{equation}
+    \begin{cases}
+        -Gp + A^\top \lambda^* = g \\
+        Ap = h
+    \end{cases}
+\end{equation}
+Multiplions la première équation par $AG^{-1}$ :
+\begin{align*}
+    -AG^{-1}Gp + AG^{-1}A^\top \lambda^* &= AG^{-1}g \\
+    -Ap + (AG^{-1}A^\top) \lambda^* &= AG^{-1}g
+\end{align*}
+En utilisant la deuxième équation ($Ap=h$), on obtient :
+\begin{equation}
+    (AG^{-1}A^\top) \lambda^* = AG^{-1}g - h
+\end{equation}
+Le système $(AG^{-1}A^\top) \lambda^* = AG^{-1}g - h$ est défini positif. On peut le résoudre pour trouver $\lambda^*$.
+Ensuite, on utilise la première ligne du système KKT pour trouver $p$ :
+\begin{equation}
+    Gp = A^\top \lambda^* - g \implies p = G^{-1}(A^\top \lambda^* - g).
+\end{equation}
+
+\paragraph{Considérations numériques :}
+Cette méthode nécessite des opérations avec $G^{-1}$ et la factorisation de la matrice $AG^{-1}A^\top$. Elle est donc adaptée lorsque :
+\begin{itemize}
+    \item $G$ est bien conditionnée et facile à inverser (exemple : diagonale).
+    \item $G^{-1}$ est explicitement connue.
+    \item $m$ (le nombre de contraintes) est petit.
+\end{itemize}
+
+\subsubsection{Méthode de l'espace nul}
+
+La non-singularité de $G$ n'est pas requise ici ; nous avons seulement besoin des hypothèses du lemme (A de rang plein, $Z^\top G Z$ définie positive).
+Supposons que nous partitionnons le vecteur $p$ comme suit :
+\begin{equation}
+    p = Y p_Y + Z p_Z
+\end{equation}
+où $Z$ est la matrice $n \times (n-m)$ de l'espace nul de $A$, et $Y$ est une matrice $n \times m$ telle que la matrice $[Y \mid Z]$ soit non-singulière.
+Pour simplification, on choisit souvent $Y$ tel que $AY = I$ (si possible) ou $A [Y \mid Z]$ triangulaire.
+
+Substituons $p$ dans la deuxième équation du système KKT ($Ap = h$) :
+\begin{equation}
+    A(Y p_Y + Z p_Z) = h \implies AY p_Y + AZ p_Z = h
+\end{equation}
+Puisque $Z$ est dans l'espace nul, $AZ = 0$. Ainsi :
+\begin{equation}
+    (AY) p_Y = h
+\end{equation}
+Comme $A$ est de rang $m$ et $[Y \mid Z]$ est non-singulière, la matrice $AY$ est non-singulière de taille $m \times m$.
+On peut donc résoudre ce système pour trouver $p_Y$. (Si on choisit $Y$ tel que $AY=I$, alors $p_Y = h$).
+
+Ensuite, substituons $p$ dans la première équation du système KKT ($ -Gp + A^\top \lambda^* = g $) :
+\begin{equation}
+    -G(Y p_Y + Z p_Z) + A^\top \lambda^* = g
+\end{equation}
+Multiplions à gauche par $Z^\top$ :
+\begin{align*}
+    -Z^\top G Y p_Y - Z^\top G Z p_Z + Z^\top A^\top \lambda^* &= Z^\top g \\
+    -Z^\top G Y p_Y - Z^\top G Z p_Z + (AZ)^\top \lambda^* &= Z^\top g
+\end{align*}
+Comme $AZ=0$, le terme impliquant $\lambda^*$ disparait :
+\begin{equation}
+    -(Z^\top G Z) p_Z = Z^\top g + Z^\top G Y p_Y
+\end{equation}
+Le système $(Z^\top G Z) p_Z = -(Z^\top g + Z^\top G Y p_Y)$ permet de trouver $p_Z$, car la matrice réduite $Z^\top G Z$ est supposée définie positive (donc inversible).
+
+Enfin, pour trouver $\lambda^*$, on multiplie la première équation par $Y^\top$ :
+\begin{equation}
+    (AY)^\top \lambda^* = Y^\top (g + Gp)
+\end{equation}
+Ce système linéaire permet de déterminer $\lambda^*$.
+
+\paragraph{Remarques :}
+\begin{itemize}
+    \item Cette méthode est efficace lorsque $n-m$ est petit.
+    \item Le calcul de $Z$ est la difficulté principale ; il n'est pas unique. De mauvais choix peuvent résulter en un mauvais conditionnement de $Z^\top G Z$.
+\end{itemize}
+
+\paragraph{Exemple :}
+Soit $G = \begin{pmatrix} 6 & 2 & 1 \\ 2 & 5 & 2 \\ 1 & 2 & 4 \end{pmatrix}$, $c = \begin{pmatrix} -8 \\ -3 \\ -3 \end{pmatrix}$. Contraintes : $\begin{cases} x_1 + x_3 = 3 \\ x_2 + x_3 = 0 \end{cases}$.
+D'où $A = \begin{pmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \end{pmatrix}$ et $b = \begin{pmatrix} 3 \\ 0 \end{pmatrix}$.
+On peut choisir $Z = \begin{pmatrix} -1 \\ -1 \\ 1 \end{pmatrix}$ (vérifiez $AZ=0$) et $Y = \begin{pmatrix} 2/3 & -1/3 \\ -1/3 & 2/3 \\ 1/3 & 1/3 \end{pmatrix}$ tel que $AY = I_2$.
+
+\paragraph{Exemple (suite) :}
+Soit $x = \begin{pmatrix} -1 \\ -2 \\ 2 \end{pmatrix}$.
+On calcule $h = Ax - b = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$ et $g = c + Gx = \begin{pmatrix} -7/2 \\ -2 \\ 2 \end{pmatrix}$ (note: valeurs de l'exemple du cours).
+
+\begin{enumerate}
+    \item \textbf{Trouver $p_Y$} : Résoudre $(AY) p_Y = -h$. Ici $p_Y = -h = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$.
+    \item \textbf{Trouver $p_Z$} : Résoudre $(Z^\top G Z) p_Z = -(Z^\top g + Z^\top G Y p_Y)$.
+    Calculons les termes : 
+    $Z^\top G Z = \begin{pmatrix} -1 & -1 & 1 \end{pmatrix} \begin{pmatrix} 6 & 2 & 1 \\ 2 & 5 & 2 \\ 1 & 2 & 4 \end{pmatrix} \begin{pmatrix} -1 \\ -1 \\ 1 \end{pmatrix} = 13$ (scalaire).
+    $Z^\top g = -13$.
+    Le terme $Z^\top G Y p_Y$ est nul car $p_Y = 0$.
+    L'équation devient : $13 p_Z = -(-13) \implies p_Z = 1$.
+    \item \textbf{Reconstruire $p$} :
+    $p = Y p_Y + Z p_Z = Y \cdot 0 + Z \cdot 1 = \begin{pmatrix} -1 \\ -1 \\ 1 \end{pmatrix}$.
+    \item \textbf{Solution} :
+    $x^* = x + p = \begin{pmatrix} -1 \\ -2 \\ 2 \end{pmatrix} + \begin{pmatrix} -1 \\ -1 \\ 1 \end{pmatrix} = \begin{pmatrix} -2 \\ -3 \\ 3 \end{pmatrix}$.
+\end{enumerate}
+
+\subsection{Résolution itérative du système KKT}
+
+Pour les systèmes de grande taille, les méthodes directes deviennent trop coûteuses. On préfère alors les méthodes itératives, comme le Gradient Conjugué (CG).
+Cependant, l'utilisation directe du CG sur le système KKT complet est instable car la matrice KKT n'est pas définie positive (elle est indéfinie).
+
+L'idée est d'appliquer le CG sur le \textbf{système réduit}, qui lui est défini positif (sous l'hypothèse que $Z^\top G Z$ l'est).
+
+Substituons $x^* = Y p_Y + Z p_Z$ dans le problème.
+$p_Z$ est solution du problème de minimisation sans contrainte :
+\begin{equation}
+    \min_{p_Z \in \mathbb{R}^{n-m}} \frac{1}{2} p_Z^\top (Z^\top G Z) p_Z + p_Z^\top c_Z
+\end{equation}
+où $c_Z = Z^\top G Y p_Y + Z^\top c$ (en notant que le terme linéaire dépend aussi de $p_Y$, déterminé par les contraintes).
+
+Ainsi, $p_Z$ vérifie l'équation normale :
+\begin{equation}
+    (Z^\top G Z) p_Z = -c_Z
+\end{equation}
+Puisque $Z^\top G Z$ est définie positive, on peut utiliser le Gradient Conjugué (CG) pour trouver $p_Z$.
+
+\paragraph{Préconditionnement :}
+En pratique, on utilise un préconditionneur $W_{ZZ}$ pour accélérer la convergence. Un bon préconditionneur devrait regrouper les valeurs propres de $W_{ZZ}^{-1/2} (Z^\top G Z) W_{ZZ}^{-1/2}$.
+Idéalement, on choisirait $W_{ZZ} = Z^\top G Z$, mais c'est trop coûteux.
+De bons choix sont de la forme $W_{ZZ} = Z^\top H Z$, où $H$ est une approximation symétrique de $G$ telle que $Z^\top H Z$ soit définie positive.
+
+L'algorithme suivant (Algorithme 17 dans certaines références) décrit cette procédure :
+
+\begin{algorithm}[H]
+    \caption{Preconditioned Conjugate Gradient for reduced systems}
+    \SetAlgoLined
+    Choose an initial point $x_Z$ (correspondant à notre $p_Z$)\;
+    Compute $r_Z=Z^\top GZx_Z + c_Z$, $g_Z=W_{ZZ}^{-1}r_Z$, and $d_Z=-g_Z$\;
+    \Repeat{a termination test is satisfied}{
+        $\alpha\leftarrow \frac{r_Z^\top g_Z}{d_Z^\top Z^\top GZd_Z}$\;
+        $x_Z\leftarrow x_Z+\alpha d_Z$\;
+        $r_Z^+\leftarrow r_Z + \alpha Z^\top GZd_Z$\;
+        $g_Z^+\leftarrow W_{ZZ}^{-1}r_Z^+$\;
+        $\beta \leftarrow \frac{(r_Z^+)^\top g_Z^+}{r_Z^\top g_Z}$\;
+        $d_Z\leftarrow -g_Z^++\beta d_Z$\;
+        $g_Z\leftarrow g_Z^+$\;
+        $r_Z\leftarrow r_Z^+$\;
+    }
+\end{algorithm}
+
+\section{Problèmes avec contraintes d'inégalité}
+
+\subsection{Propriétés}
+
+
+Considérons le problème d'optimisation suivant :
+    \begin{equation}
+        \min_{x \in \mathbb{R}^n} \frac{1}{2} x^\top G x + c^\top x \quad \text{sujet à} \quad
+        \begin{cases}
+            a_i^\top x - b_i \ge 0, & \forall i \in \mathcal{I} \\
+            a_i^\top x - b_i = 0, & \forall i \in \mathcal{E}
+        \end{cases}
+    \end{equation}
+
+    Le Lagrangien est défini par :
+    \begin{equation}
+        \mathcal{L}(x, \lambda) = \frac{1}{2} x^\top G x + c^\top x - \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i (a_i^\top x - b_i)
+    \end{equation}
+
+    Rappelons l'ensemble actif ("active set") :
+    \begin{equation}
+        \mathcal{A}(x) = \{ i \in \mathcal{E} \cup \mathcal{I} \mid a_i^\top x - b_i = 0 \}
+    \end{equation}
+
+    \paragraph{Conditions KKT :}
+    Toute solution $x^*$ satisfait, pour certains multiplicateurs $\lambda_i^*$ :
+    \begin{equation}
+        \begin{cases}
+            G x^* + c - \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i^* a_i = 0 \\
+            a_i^\top x^* - b_i \ge 0, \quad \forall i \in \mathcal{I} \setminus \mathcal{A}(x^*) \\
+            a_i^\top x^* - b_i = 0, \quad \forall i \in \mathcal{E} \\
+            \lambda_i^* \ge 0, \quad \forall i \in \mathcal{I} \cap \mathcal{A}(x^*)
+        \end{cases}
+    \end{equation}
+    \emph{Note :} Sur le tableau, les conditions de faisabilité sont notées implicitement par les ensembles d'indices, et la condition de complémentarité est résumée par $\lambda_i^* \ge 0$ pour les contraintes actives d'inégalité (et $\lambda_i^* = 0$ pour les inactives).
+
+    \begin{remarque}
+        Nous n'avons pas besoin de supposer la qualification des contraintes (LICQ) car les contraintes sont linéaires. Nous supposons simplement que la matrice $A$ des contraintes d'égalité a un rang plein (sur les lignes).
+    \end{remarque}
+
+    \begin{theoreme}
+        Si $x^*$ satisfait les conditions KKT pour certains $\lambda^*$, et si $G$ est semi-définie positive, alors $x^*$ est une solution globale du problème.
+    \end{theoreme}
+
+    \begin{proof}
+        Soit $x$ un autre point réalisable. On a :
+        \begin{equation}
+            \begin{aligned}
+                a_i^\top x &= b_i, \quad \forall i \in \mathcal{E} \\
+                a_i^\top x &\ge b_i, \quad \forall i \in \mathcal{I}
+            \end{aligned}
+        \end{equation}
+        Donc, en considérant la différence avec $x^*$ :
+        \begin{equation}
+            \begin{aligned}
+                a_i^\top (x - x^*) &= 0, \quad \forall i \in \mathcal{E} \\
+                a_i^\top (x - x^*) &\ge 0, \quad \forall i \in \mathcal{I} \cap \mathcal{A}(x^*)
+            \end{aligned}
+        \end{equation}
+        La deuxième inégalité vient du fait que pour $i \in \mathcal{A}(x^*)$, $a_i^\top x^* = b_i$, donc $a_i^\top x \ge b_i \implies a_i^\top (x - x^*) \ge 0$.
+
+        D'après la première condition KKT :
+        \begin{equation}
+            (G x^* + c) = \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i^* a_i
+        \end{equation}
+        Multiplions par $(x - x^*)^\top$ :
+        \begin{equation}
+            (x - x^*)^\top (G x^* + c) = \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i^* a_i^\top (x - x^*)
+        \end{equation}
+        Décomposons la somme :
+        \begin{equation}
+            \sum_{i \in \mathcal{E}} \lambda_i^* \underbrace{a_i^\top (x - x^*)}_{=0} + \sum_{i \in \mathcal{I} \cap \mathcal{A}(x^*)} \underbrace{\lambda_i^*}_{\ge 0} \underbrace{a_i^\top (x - x^*)}_{\ge 0} + \sum_{i \in \mathcal{I} \setminus \mathcal{A}(x^*)} \underbrace{\lambda_i^*}_{=0} a_i^\top (x - x^*)
+        \end{equation}
+        Tous les termes sont nuls ou positifs. Donc :
+        \begin{equation}
+            (x - x^*)^\top (G x^* + c) \ge 0
+        \end{equation}
+
+        Considérons maintenant le développement de Taylor (exact pour une quadratique) de $q(x)$ autour de $x^*$ :
+        \begin{equation}
+            q(x) = q(x^*) + (x - x^*)^\top \nabla q(x^*) + \frac{1}{2} (x - x^*)^\top \nabla^2 q(x^*) (x - x^*)
+        \end{equation}
+        Or $\nabla q(x^*) = G x^* + c$ et $\nabla^2 q(x^*) = G$.
+        \begin{equation}
+            q(x) = q(x^*) + \underbrace{(x - x^*)^\top (G x^* + c)}_{\ge 0} + \frac{1}{2} \underbrace{(x - x^*)^\top G (x - x^*)}_{\ge 0 \text{ car } G \succeq 0}
+        \end{equation}
+        Ainsi, $q(x) \ge q(x^*)$, ce qui prouve que $x^*$ est une solution globale.
+    \end{proof}
+
+    \begin{remarque}
+        Si $G$ est définie positive, on peut adapter la preuve pour montrer que $x^*$ est unique.
+        (En effet, si $x \neq x^*$, le terme quadratique est strictement positif).
+    \end{remarque}
+
+
+\begin{remarque}
+    Il existe des méthodes pour les problèmes quadratiques généraux, par exemple :
+    \begin{itemize}
+        \item Méthodes "active-set" (Gould);
+        \item Méthodes de point intérieur (Wright ou Vanderbei).
+    \end{itemize}
+\end{remarque}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.2]
+    \draw[thick, fill=blue!5] plot [smooth cycle] coordinates {(0,0) (2,0.5) (2.5,2.5) (1,3) (-0.5,2)};
+    \node[blue!50!black] at (1.5, 1.5) {$\Omega$};
+    
+    \coordinate (x0) at (0.2, 2.5); 
+    \filldraw[black] (x0) circle (1.5pt) node[above left] {$x_0$};
+    
+    \draw[thick, ->] (x0) -- (0.5, 2.2);
+    \draw[thick] (0.4, 2.3) -- (0.6, 2.1); % Tick
+    
+    \draw[thick, ->] (0.5, 2.2) -- (0.9, 2.0);
+    \draw[thick] (0.8, 2.1) -- (1.0, 1.9); % Tick
+    
+    \draw[thick, ->] (0.9, 2.0) -- (1.3, 1.0); % Moving towards interior or along boundary
+    
+    \filldraw[red] (1.3, 1.0) circle (1.5pt) node[right] {$x^*$};
+    
+    % Annotation "Active Set"
+    \node[align=center, font=\small] at (-1.5, 2.5) {Cheminement\\Active-Set};
+    \draw[->, gray] (-0.8, 2.5) -- (0.1, 2.5);
+    
+\end{tikzpicture}
+\caption{Illustration d'une méthode de type Active-Set pour un problème QP général. L'algorithme se déplace à la surface de l'ensemble réalisable $\Omega$, en activant ou désactivant des contraintes jusqu'à trouver l'optimum.}
+\label{fig:generic-active-set}
+\end{figure}
+
+\begin{figureexplanation}
+\textbf{Méthodes Active-Set Générales :}
+Contrairement au cas simple des bornes, la région $\Omega$ peut avoir une forme polyédrique complexe définie par des inégalités linéaires générales.
+L'algorithme maintient un ensemble de contraintes "actives" (saturées) et se déplace sur la frontière correspondante. Si le gradient indique qu'on peut réduire la fonction objectif en "décollant" d'une contrainte, on la relâche (on la retire de l'ensemble actif).
+\end{figureexplanation}
+
+Nous restreignons notre attention aux problèmes avec **contraintes de bornes** ("bound-constrained") :
+\begin{equation}
+    \min_{x \in \mathbb{R}^n} \frac{1}{2} x^\top G x + c^\top x \quad \text{sujet à} \quad l \le x \le u
+\end{equation}
+où $G$ est symétrique, et $l, u \in \mathbb{R}^n$. Les inégalités s'entendent composante par composante ($l_i \le x_i \le u_i$). Certaines composantes de $l$ et $u$ peuvent être $-\infty$ ou $+\infty$.
+
+La région réalisable ressemble à une "boîte".
+
+\begin{center}
+\begin{tikzpicture}
+    \draw[->] (-1,0) -- (4,0) node[right] {$x_1$};
+    \draw[->] (0,-1) -- (0,4) node[above] {$x_2$};
+    
+    % Box
+    \draw[blue, thick] (1,1) rectangle (3,3);
+    
+    \node at (1, -0.3) {$l_1$};
+    \node at (3, -0.3) {$u_1$};
+    \node at (-0.3, 1) {$l_2$};
+    \node at (-0.3, 3) {$u_2$};
+    \node at (2, 2) {$\mathcal{F}$};
+\end{tikzpicture}
+\captionof{figure}{Région réalisable (Boîte)}
+\end{center}
+
+\begin{figureexplanation}
+\textbf{Géométrie des contraintes de bornes :}
+L'ensemble réalisable est un hyper-pavé (box). Pour chaque dimension $i$, la variable $x_i$ est contrainte à rester dans l'intervalle $[l_i, u_i]$.
+La "projection" sur cet ensemble est très simple : si une coordonnée dépasse une borne, on la ramène simplement à la valeur de la borne (clipping).
+\end{figureexplanation}
+
+Les itérations se composent de deux étapes :
+
+\subsubsection{Étape 1 : Calcul du point de Cauchy}
+
+\paragraph{Projection sur la région réalisable :}
+La projection d'un point $x$ sur la boîte $[l, u]$ se définit composante par composante :
+\begin{equation}
+    P(x, l, u)_i = \begin{cases}
+        l_i & \text{si } x_i < l_i \\
+        x_i & \text{si } l_i \le x_i \le u_i \\
+        u_i & \text{si } x_i > u_i
+    \end{cases}
+\end{equation}
+
+\paragraph{Trajectoire linéaire par morceaux :}
+La trajectoire $x(t)$, partant de l'itéré courant $x$, est définie par :
+\begin{equation}
+    x(t) = P(x - tg, l, u)
+\end{equation}
+où $g = Gx + c$ est le gradient.
+
+Cette trajectoire suit la direction de plus forte descente $-g$ et se "plie" lorsqu'elle atteint une borne, restant ainsi réalisable. Le premier minimum local le long de cette trajectoire est le \textbf{Point de Cauchy} $x^c$.
+
+\paragraph{Calcul du Point de Cauchy :}
+$x^c$ est le premier minimiseur local de $q(x(t))$. Pour le trouver, examinons les \textbf{points de rupture} (breakpoints).
+
+\textbf{1) Identifier les $t$ auxquels les composantes de $x(t)$ atteignent une borne le long de $-g$ :}
+
+La valeur $\bar{t}_i$ pour chaque composante est :
+\begin{equation}
+    \bar{t}_i = \begin{cases}
+        \displaystyle\frac{x_i - u_i}{g_i} & \text{si } g_i < 0 \text{ et } u_i < +\infty \\[10pt]
+        \displaystyle\frac{x_i - l_i}{g_i} & \text{si } g_i > 0 \text{ et } l_i > -\infty \\[10pt]
+        +\infty & \text{sinon}
+    \end{cases}
+\end{equation}
+
+Les composantes de $x(t)$ évoluent alors comme suit :
+\begin{equation}
+    x_i(t) = \begin{cases}
+        x_i - t g_i & \text{si } t < \bar{t}_i \\
+        x_i - \bar{t}_i g_i & \text{si } t \ge \bar{t}_i
+    \end{cases}
+\end{equation}
+
+\textbf{2) Éliminer les zéros et doublons, puis trier la liste de $\bar{T}$ :}
+
+On obtient : $t_1 < t_2 < \cdots < t_\ell$.
+
+\textbf{3) Examiner successivement les segments $[0, t_1], [t_1, t_2], \ldots$ :}
+
+Supposons que nous n'avons pas trouvé de minimum local jusqu'à $t_{j-1}$. Sur le segment $[t_{j-1}, t_j]$ :
+\begin{equation}
+    x(t) = x(t_{j-1}) + (\Delta t) \, p^{j-1}
+\end{equation}
+où $\Delta t = t - t_{j-1}$ et :
+\begin{equation}
+    p_i^{j-1} = \begin{cases}
+        -g_i & \text{si } t_{j-1} < \bar{t}_i \\
+        0 & \text{sinon}
+    \end{cases}
+\end{equation}
+
+On peut écrire :
+\begin{equation}
+    q(x(t)) = q(x(t_{j-1})) + (\Delta t) \, \delta_{j-1} + \frac{1}{2} (\Delta t)^2 \, (p^{j-1})^\top G \, p^{j-1}
+\end{equation}
+où $\delta_{j-1} = (p^{j-1})^\top (G x(t_{j-1}) + c)$ est la dérivée directionnelle.
+
+\paragraph{Trois cas possibles :}
+\begin{itemize}
+    \item \textbf{Cas 1 :} $\delta_{j-1} \ge 0$ $\Rightarrow$ il y a un minimiseur local de $q(x(t))$ en $x^c = x(t_{j-1})$.
+    \item \textbf{Cas 2 :} $(\Delta t)^* \in [0, t_j - t_{j-1}]$ $\Rightarrow$ il y a un minimiseur local en $x^c = x(t_{j-1} + (\Delta t)^*)$.
+    \item \textbf{Cas 3 :} $(\Delta t)^* > t_j - t_{j-1}$ $\Rightarrow$ explorer le segment suivant.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.2]
+    \draw[->, thick] (-0.3, 0) -- (5.5, 0) node[right] {$t$};
+    
+    % Tick marks for t_{j-1} and t_j
+    \draw[thick] (0, 0.15) -- (0, -0.15) node[below] {$t_{j-1}$};
+    \draw[thick] (4, 0.15) -- (4, -0.15) node[below] {$t_j$};
+    
+    % Segment bracket (lowered)
+    \draw[<->, gray] (0, -1.0) -- (4, -1.0) node[midway, fill=white, font=\footnotesize] {Segment courant};
+    
+    % === CASE 1: Increasing from start (blue) ===
+    \draw[blue, very thick, domain=0:3, smooth, samples=50] plot (\x, {0.08*\x*\x + 2.5});
+    \filldraw[blue] (0, 2.5) circle (2pt);
+    \draw[blue, dashed] (0, 2.5) -- (0, 0);
+    \node[blue, font=\small] at (5.5, 4.2) {\textbf{Cas 1}: $\delta_{j-1} \ge 0$};
+    \node[blue, font=\footnotesize] at (5.5, 3.6) {Min en $t_{j-1}$};
+    
+    % === CASE 2: Minimum inside (green) ===
+    \draw[green!60!black, very thick, domain=0:4, smooth] plot (\x, {0.25*(\x-2)*(\x-2) + 0.8});
+    \filldraw[green!60!black] (2, 0.8) circle (2pt);
+    \draw[green!60!black, dashed] (2, 0.8) -- (2, 0);
+    \node[below, green!60!black, font=\footnotesize] at (2, -0.15) {$(\Delta t)^*$};
+    \node[green!60!black, font=\small] at (5.5, 2.5) {\textbf{Cas 2}: Min intérieur};
+    
+    % === CASE 3: Decreasing throughout (red) ===
+    \draw[red, very thick, domain=0:4.2, smooth, samples=50] plot (\x, {2.0 - 0.08*\x*\x - 0.12*\x});
+    \draw[->, red, very thick] (4.2, {2.0 - 0.08*4.2*4.2 - 0.12*4.2}) -- (5.0, {2.0 - 0.08*5.0*5.0 - 0.12*5.0});
+    \node[red, font=\small] at (5.5, 0.8) {\textbf{Cas 3}: Vers segment suivant $\to$};
+    
+\end{tikzpicture}
+\caption{Recherche du point de Cauchy : les trois cas possibles lors de la minimisation de $q(x(t))$ sur un segment $[t_{j-1}, t_j]$.}
+\label{fig:cauchy-search-cases}
+\end{figure}
+
+\begin{figureexplanation}
+Sur chaque segment linéaire de la trajectoire projetée, la fonction objectif $q(x(t))$ est une parabole (fonction quadratique de $t$).
+\begin{itemize}
+    \item \textbf{Cas 1 (Bleu)} : La pente est montante dès le début. Le minimum sur le segment est le point de départ $t_{j-1}$. C'est le Point de Cauchy.
+    \item \textbf{Cas 2 (Vert)} : La parabole atteint son minimum à l'intérieur du segment (la dérivée s'annule en $(\Delta t)^* < t_j - t_{j-1}$). C'est le Point de Cauchy.
+    \item \textbf{Cas 3 (Rouge)} : La fonction décroît tout le long du segment. Le minimum n'est pas atteint ici, il faut continuer la recherche sur le segment suivant (au-delà de $t_j$).
+\end{itemize}
+\end{figureexplanation}
+
+\begin{center}
+\begin{tikzpicture}[scale=1.4]
+    % 3D Box (parallélépipède) - perspective isométrique
+    % On utilise d comme unité de base pour les arêtes
+    \def\d{2.5}  % taille d'une arête
+    
+    % Coordonnées des 8 sommets du cube
+    % Face avant : coins (0,0), (d,0), (d,d), (0,d)
+    % Face arrière : décalage de (0.6d, 0.4d) en perspective
+    \def\px{0.6}  % facteur de perspective x
+    \def\py{0.4}  % facteur de perspective y
+    
+    % Face avant (rouge)
+    \draw[red, thick] (0,0) -- (\d,0) -- (\d,\d) -- (0,\d) -- cycle;
+    
+    % Face droite (rouge)
+    \draw[red, thick] (\d,0) -- (\d+\d*\px, \d*\py) -- (\d+\d*\px, \d+\d*\py) -- (\d,\d) -- cycle;
+    
+    % Face supérieure (rouge)
+    \draw[red, thick] (0,\d) -- (\d,\d) -- (\d+\d*\px, \d+\d*\py) -- (\d*\px, \d+\d*\py) -- cycle;
+    
+    % Arêtes arrière (pointillés rouges)
+    \draw[red, thick, dashed] (0,0) -- (\d*\px, \d*\py);
+    \draw[red, thick, dashed] (\d*\px, \d*\py) -- (\d*\px, \d+\d*\py);
+    \draw[red, thick, dashed] (\d*\px, \d*\py) -- (\d+\d*\px, \d*\py);
+    
+    % Centre du cube (point x)
+    \coordinate (center) at (\d/2 + \d*\px/2, \d/2 + \d*\py/2);
+    \fill[blue] (center) circle (2.5pt);
+    \node[blue, below] at (center) {$t_x$};
+    
+    % X' = milieu de l'arête supérieure GAUCHE (arête entre (0,d) et (d*px, d+d*py))
+    \coordinate (Xprime) at (\d*\px/2, \d + \d*\py/2);
+    
+    % X'' = au-dessus de l'arête du fond (arête arrière supérieure)
+    % L'arête arrière va de (d*px, d+d*py) à (d+d*px, d+d*py)
+    % On place X'' au-dessus du milieu de cette arête
+    \coordinate (Xpp) at (\d*\px + \d*0.8, \d + \d*\py + \d*0.5);
+    
+    % X = intersection de la droite (center -> X'') avec la face supérieure
+    % On calcule où la ligne center-X'' coupe le plan z=d (face sup)
+    % La face sup a y entre d et d+d*py selon la perspective
+    % Approximation: X est sur le segment center-X'' quand on atteint la hauteur de la face sup
+    \coordinate (X) at ($(center)!0.40!(Xpp)$);  % X plus haut sur la trajectoire
+    \fill[black] (X) circle (2pt);
+    
+    % Trajectoire x - tg : du centre (center) vers X'' - en teal
+    \draw[very thick, teal] (center) -- (X);
+    \draw[->, very thick, teal] (X) -- (Xpp);
+    \node[teal, left] at (Xpp) {$x-tg$};
+    
+    % L'arête supérieure arrière va de (d*px, d+d*py) à (d+d*px, d+d*py)
+    % L'arête de droite de la face supérieure va de (d,d) à (d+d*px, d+d*py) avec direction (d*px, d*py)
+    % Pour que la ligne X→MidBack soit parallèle à cette arête, on suit la direction (px, py)
+    % MidBack doit être sur l'arête arrière, donc à y = d+d*py
+    % Le facteur dépend de la distance entre X et l'arête arrière
+    \coordinate (MidBack) at ($(X) + (0.55*\d*\px, 0.55*\d*\py)$);
+    
+    % Ligne de X vers le point sur l'arête arrière (parallèle à l'arête de droite)
+    \draw[black, very thick] (X) -- (MidBack);
+    
+    % Coin supérieur arrière droit
+    \coordinate (EdgePoint) at (\d+\d*\px, \d+\d*\py);
+    
+    % Ligne le long de l'arête supérieure arrière vers le coin (confondue avec l'arête)
+    \draw[black, very thick] (MidBack) -- (EdgePoint);
+    
+\end{tikzpicture}
+\captionof{figure}{Trajectoire projetée sur la boîte réalisable (3D). La trajectoire $x-tg$ traverse le cube et sort par la face supérieure en $X$, puis suit les arêtes (projection).}
+\end{center}
+
+\begin{figureexplanation}
+\textbf{Le chemin de Cauchy :}
+Cette figure en 3D illustre le chemin $x(t) = P(x - tg)$.
+\begin{itemize}
+    \item Au départ (centre), on suit la direction de plus forte pente $-g$ (ligne droite).
+    \item Dès qu'on rencontre une face de la boîte (ici la face supérieure), on ne peut plus "monter". La projection nous force à rester sur la face.
+    \item On continue alors à glisser sur la face, ou le long d'une arête, jusqu'à trouver un minimum local le long de ce chemin brisé. Ce minimum est le \textbf{Point de Cauchy} $x^c$.
+\end{itemize}
+\end{figureexplanation}
+
+\subsubsection{Étape 2 : Minimisation dans le sous-espace}
+
+Une fois $x^c$ calculé, on travaille sur l'ensemble actif :
+\begin{equation}
+    \mathcal{A}(x^c) = \{ i \mid x_i^c = l_i \text{ ou } x_i^c = u_i \}
+\end{equation}
+
+On résout approximativement le problème QP en \textbf{fixant} $x_i$ à $x_i^c$ pour $i \in \mathcal{A}(x^c)$.
+Les autres composantes sont déterminées par :
+\begin{equation}
+    \min_{x \in \mathbb{R}^n} q(x) = \frac{1}{2} x^\top G x + c^\top x
+\end{equation}
+sujet à :
+\begin{equation}
+    \begin{cases}
+        x_i = x_i^c & \text{si } i \in \mathcal{A}(x^c) \\
+        l_i \le x_i \le u_i & \text{si } i \notin \mathcal{A}(x^c)
+    \end{cases}
+\end{equation}
+
+\begin{remarque}
+    Il n'est pas nécessaire (ni souhaitable) de résoudre ce sous-problème exactement. Il suffit de trouver un point plus intéressant que $x^c$.
+    Par exemple, on peut utiliser un algorithme de Gradient Conjugué (comme dans la Section~\ref{chap:unconstrained}) et s'arrêter dès que les contraintes $l_i \le x_i \le u_i$ pour $i \notin \mathcal{A}(x^c)$ sont satisfaites.
+\end{remarque}
+
+\begin{remarque}
+    En principe, l'algorithme peut être utilisé pour des contraintes d'inégalité générales $a_i^\top x \ge b_i$, mais des calculs significativement plus complexes sont nécessaires.
+    Par exemple, pour trouver la projection d'un point $x$ sur l'ensemble réalisable, on doit résoudre :
+    \begin{equation}
+        \min_{\bar{x} \in \mathbb{R}^n} \|x - \bar{x}\|^2, \quad \text{sujet à } a_i^\top \bar{x} \ge b_i, \; \forall i \in \mathcal{I}
+    \end{equation}
+    ce qui peut être aussi difficile que le problème original.
+    
+    \textbf{Solutions :} recourir aux méthodes active-set ou aux méthodes de point intérieur.
+\end{remarque}
+
+\subsubsection{Résumé}
+
+\begin{algorithm}[H]
+    \caption{Méthode du gradient projeté pour la Programmation Quadratique}
+    \SetAlgoLined
+    Calculer un point de départ réalisable $x_0$\;
+    \For{$k=0, 1, \ldots$}{
+        \If{$x_k$ satisfait les conditions KKT pour le problème avec contraintes de bornes}{
+            \Stop avec la solution $x^*=x_k$\;
+        }
+        Poser $x=x_k$ et trouver le point de Cauchy $x^c$\;
+        Trouver une solution approchée $x^+$ de
+        \begin{align*}
+            \min_{x} q(x)=\frac{1}{2}x^\top Gx &+ x^\top c\\
+            \text{sous contraintes } x_i&=x_i^c, \quad i\in\mathcal{A}(x^c)\\
+            l_i \leq x_i & \leq u_i, \quad i\notin\mathcal{A}(x^c)
+        \end{align*}
+        telle que $q(x^+)\leq q(x^c)$ et $x^+$ est réalisable\;
+        $x_{k+1}\leftarrow x^+$\;
+    }
+\end{algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exercices d'entraînement (Nocedal \& Wright)}
+\label{sec:11.exercises}
+
+Ces exercices correspondent au chapitre 16 (Quadratic Programming) du livre de référence.
+
+\bigskip
+\begin{exercice}[Conditions KKT pour QP]
+Écrire les conditions KKT pour le programme quadratique convexe avec contraintes mixtes :
+\begin{align*}
+    \min_x \quad & \frac{1}{2} x^\top G x + x^\top c \\
+    \text{s.c. } \quad & Ax \ge b \\
+               & \bar{A}x = \bar{b}
+\end{align*}
+Utiliser ces conditions pour dériver un analogue du système primal-dual générique.
+\end{exercice}
+
+\begin{correction}
+Lagrangien :
+$$ L(x, \lambda, \mu) = \frac{1}{2}x^\top G x + c^\top x - \lambda^\top (Ax - b) - \nu^\top (\bar{A}x - \bar{b}). $$
+Conditions KKT :
+1. Stationnarité : $Gx + c - A^\top \lambda - \bar{A}^\top \nu = 0$.
+2. Admissibilité primale : $Ax \ge b$, $\bar{A}x = \bar{b}$.
+3. Admissibilité duale : $\lambda \ge 0$.
+4. Complémentarité : $\lambda_i (A_i x - b_i) = 0, \forall i$.
+\end{correction}
+\bigskip
+
+\bigskip
+\begin{exercice}[Résolution par Active-Set]
+Programmer (ou dérouler manuellement) l'algorithme Active-Set pour résoudre :
+\begin{align*}
+    \min_{x_1, x_2} \quad & x_1^2 + 2x_2^2 - 2x_1 - 6x_2 - 2x_1 x_2 \\
+    \text{s.c. } \quad & \frac{1}{2}x_1 + \frac{1}{2}x_2 \le 1 \\
+               & -x_1 + 2x_2 \le 2 \\
+               & x_1 \ge 0, x_2 \ge 0
+\end{align*}
+Tester avec plusieurs points de départ (intérieur, sommet, bord non-sommet).
+\end{exercice}
+
+\begin{correction}
+C'est un exercice de mise en oeuvre de l'Algorithme 16.3.
+Il faut partir d'un point réalisable $x_0$, identifier l'ensemble actif $\mathcal{W}_0$.
+Résoudre le sous-problème d'égalité. Calculer les multiplicateurs. Si $\lambda_i < 0$ pour une contrainte active, on la relâche.
+(Solution spécifique dépendante du point de départ choisi).
+\end{correction}
+\bigskip
+
+\bigskip
+\begin{exercice}[Exemple graphique et résolution]
+Considérer le problème QP :
+\begin{align*}
+    \max \quad & 6x_1 + 4x_2 - 13 - x_1^2 - x_2^2 \\
+    \text{s.c. } \quad & x_1 + x_2 \le 3 \\
+               & x_1 \ge 0, x_2 \ge 0
+\end{align*}
+\begin{enumerate}
+    \item Résoudre ce problème graphiquement.
+    \item Appliquer la méthode Active-Set pour retrouver la solution.
+\end{enumerate}
+\end{exercice}
+
+\begin{correction}
+Minimiser $f(x) = (x_1 - 3)^2 + (x_2 - 2)^2$ (en complétant les carrés et changeant le signe du max).
+Le minimum sans contrainte est $(3, 2)$.
+Contrainte $x_1 + x_2 \le 3$. Le point $(3,2)$ a $3+2=5 > 3$, donc pas réalisable.
+Le point le plus proche de $(3,2)$ sur la droite $x_1+x_2=3$ (dans le cadran positif) est la solution.
+Projection de $(3,2)$ sur $x_1+x_2-3=0$ :
+Vecteur normal $(1,1)$. Droite passant par $(3,2)$ : $(3+t, 2+t)$.
+Intersection : $(3+t) + (2+t) = 3 \implies 2t + 5 = 3 \implies 2t = -2 \implies t=-1$.
+Point projeté : $(2, 1)$.
+Ce point vérifie $x \ge 0$. Donc $x^*=(2,1)$.
+\end{correction}
+\bigskip
+
+\bigskip
+\begin{exercice}[Méthode de l'Espace Nul ($p_Y, p_Z$) - Type Examen]
+On considère le problème QP d'égalité suivant (analogue à l'itération d'un EQP) :
+\begin{align*}
+    \min_{p} \quad & \frac{1}{2} p^\top G p + g^\top p \\
+    \text{s.c. } \quad & A p = -h
+\end{align*}
+avec $G = \begin{pmatrix} 4 & 0 \\ 0 & 2 \end{pmatrix}$, $A = \begin{pmatrix} 1 & 1 \end{pmatrix}$, $h = -2$, $g = \begin{pmatrix} -1 \\ -1 \end{pmatrix}$.
+\begin{enumerate}
+    \item Construire une matrice $Z$ (base du noyau de $A$) et une matrice $Y$ (telle que $AY$ soit inversible, ou pseudo-inverse).
+    \item Écrire la décomposition $p = Y p_Y + Z p_Z$.
+    \item Calculer $p_Y$ en résolvant $AY p_Y = -h$.
+    \item Écrire le système réduit pour $p_Z$ : $(Z^\top G Z) p_Z = -(Z^\top g + Z^\top G Y p_Y)$ et le résoudre.
+    \item En déduire le pas optimal $p$.
+\end{enumerate}
+\end{exercice}
+
+\begin{correction}
+\textbf{1. Construction de Y et Z :}
+Contrainte linaire $p_1 + p_2 = 2$ (car $Ap = -(-2) = 2$).
+$A = \begin{pmatrix} 1 & 1 \end{pmatrix}$. Base du noyau ($\ker A$) : on cherche $z$ t.q. $z_1 + z_2 = 0$.
+Posons $Z = \begin{pmatrix} 1 \\ -1 \end{pmatrix}$.
+Pour $Y$, on cherche $y$ t.q. $Ay = I$ (ici $1$). Choisissons $Y = \begin{pmatrix} 1/2 \\ 1/2 \end{pmatrix}$ (Pseudo-inverse) ou $Y = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$.
+Prenons le choix simple du cours (souvent $Y = A^\top (AA^\top)^{-1}$). $AA^\top = 2$, donc $Y = \begin{pmatrix} 1/2 \\ 1/2 \end{pmatrix}$.
+Vérifions : $A Z = 1(1) + 1(-1) = 0$. $A Y = 1(1/2) + 1(1/2) = 1$. OK.
+
+\textbf{2. Décomposition :} $p = Y p_Y + Z p_Z$.
+
+\textbf{3. Calcul de $p_Y$ :}
+$AY p_Y = -h \implies 1 \cdot p_Y = 2 \implies p_Y = 2$.
+Donc la composante de range space contribue $Y p_Y = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$.
+Le point $\begin{pmatrix} 1 \\ 1 \end{pmatrix}$ vérifie bien la contrainte $1+1=2$.
+
+\textbf{4. Calcul de $p_Z$ :}
+Matrice réduite $Z^\top G Z = \begin{pmatrix} 1 & -1 \end{pmatrix} \begin{pmatrix} 4 & 0 \\ 0 & 2 \end{pmatrix} \begin{pmatrix} 1 \\ -1 \end{pmatrix} = \begin{pmatrix} 1 & -1 \end{pmatrix} \begin{pmatrix} 4 \\ -2 \end{pmatrix} = 4 + 2 = 6$.
+Vecteur réduit $Z^\top g = \begin{pmatrix} 1 & -1 \end{pmatrix} \begin{pmatrix} -1 \\ -1 \end{pmatrix} = -1 + 1 = 0$.
+Terme croisé $Z^\top G Y p_Y = \begin{pmatrix} 1 & -1 \end{pmatrix} \begin{pmatrix} 4 & 0 \\ 0 & 2 \end{pmatrix} \begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 1 & -1 \end{pmatrix} \begin{pmatrix} 4 \\ 2 \end{pmatrix} = 4 - 2 = 2$.
+Équation réduite : $6 p_Z = -(0 + 2) \implies p_Z = -2/6 = -1/3$.
+
+\textbf{5. Solution $p$ :}
+$p = \begin{pmatrix} 1 \\ 1 \end{pmatrix} + \begin{pmatrix} 1 \\ -1 \end{pmatrix} (-1/3) = \begin{pmatrix} 1 - 1/3 \\ 1 + 1/3 \end{pmatrix} = \begin{pmatrix} 2/3 \\ 4/3 \end{pmatrix}$.
+Vérification : $p_1 + p_2 = 6/3 = 2$. OK.
+\end{correction}
+\bigskip
+
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{KKT QP :} Écrire le système KKT pour un problème QP avec contraintes d'égalité.
+    \item \textbf{Espace Nul :} Comment décomposer le pas $p$ en $p_Y$ et $p_Z$ ? Lequel minimise la quadratique réduite ?
+    \item \textbf{Active Set :} Comment cette méthode gère-t-elle les inégalités ? (En ajoutant/retirant des contraintes de l'ensemble de travail).
+\end{itemize}
+\end{checkpoint}
+

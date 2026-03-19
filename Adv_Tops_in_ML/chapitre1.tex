@@ -266,7 +266,7 @@ où $\tilde{f}$ est l'oracle de la classe de modèles.
 
 \subsection{Estimateur des k-Plus Proches Voisins (k-NN)}
 
-\begin{definition}[Estimateur k-NN]
+\begin{definition}[Estimateur k-NN]\label{def:knn_regression}
 Le prédicteur k-NN à un point $x$ est la moyenne des sorties des $k$ voisins les plus proches:
 \begin{equation}
 \hat{f}(x)=\frac{1}{k}\sum_{j=1}^{k}Y_{(j)}(x)
@@ -276,7 +276,7 @@ où $Y_{(1)}(x), \ldots, Y_{(k)}(x)$ sont les sorties correspondant aux $k$ plus
 
 
 \begin{exemple}[Illustration : Points de données dans $\R^2$]
-Considérons un ensemble de points dans $\R^2$. Soit $X_i = (x_i^1, x_i^2)$ des vecteurs pour $i = 1, \ldots, n$ avec $n = 5$. L'échantillon d'apprentissage est noté :
+Considérons un ensemble de points dans $\R^2$. Soit $X_i = (X_i^1, X_i^2)$ des vecteurs pour $i = 1, \ldots, n$ avec $n = 5$. L'échantillon d'apprentissage est noté :
 \[
 \mathcal{D}_5 = \{(X_1, Y_1), \ldots, (X_5, Y_5)\}
 \]
@@ -290,11 +290,11 @@ Fixons le paramètre $k = 3$.
         \draw[->, thick] (0,-0.5) -- (0,5.5) node[above] {$x^2$};
         
         % Data points (blue filled circles)
-        \filldraw[blue!70!black] (2,3.8) circle (3pt) node[above right] {$x_1$};
-        \filldraw[blue!70!black] (4,4.5) circle (3pt) node[above right] {$x_2$};
-        \filldraw[blue!70!black] (1,1.5) circle (3pt) node[below left] {$x_3$};
-        \filldraw[blue!70!black] (4,1.8) circle (3pt) node[below right] {$x_4$};
-        \filldraw[blue!70!black] (3,2.8) circle (3pt) node[above right] {$x_5$};
+        \filldraw[blue!70!black] (2,3.8) circle (3pt) node[above right] {$X_1$};
+        \filldraw[blue!70!black] (4,4.5) circle (3pt) node[above right] {$X_2$};
+        \filldraw[blue!70!black] (1,1.5) circle (3pt) node[below left] {$X_3$};
+        \filldraw[blue!70!black] (4,1.8) circle (3pt) node[below right] {$X_4$};
+        \filldraw[blue!70!black] (3,2.8) circle (3pt) node[above right] {$X_5$};
         
         % Query point x (red cross)
         \draw[red!70!black, thick] (2.5,2) -- ++(0.2,0.2);
@@ -317,7 +317,7 @@ Les estimateurs $\hat{f}$ aux points $x$ et $x'$ sont calculés en moyennant les
 \hat{f}(x) &= \frac{1}{3}(Y_3 + Y_4 + Y_5) \\
 \hat{f}(x') &= \frac{1}{3}(Y_1 + Y_2 + Y_5)
 \end{align}
-Le prédicteur $\hat{f}(x)$ effectue donc une moyenne locale des labels des voisins les plus proches. En classification, cela reviendrait à un vote majoritaire parmi les voisins.
+Le prédicteur $\hat{f}(x)$ effectue donc une moyenne locale des labels des voisins les plus proches. En classification, cela reviendrait à un vote majoritaire parmi les voisins (voir section Clasification).
 \end{exemple}
 
 \begin{proposition}[Taux de convergence k-NN]
@@ -469,9 +469,7 @@ Le GMM est un modèle \textbf{génératif} : on modélise la distribution jointe
 
 Dans la pratique, les paramètres $(\pi_k)_k, (\mu_k)_k, (\Sigma_k)_k$ sont inconnus. Nous ne pouvons pas calculer directement $f^*$. Nous devons estimer $f^*$ par $\hat{f}$ à partir de l'échantillon d'apprentissage $D_n$.
 
-\begin{definition}[Plug-in approach]
-L'approche "plug-in" consiste à considérer des estimateurs $\hat{\pi}_k, \hat{\mu}_k, \hat{\Sigma}_k$ des paramètres inconnus, calculés sur $D_n$, et à les substituer dans l'expression du prédicteur de Bayes.
-\end{definition}
+L'approche "plug-in" consiste à considérer des estimateurs $\hat{\pi}_k, \hat{\mu}_k, \hat{\Sigma}_k$ des paramètres inconnus, calculés sur $D_n$, et à les substituer dans l'expression du prédicteur de Bayes (cette approche générale sera formellement détaillée dans la section \ref{sec:plugin_analysis}).
 
 On construit ainsi le prédicteur :
 \begin{equation}
@@ -583,11 +581,11 @@ R(f^*) = 1 - \Phi\left( \frac{\|\mu_1-\mu_0\|}{2\sigma} \right)
 \]
 \end{exercice}
 
-\section{Analyse Générale du Classifieur Plug-in}
+\subsection{Analyse Générale du Classifieur Plug-in}\label{sec:plugin_analysis}
 
-Cette section formalise l'approche du "Plug-in Classifier" pour construire un classifieur à partir des données.
+Cette sous-section formalise l'approche du "Plug-in Classifier" pour construire un classifieur à partir des données.
 
-\subsection{Définition et Approche}
+\subsubsection{Définition et Approche}
 
 Supposons que la distribution conjointe $(X, Y)$ soit inconnue.
 Le classifieur de Bayes est donné par :
@@ -596,13 +594,15 @@ f^*(x) \in \argmax_{k \in \{1, \dots, K\}} P_k(x)
 \]
 où $P_k(x) = \mathbb{P}(Y=k | X=x)$.
 
-Le \textbf{Classifieur Plug-in} $\hat{f}$ est défini en remplaçant les probabilités réelles $P_k$ par des estimateurs $\hat{P}_k$ construits à partir des données :
+\begin{definition}[Classifieur Plug-in]
+Le \textbf{Classifieur Plug-in} $\hat{f}$ est défini en remplaçant les probabilités réelles $P_k$ (ou plus généralement tout paramètre inconnu du problème) par des estimateurs $\hat{P}_k$ construits à partir des données :
 \[
 \hat{f}(x) \in \argmax_{k \in \{1, \dots, K\}} \hat{P}_k(x)
 \]
 où $\hat{P}_k$ est un estimateur de $P_k$.
+\end{definition}
 
-\subsection{Borne sur le Risque en Excès}
+\subsubsection{Borne sur le Risque en Excès}
 
 Nous avons le résultat fondamental suivant qui lie la performance du classifieur plug-in à la qualité de l'estimation des probabilités conditionnelles.
 
@@ -647,7 +647,7 @@ En prenant l'espérance, on obtient le résultat :
 \]
 \end{proof}
 
-\subsection{Consistance}
+\subsubsection{Consistance}
 
 \begin{corollaire}[Consistance]
 Si les estimateurs $\hat{P}_k$ sont consistants (i.e., convergent vers $P_k$ en probabilité ou p.s.), alors le classifieur plug-in associé $\hat{f}$ est \textbf{consistant}, c'est-à-dire :
@@ -662,7 +662,7 @@ Le classifieur de Bayes est $f^*(x) = \indic\{\eta(x) \ge 1/2\}$.
 Le classifieur plug-in est $\hat{f}(x) = \indic\{\hat{\eta}(x) \ge 1/2\}$.
 \end{remarque}
 
-\subsection{Analyse Détaillée du Cas Binaire}
+\subsubsection{Analyse Détaillée du Cas Binaire}
 
 Approfondissons le cas où $\mathcal{Y}=\{0,1\}$. Soit $\hat{\eta}$ un estimateur de la fonction de régression $\eta$.
 Nous avons le résultat suivant pour l'excès de risque :
@@ -730,18 +730,16 @@ En utilisant l'inégalité démontrée ci-dessus sur l'événement erreur, nous 
 \]
 Ainsi, la performance du classifieur plug-in est directement contrôlée par la qualité d'estimation $L^1$ de la fonction de régression $\eta$.
 
-\begin{definition}[Estimateur des k-Plus Proches Voisins]
+\begin{definition}[Estimateur des k-Plus Proches Voisins (k-NN) en classification]
+L'estimateur k-NN a été défini en régression (voir Théorème \ref{def:knn_regression}). En classification, le principe est similaire.
 Soit $D_n = \{(X_i, Y_i)\}_{i=1}^n$ l'échantillon d'apprentissage et $k \ge 1$ un entier.
-Pour tout $x \in \R^d$, considérons les données réordonnées selon la distance euclidienne $d(x,y) = \|x-y\|$, notées $X_{(1)}(x), \dots, X_{(n)}(x)$, telles que :
-\[
-\|X_{(1)}(x) - x\| \le \|X_{(2)}(x) - x\| \le \dots \le \|X_{(n)}(x) - x\|
-\]
+Pour tout $x \in \R^d$, considérons les données réordonnées selon la distance euclidienne $d(x,X_i) = \|x-X_i\|$, notées $X_{(1)}(x), \dots, X_{(n)}(x)$.
 Soit $Y_{(i)}(x)$ l'étiquette associée à $X_{(i)}(x)$.
 L'estimateur de la probabilité conditionnelle $P_j(x) = \PP(Y=j|X=x)$ est donné par la proportion de voisins de classe $j$ parmi les $k$ plus proches :
 \[
 \hat{P}_j(x) = \frac{1}{k} \sum_{i=1}^k \indic_{\{Y_{(i)}(x) = j\}}
 \]
-Le classifieur des k-NN est alors défini par le principe "Plug-in" :
+Le classifieur des k-NN est alors défini par le principe "Plug-in" (vote majoritaire) :
 \[
 \hat{f}_{kNN}(x) \in \argmax_{j \in \{1,\dots,K\}} \hat{P}_j(x)
 \]
@@ -795,7 +793,7 @@ Pour le point $x$, la majorité des 3 voisins sont des ronds $\Rightarrow$ Class
 Pour le point $x'$, la majorité des 3 voisins sont des carrés $\Rightarrow$ Classe "Carré".
 \end{exemple}
 
-\section{Minimisation du Risque Empirique (Empirical Risk Minimization)}
+\subsection{Minimisation du Risque Empirique (Empirical Risk Minimization en classification)}
 
 Le classifieur de Bayes $f^*$ est caractérisé par :
 \[
@@ -803,7 +801,7 @@ f^* \in \argmin_f R(f)
 \]
 où $R(f) = \PP(f(X) \neq Y)$ est le risque théorique.
 
-\subsection{Principe de l'ERM}
+\subsubsection{Principe de l'ERM}
 
 En pratique, le risque $R(f)$ est inconnu car la distribution $(X,Y)$ n'est pas accessible. On dispose uniquement d'un échantillon d'apprentissage $D_n = \{(X_i, Y_i)\}_{i=1}^n$.
 
@@ -820,7 +818,7 @@ L'estimateur par minimisation du risque empirique (ERM) est :
 \]
 $\hat{f}$ est appelé \textbf{empirical risk estimator}.
 
-\subsection{Difficultés de l'ERM}
+\subsubsection{Difficultés de l'ERM}
 
 \begin{remarque}[Deux problèmes majeurs]
 L'optimisation directe de l'ERM pose deux difficultés :
@@ -830,11 +828,11 @@ L'optimisation directe de l'ERM pose deux difficultés :
 \end{enumerate}
 \end{remarque}
 
-\subsection{Solution : Surrogate Convex}
+\subsubsection{Solution : Surrogate Convex}
 
 Pour éviter ces deux problèmes, on considère une \textbf{relaxation convexe} (convex surrogate) du problème initial.
 
-\subsubsection{Fonctions de Score}
+\paragraph{Fonctions de Score}
 
 Plutôt que de considérer directement un ensemble de classifieurs $f : \R^d \to \{1, \dots, K\}$, on considère un ensemble de \textbf{fonctions de score} :
 \[
@@ -846,7 +844,7 @@ L'avantage est que l'ensemble des fonctions de score est un espace vectoriel : t
 Si $\lambda \in [0,1]$ et $h, h'$ sont deux fonctions de score, alors $\lambda h + (1-\lambda) h'$ est également une fonction de score. En revanche, si $f, f'$ sont deux classifieurs, $\lambda f + \mu f'$ n'est \textbf{pas} un classifieur (la somme de deux fonctions à valeurs dans $\{0,1\}$ n'est pas à valeurs dans $\{0,1\}$).
 \end{remarque}
 
-\subsubsection{Surrogate Loss Convexe}
+\paragraph{Surrogate Loss Convexe}
 
 On remplace également la perte 0-1 par une perte convexe (\textbf{surrogate loss}). Un exemple classique est la perte quadratique ($L_2$ loss) :
 \[
@@ -864,7 +862,7 @@ Z = (Z_1, \dots, Z_K)^\top = \big(2\indic_{\{Y=1\}} - 1, \dots, 2\indic_{\{Y=K\}
 \]
 \end{definition}
 
-\subsubsection{Vecteur de Fonctions de Score}
+\paragraph{Vecteur de Fonctions de Score}
 
 Considérons un vecteur de fonctions de score $\vec{h} = (h_1, \dots, h_K)$ où chaque $h_k : \R^d \to \R$ est une fonction de score.
 
@@ -873,7 +871,7 @@ Pour un vecteur $\vec{h}$ donné, on peut considérer son \textbf{classifieur as
 f_{\vec{h}}(x) \in \argmax_{k \in \{1, \dots, K\}} h_k(x)
 \]
 
-\subsubsection{Risque $L_2$}
+\paragraph{Risque $L_2$}
 
 Pour un vecteur $\vec{h}$ de fonctions de score, on définit son risque $L_2$ associé :
 \[
@@ -888,7 +886,7 @@ avec $Z_k^i = 2\indic_{\{Y_i = k\}} - 1$.
 
 On choisit un modèle $\mathcal{H}$ (un ensemble de vecteurs de fonctions de score).
 
-\subsection{ERM avec Surrogate $L_2$}
+\subsubsection{ERM avec Surrogate $L_2$}
 
 L'estimateur par minimisation du risque empirique (ERM) est :
 \[
@@ -915,7 +913,7 @@ f_{\vec{h}^*}(x) &\in \argmax_k h_k^*(x) \\
 &= f^*(x) \quad \text{p.s.}
 \end{align*}
 
-\subsection{Zhang's Lemma et Consistance}
+\subsubsection{Zhang's Lemma et Consistance}
 
 \begin{theoreme}[Zhang's Lemma (2004) - Pour la perte $L_2$]
 Pour toute fonction de score $\vec{h}$ et son classifieur associé $f_{\vec{h}}$, on a :
@@ -932,3 +930,13 @@ R(f_{\hat{\vec{h}}}) \to R(f^*) \quad \text{quand } n \to \infty
 \end{corollaire}
 
 Ce résultat justifie l'utilisation de la perte $L_2$ comme surrogate convexe de la perte 0-1 en classification.
+
+\section{Limites de l'ERM et Transition vers l'Équité}
+
+Tout au long de ce chapitre, nous avons cherché à construire des fonctions de décision $f$ minimisant un risque global $R(f) = \E[L(f(X),Y)]$. L'approche par Minimisation du Risque Empirique (ERM) vise explicitement à maximiser la performance moyenne sur l'ensemble de la population, souvent au détriment des sous-groupes minoritaires. 
+
+En effet, si un groupe représente une faible proportion de l'échantillon d'apprentissage $D_n$, une erreur de prédiction sur ce groupe aura un impact négligeable sur le risque empirique global $\hat{R}(f)$. L'algorithme a donc naturellement tendance à optimiser ses prédictions pour le groupe majoritaire, quitte à être systématiquement inexact pour les minorités. 
+
+De plus, les données $D_n$ peuvent elles-mêmes contenir des biais historiques ou sociaux profonds (ex: discriminations passées à l'embauche ou dans l'octroi de crédits), que l'algorithme se contentera de reproduire ou d'amplifier. La recherche de la seule performance prédictive pure (accuracy) n'est donc pas suffisante dans des applications critiques où les décisions ont un impact humain fort. 
+
+C'est pour répondre à cette limitation fondamentale de l'E.R.M. standard que nous introduisons au chapitre suivant les notions d'\textbf{Équité Algorithmique} (Algorithmic Fairness), afin de contraindre mathématiquement nos modèles à traiter les différents groupes de manière équitable.

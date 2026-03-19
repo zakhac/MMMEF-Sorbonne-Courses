@@ -1,11 +1,65 @@
 %===========================
-% Chapitre 2 : Classification Under Demographic Parity Constraint
+% Chapitre 2 : Équité Algorithmique (Algorithmic Fairness)
 %===========================
-\chapter{Classification Under Demographic Parity Constraint}
+\chapter{Équité Algorithmique (Algorithmic Fairness)}
 
-\section{Notations}
+\section{Fondements de l'équité (Fairness)}
 
-Considérons les notations suivantes pour ce chapitre :
+L'adoption croissante d'algorithmes d'apprentissage automatique dans des domaines critiques tels que les admissions universitaires, les diagnostics médicaux, les décisions de justice ou encore l'octroi de crédits bancaires a soulevé des enjeux éthiques fondamentaux. L'équité algorithmique (Algorithmic Fairness) vise à atténuer les biais contenus dans les données historiques et à s'assurer qu'un algorithme ne discrimine pas les individus selon un ou plusieurs attributs dits \textit{sensibles} ou \textit{protégés} (sexe, origine, situation de famille, etc.).
+
+\subsection{Origines des discriminations algorithmiques}
+Les biais aboutissant à des discriminations algorithmiques peuvent provenir de plusieurs sources :
+\begin{itemize}
+    \item Une discrimination intentionnelle.
+    \item Des biais historiques profondément ancrés dans la base de données d'apprentissage.
+    \item Un biais lié à l'échantillonnage des données (si la base de données d'entraînement n'est pas représentative de la population globale).
+    \item Un biais lié aux objectifs mathématiques fixés à l'algorithme (qui a souvent tendance à optimiser les profits pour le groupe majoritaire en délaissant les minorités).
+\end{itemize}
+
+\subsection{Awareness vs Unawareness}
+La formalisation de la notion d'équité confronte deux visions majeures :
+\begin{itemize}
+    \item \textbf{Fairness through awareness} : Le modèle a directement accès à l'attribut sensible $S$ lors de l'apprentissage et de la prédiction ($f(X, S)$). L'inconvénient est que le système utilise ouvertement l'information sensible pour statuer.
+    \item \textbf{Fairness through unawareness} : Le modèle ignore aveuglément la variable $S$ et ne prédit qu'à l'aide du reste des variables ($f(X)$), pour éviter toute discrimination directe. Cette situation simule également le cas où l'information $S$ n'est légalement pas disponible au moment de la prédiction, formant un modèle de \textit{Disparate learning process}.
+\end{itemize}
+
+\subsection{L'Illusion de l'Unawareness (Discrimination Indirecte)}
+Il est faux de croire qu'ignorer l'attribut sensible ($S$) résout automatiquement les problèmes d'équité. En effet, l'attribut $S$ n'est pratiquement jamais indépendant des autres caractéristiques $X$ (exemple : un code postal peut trahir fortement l'origine socio-économique d'une personne). 
+
+Ainsi, retirer manuellement $S$ revient à plonger dans la \textbf{discrimination indirecte}, expressément pointée par la loi (Article 1 de la loi française n° 2008-496) : l'algorithme trouvera des corrélations latentes pour reproduire la discrimination à travers des variables apparemment neutres. L'absence de l'information (unawareness) n'apporte donc pas d'équité algorithmique.
+
+\subsection{Équité individuelle vs Équité de groupe}
+Deux visions philosophiques s'opposent quant à la considération de l'équité :
+\begin{enumerate}
+    \item \textbf{Équité individuelle (Individual fairness) :} Le dogme imposant que des « individus similaires doivent recevoir des traitements similaires ». L'algorithme doit alors estimer mathématiquement la similarité entre les individus.
+    \item \textbf{Équité de groupe (Group fairness) :} Le dogme selon lequel des métriques de traitements doivent valoir de façon égale à l'échelle des diverses populations ou communautés.
+\end{enumerate}
+
+Le cours se focalise sur l'\textit{Équité de groupe}. Soit l'entrée $Z = (X,S)$ ou $Z=X$ (selon le niveau d'awareness). Le but mathématique est de viser mathématiquement soit à l'Indépendance globale ($f(Z) \perp \!\!\! \perp S$), soit à la Séparation locale conditionnée au résultat ($f(Z) \perp \!\!\! \perp S \mid Y$).
+
+\subsection{Théorème de l'impossibilité}
+Il existe un résultat fondamental démontrant les limites intrinsèques des algorithmes quant à la satisfaction absolue de plusieurs définitions d'équité : un classifieur $f$ ne peut satisfaire \textbf{simultanément} l'indépendance parfaite vis-à-vis de l'attribut sensible \textbf{et} la séparation sur les labels, hormis dans des scénarios dégénérés (soit les labels de la vie réelle $Y$ sont déjà originellement parfaitement indépendants de $S$, soit la prédiction de l'algorithme $f(Z)$ ignore fondamentalement $Y$ et fait des prédictions aléatoires). Il faut donc faire un choix de modélisation mathématique selon le domaine.
+
+\section{Autres métriques et taxonomie des méthodes}
+
+Bien que ce chapitre se focalise sur une contrainte spécifique, d'autres métriques mathématiques importantes définissent l'équité de groupe dans le cas de classifications binaires (où $S \in \mathcal{S}$ et $Y \in \{0, 1\}$) :
+\begin{itemize}
+    \item \textbf{Demographic Parity (DP) :} Le taux de prédiction positive doit être similaire d'un groupe à un autre. $\mathbb{P}(f(Z)=1|S=s) = \mathbb{P}(f(Z)=1)$.
+    \item \textbf{Equalized odds (EOd) :} Il s'agit des taux de vrais positifs et de faux positifs qui doivent être identiques d'un groupe à un autre. $\mathbb{P}(f(Z)=y|S=s, Y=y) = \mathbb{P}(f(Z)=y|Y=y)$ (pour $y \in \{0, 1\}$).
+    \item \textbf{Equal opportunity (EO) :} Plus clément que l'EOd, requiert seulement l'égalisation des taux de Vrais Positifs (les résultats bénéfiques pour le candidat). $\mathbb{P}(f(Z)=1|S=s, Y=1) = \mathbb{P}(f(Z)=1|Y=1)$.
+\end{itemize}
+
+\subsection{Grandes familles d'approches}
+Pour forcer le respect de ces contraintes, les méthodes se rangent en trois catégories :
+\begin{enumerate}
+    \item \textbf{Pre-processing :} Vise à modifier, en première intention, la base de données. Il s'agit de trouver une représentation modifiée $\phi(Z)$ des données telle que $\phi(Z)$ soit mathématiquement indépendante de $S$, puis d'entraîner tout modèle standard innocent sur $\phi$.
+    \item \textbf{In-processing :} Basée sur de l'Empirical Risk Minimization, cette méthode intègre la contrainte d'équité directement dans la fonction Lagrangienne de coût du modèle durant l'apprentissage $\min_f \hat{R}(f) + \lambda \hat{C}(f)$.
+    \item \textbf{Post-processing :} Procédure plus a posteriori. L'algorithme principal $\hat{f}$ est d'abord entraîné sans considération d'équité en cherchant la performance pure. Dans un second temps, on trouve a posteriori une transformation $\hat{T}$ qui altère la prédiction pour que $\hat{T}(\hat{f})$ respecte exactement la contrainte d'équité ciblée.
+\end{enumerate}
+
+\section{Classification sous Post-Processing et contrainte DP}
+
+\subsection{Notations du Problème Initial}
 \begin{itemize}
     \item Une observation est un triplet $(X, S, Y)$.
     \item $X \in \mathbb{R}^d$ représente les caractéristiques (features).
@@ -31,10 +85,10 @@ est défini par :
 \end{equation}
 où $\eta(X,S) = \mathbb{P}(Y=1 | X,S)$.
 
-\section{Définition de l'Équité (Fairness)}
+\subsection{Définition de l'Équité (Fairness)}
 
 Nous considérons la contrainte de Parité Démographique (Demographic Parity constraint ou DP-constraint).
-Nous disons qu'un prédicteur $f$ satisfait la contrainte DP si :
+Nous disons qu'un prédicteur $f$ satisfait la contrainte DP si (comme vu intuitivement à la section 2) :
 \begin{equation}
     \forall s \in \{-1, 1\}, \quad \mathbb{P}(f(X,S)=1 | S=s) = \mathbb{P}(f(X,S)=1)
 \end{equation}
@@ -44,7 +98,7 @@ Ceci équivaut aux propriétés suivantes :
     &\iff \sum_{s \in \{-1, 1\}} s \cdot \mathbb{P}(f(X,S)=1 | S=s) = 0
 \end{align*}
 
-\section{Classifieur Optimal sous Contrainte DP}
+\subsection{Classifieur Optimal sous Contrainte DP}
 
 Nous considérons $f^*_{fair}$ défini comme :
 \begin{equation}
@@ -87,11 +141,11 @@ Nous résolvons le problème \eqref{eq:dual_problem} et montrons que :
 \end{equation}
 C'est-à-dire qu'il n'y a pas de saut de dualité (\textit{no duality gap}, ou dualité forte).
 
-\section{Résolution du Problème Dual}
+\subsection{Résolution du Problème Dual}
 
 Le but est d'obtenir une expression analytique (\textit{closed form expression}) du prédicteur optimal $f^*_{fair}$.
 
-\subsection*{Première étape : Minimisation par rapport à $f$}
+\subsubsection{Première étape : Minimisation par rapport à $f$}
 
 Pour tout $\lambda \in \mathbb{R}$ fixé, nous cherchons à résoudre :
 \begin{equation}
@@ -174,7 +228,7 @@ Le prédicteur optimal pour un $\lambda$ fixé est donc :
     f^*_{\lambda}(X,S) = \indic\left\{ \eta(X,S) > \frac{1}{2} + \frac{\lambda s}{2\pi_s} \right\}
 \end{equation}
 
-\subsection*{Deuxième étape : Maximisation par rapport à $\lambda$}
+\subsubsection{Deuxième étape : Maximisation par rapport à $\lambda$}
 
 Nous cherchons maintenant à résoudre :
 \begin{equation}
@@ -262,6 +316,13 @@ est coercive, c'est-à-dire que $\lim_{|\lambda| \to +\infty} \mathcal{H}(\lambd
         Par conséquent, le minimum global $\lambda^*$ doit se trouver dans l'intervalle $[-1, 1]$.
     \end{enumerate}
 \end{exemple}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/fair_optimal_prediction.png}
+    \caption{Densités du prédicteur équitable optimal $g^*$ et seuils associés selon le groupe $S$}
+    \label{fig:fair_optimal_prediction}
+\end{figure}
 
 \begin{remarque}[Autre approche pour dériver le prédicteur équitable optimal]
     Nous avons établi que pour tout $\lambda \in \mathbb{R}$, le minimiseur du lagrangien est donné par :
@@ -358,9 +419,9 @@ Puisque $\lambda^*$ est un minimum de $\mathcal{H}$ (fonction convexe différent
     \frac{\partial \mathcal{H}}{\partial \lambda}(\lambda^*) = 0 \iff \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(f^*_{\lambda^*}(X,S)=1) = 0
 \end{equation}
 
-\section{Algorithme de Post-traitement pour la DP}
+\subsection{Algorithme de Post-traitement pour la DP}
 
-\subsection*{Contexte et Objectifs}
+\subsubsection{Contexte et Objectifs}
 
 Rappelons que le prédicteur optimal équitable est donné par :
 \[
@@ -389,7 +450,7 @@ Dans la suite, nous introduisons l'\textbf{injustice} (unfairness) d'un prédict
 Un prédicteur $f$ est dit équitable (fair) si et seulement si $\mathcal{U}(f) = 0$.
 Pour un prédicteur empirique $\hat{f}$, nous voulons $\mathcal{U}(\hat{f}) \approx 0$.
 
-\subsection*{Stratégie d'Estimation}
+\subsubsection{Stratégie d'Estimation}
 
 À partir de l'échantillon d'apprentissage $D_n$, nous pouvons utiliser une approche "plug-in" :
 
@@ -414,7 +475,7 @@ où $\hat{\eta}$ est un estimateur de $\eta$ (avec $\eta(x,s) = \mathbb{P}(Y=1|X
 
 Le terme $\frac{\hat{\lambda} s}{2\hat{\pi}_s}$ contrôle le compromis (\textit{trade-off}) entre précision (\textit{accuracy}) et équité (\textit{fairness}).
 
-\subsection*{Équité Approximative ($\varepsilon$-équité)}
+\subsubsection{Équité Approximative ($\varepsilon$-équité)}
 
 Au lieu de se restreindre à une équité parfaite $\mathcal{U}(f) = 0$ (où $f$ est strictement DP-équitable), nous pouvons considérer une \textbf{équité approximative} ou \textbf{$\varepsilon$-équité}.
 Nous disons qu'un prédicteur $f$ est $\varepsilon$-équitable si et seulement si :
@@ -430,7 +491,7 @@ Le prédicteur $\varepsilon$-équitable optimal est alors logiquement défini pa
     f_\varepsilon^* \in \argmin_{f} \left\{ R(f) \;\middle|\; f \text{ est } \varepsilon\text{-équitable} \right\}
 \end{equation}
 
-\subsection*{Garanties Théoriques pour le Prédicteur Équitable $\hat{f}$}
+\subsubsection{Garanties Théoriques pour le Prédicteur Équitable $\hat{f}$}
 
 \begin{theoreme}[Injustice]
     Il existe une constante $C$ (qui dépend des probabilités a priori $(\pi_s)_{s \in \mathcal{S}}$) telle que :
@@ -586,7 +647,7 @@ Le prédicteur $\varepsilon$-équitable optimal est alors logiquement défini pa
     Cela conclut l'esquisse de la preuve prouvant que $\mathbb{E}[\mathcal{U}(\hat{f})] \le C \times N^{-1/2}$.
 \end{proof}
 
-\section{Algorithmique et Sous-gradients}
+\subsection{Algorithmique et Sous-gradients}
 
 Afin de trouver le paramètre empirique optimal $\hat{\lambda}$, nous devons résoudre le problème d'optimisation suivant :
 \begin{equation}
@@ -595,7 +656,7 @@ Afin de trouver le paramètre empirique optimal $\hat{\lambda}$, nous devons ré
 
 Pour minimiser cette fonction objectif qui n'est pas différentiable partout (à cause de la fonction $\max$), nous introduisons la notion de \textbf{sous-gradient} (sub-gradient).
 
-\subsection*{Rappels : Sous-gradient}
+\subsubsection{Rappels : Sous-gradient}
 
 Soit $f : \mathbb{R}^d \to \mathbb{R}$ une fonction convexe. Le domaine de $f$ est $\mathcal{D}_f = \mathbb{R}^d$.
 
@@ -627,7 +688,7 @@ Nous notons $\partial f(x)$ l'ensemble des sous-gradients de $f$ en $x$.
     $x^*$ est un minimiseur de $f \iff f$ est sous-différentiable en $x^*$ et $0 \in \partial f(x^*)$.
 \end{theoreme}
 
-\subsection*{Propriétés opératoires}
+\subsubsection{Propriétés opératoires}
 
 \begin{itemize}
     \item Si $f = f_1 + \dots + f_m$, où $f_i : \mathbb{R}^d \to \mathbb{R}$ sont convexes, alors le sous-différentiel de la somme est la somme de Minkowski des sous-différentiels :
@@ -642,7 +703,7 @@ Nous notons $\partial f(x)$ l'ensemble des sous-gradients de $f$ en $x$.
     où $\text{Conv}$ désigne l'enveloppe convexe. En d'autres termes, le sous-différentiel du maximum en un point $x$ est l'enveloppe convexe des gradients des fonctions "actives" en ce point (celles qui atteignent le maximum).
 \end{itemize}
 
-\subsection*{Application à la minimisation empirique de $\hat{\lambda}$}
+\subsubsection{Application à la minimisation empirique de $\hat{\lambda}$}
 
 Revenons à notre fonction objectif empirique :
 \begin{equation}
@@ -683,7 +744,7 @@ En réorganisant cette équation de point fixe par rapport aux classes $S=1$ et 
 
 Ceci revient exactement à tenter d'égaliser les taux de prédiction positive $\hat{\mathbb{P}}_{X|S=s}(\hat{f}(X, S)=1)$ pour les deux groupes. Le terme en $\alpha_i^s$ sert algorithmiquement à résoudre de manière exacte l'égalité si de multiples observations tombent exactement sur le seuil, ce qui est appelé la randomisation (une prédiction probabiliste $\alpha$ au lieu de déterministe) pour casser les égalités sur la frontière de décision.
 
-\section{Consistance du Risque de Classification}
+\subsection{Consistance du Risque de Classification}
 
 Nous considérons la fonction de risque suivante pour un classifieur $f$ :
 \begin{equation}
@@ -735,5 +796,194 @@ Nous étudions l'erreur d'estimation introduite par notre classifieur plug-in $\
     \begin{equation}
         R_{\lambda^*}(\hat{f}) - R_{\hat{\lambda}}(\hat{f}) = (\lambda^* - \hat{\lambda}) \sum_{s \in \{-1, 1\}} s \mathbb{P}_{X|S=s}(\hat{f}(X, S) = 1)
     \end{equation}
-    % La suite de la démonstration consiste à montrer que (I) et (II) tendent vers zéro.
+    
+    Pour contrôler le second terme $(II)$, nous évaluons la différence des risques pour un même $\lambda$. D'après la caractérisation du classifieur optimal, nous savons que l'événement d'erreur $\{f^*_{\hat{\lambda}}(X, S) \neq \hat{f}(X, S)\}$ se produit lorsque les expressions $\pi_s(2\eta(X,S)-1) - s\hat{\lambda}$ (vrai signal) et $\hat{\pi}_s(2\hat{\eta}(X,S)-1) - s\hat{\lambda}$ (signal estimé) n'ont pas le même signe.
+    
+    Géométriquement, cela signifie que zéro est compris entre les deux valeurs, comme illustré dans le schéma suivant :
+    
+    \begin{figure}[h]
+        \centering
+        \begin{tikzpicture}
+            % Ligne horizontale / axe réel
+            \draw (-4,0) -- (4,0);
+            
+            % Origine
+            \draw (0,-0.1) -- (0,0.1) node[below=4pt] {$0$};
+            
+            % Points représentant l'estimation et la vérité (signes opposés)
+            \draw (-2,-0.1) -- (-2,0.1);
+            \node at (-2,0) {$\times$};
+            \node[above=8pt] at (-2,0) {$\hat{\pi}_s(2\hat{\eta}(x,s) - 1) - s\hat{\lambda}$};
+            
+            \draw (2,-0.1) -- (2,0.1);
+            \node at (2,0) {$\times$};
+            \node[above=8pt] at (2,0) {$\pi_s(2\eta(x,s) - 1) - s\hat{\lambda}$};
+            
+        \end{tikzpicture}
+        \caption{Illustration du croisement de la frontière de décision lorsque la prédiction diffère de l'optimum.}
+        \label{fig:risk_consistency_schema}
+    \end{figure}
+
+    Sur l'événement d'erreur $\{ f^*_{\hat{\lambda}}(X, S) \neq \hat{f}(X, S) \}$, puisque $0$ se trouve formellement entre la valeur théorique et la valeur estimée, la distance de la valeur théorique à $0$ est nécessairement plus petite que la distance totale entre les deux valeurs. On a donc la majoration essentielle suivante :
+    \begin{align}
+        |\pi_s(2\eta(X,S)-1) - s\hat{\lambda}| &\le |\pi_s(2\eta(X,S)-1) - s\hat{\lambda} - (\hat{\pi}_s(2\hat{\eta}(X,S)-1) - s\hat{\lambda})| \nonumber \\
+        &\le |\pi_s(2\eta(X,S)-1) - \hat{\pi}_s(2\hat{\eta}(X,S)-1)|
+    \end{align}
+    
+    Plus précisément, le terme de saut de risque $(II)$ se majore formellement comme suit :
+    \begin{align}
+        R_{\hat{\lambda}}(\hat{f}) - R_{\hat{\lambda}}(f^*_{\hat{\lambda}}) 
+        &= \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \left( \pi_s(2\eta(X,S)-1) - s\hat{\lambda} \right) \left( f^*_{\hat{\lambda}}(X,S) - \hat{f}(X,S) \right) \right] \nonumber \\
+        &\le \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \left| \pi_s(2\eta(X,S)-1) - \hat{\pi}_s(2\hat{\eta}(X,S)-1) \right| \right] \nonumber \\
+        &= \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ \left| \pi_s 2\eta(X,S) - \hat{\pi}_s 2\hat{\eta}(X,S) + \hat{\pi}_s - \pi_s \right| \right] \nonumber \\
+        &\le C \sum_{s \in \{-1, 1\}} \pi_s \mathbb{E}_{X|S=s} \left[ | \hat{\eta}(X,S) - \eta(X,S) | \right] + C \sum_{s \in \{-1, 1\}} \mathbb{E}_{X|S=s} \left[ | \hat{\pi}_s - \pi_s | \right]
+    \end{align}
+    (où la dernière inégalité est laissée en exercice : on utilise l'inégalité triangulaire et on borne les variables de probabilité par 1).
+
+    De tout ce qui précède, en prenant l'espérance globale sur les données d'apprentissage, et en liant $(I)$ et $(II)$, l'excès de risque complet est majoré par :
+    \begin{equation}
+        \mathbb{E} \left[ R_{\lambda^*}(\hat{f}) - R_{\lambda^*}(f^*) \right] \le C \left( \mathbb{E}\left[|\hat{\eta}(X,S) - \eta(X,S)|\right] + \mathbb{E}\left[|\hat{\pi}_s - \pi_s|\right] + \mathbb{E}[U(\hat{f})] \right)
+    \end{equation}
+    
+    Or, l'estimateur de la proportion d'un groupe est une moyenne empirique sur un échantillon non labellisé de taille $N$ : $\hat{\pi}_s = \frac{1}{N}\sum_{i=1}^N \indic_{\{S_i=s\}}$.
+    Les variables indicatrices suivent des lois de Bernoulli indépendantes identiquement distribuées : $\indic_{\{S_i=s\}} \sim_{iid} \mathcal{B}er(\pi_s)$, donc $\mathbb{E}[\hat{\pi}_s] = \pi_s$.
+    La variance de l'estimateur est donnée par :
+    \begin{equation}
+        \mathbb{E}\left[(\hat{\pi}_s - \pi_s)^2\right] = \text{Var}(\hat{\pi}_s) = \frac{\text{Var}(\indic_{\{S_1=s\}})}{N} = \frac{\pi_s(1-\pi_s)}{N} \le \frac{1}{4N}
+    \end{equation}
+    Par l'inégalité de Cauchy-Schwarz (ou de Jensen sur la concavité de la racine) :
+    \begin{equation}
+        \mathbb{E}\left[|\hat{\pi}_s - \pi_s|\right] \le \sqrt{\mathbb{E}\left[(\hat{\pi}_s - \pi_s)^2\right]} \le \frac{1}{2\sqrt{N}} = \mathcal{O}\left(\frac{1}{\sqrt{N}}\right)
+    \end{equation}
+    
+    Sachant que $\mathbb{E}[U(\hat{f})] \le \mathcal{O}(N^{-1/2})$, la majoration tombe sous la racine carrée de la taille de l'échantillon $N$. Et enfin, sous l'hypothèse primordiale de consistance de l'estimateur probabiliste du signal $\mathbb{E}[|\hat{\eta} - \eta|] \to 0$, tous les termes de la borne tendent continûment vers $0$ lorsque $n, N \to \infty$, ce qui conclut la preuve de convergence asymptotique de l'estimateur plug-in vers l'optimum.
 \end{proof}
+
+\section{Classification sous In-Processing}
+
+L'approche In-Processing intègre directement les contraintes d'équité lors de la phase d'optimisation du modèle. Contrairement au post-traitement qui fige un modèle potentiellement biaisé $\hat{f}$ pour en corriger les prédictions a posteriori, l'in-processing cherche d'emblée un prédicteur équitable dans une classe de fonctions donnée $\mathcal{F}$.
+
+\subsection{Minimisation du Risque Empirique (ERM) Équitable}
+
+Supposons que nous disposions d'un unique échantillon d'apprentissage supervisé labellisé $\mathcal{D}_n = \{(X_i, S_i, Y_i)\}_{i=1}^n$.
+Soit $\mathcal{F}$ la classe de classifieurs considérée.
+
+Le \textbf{risque empirique} classique est défini par la proportion d'erreurs :
+\begin{equation}
+    \hat{R}(f) = \frac{1}{n} \sum_{i=1}^n \indic_{\{f(X_i, S_i) \neq Y_i\}}
+\end{equation}
+
+Pour mesurer la violation de la Parité Démographique, on définit la \textbf{contrainte d'injustice empirique} (\textit{empirical unfairness constraint}) pour un seuil $\varepsilon > 0$ :
+\begin{equation}
+    \hat{\mathcal{U}}(f) = \left| \sum_{s \in \mathcal{S}} s \frac{1}{n_s} \sum_{i=1}^{n_s} f(X_i^s, s) \right| \le \varepsilon
+\end{equation}
+où $n_s$ est le nombre d'observations appartenant au groupe sensible $S=s$.
+
+Le minimiseur du risque empirique (E.R.M.) sous contrainte d'équité est alors :
+\begin{equation}
+    \hat{f} \in \argmin_{f \in \mathcal{F}} \left\{ \hat{R}(f) \quad \text{s.c.} \quad \hat{\mathcal{U}}(f) \le \hat{\varepsilon} \right\}
+\end{equation}
+(souvent avec $\hat{\varepsilon} \propto \sum_{s \in \mathcal{S}} \sqrt{\frac{\log(n)}{n_s}}$ pour autoriser une tolérance statistique liée à la taille des échantillons empiriques).
+
+\subsection{Garanties de l'In-Processing}
+
+Si l'on suppose que la classe de fonctions $\mathcal{F}$ a une dimension VC (Vapnik-Chervonenkis) finie : $\mathcal{V}(\mathcal{F}) < \infty$ et que le prédicteur optimal absolu $f^*$ appartient bien à $\mathcal{F}$, nous pouvons borner l'écart de généralisation par des inégalités de concentration classiques :
+
+\begin{equation}
+    \mathbb{E} \left[ \sup_{f \in \mathcal{F}} \left| \frac{1}{n}\sum_{i=1}^n f(X_i) - \mathbb{E}[f(X)] \right| \right] \le C \sqrt{\frac{\log(n)}{n}}
+\end{equation}
+
+On en déduit les bornes probabilistes suivantes pour l'estimateur in-processing $\hat{f}$ :
+\begin{itemize}
+    \item L'injustice anticipée est bornée : $\mathbb{E} [\mathcal{U}(\hat{f})] \le C \sqrt{\frac{\log(n)}{n}}$.
+    \item L'excès de risque pénalisé (le Lagrangien optimisé) est également borné : $\mathbb{E} [R_{\lambda^*}(\hat{f}) - R_{\lambda^*}(f^*)] \le C \sqrt{\frac{\log(n)}{n}}$.
+\end{itemize}
+
+\subsection{Algorithmique : Convexification}
+
+L'optimisation directe du risque empirique avec des fonctions indicatrices (perte 0-1 booléenne) est NP-difficile. Pour rendre le problème de l'ERM équitable calculable en pratique, l'approche algorithmique standard consiste à recourir à la \textbf{convexification} :
+\begin{enumerate}
+    \item Remplacer la perte de classification discrète par une \textbf{fonction de perte de substitution convexe} (comme la perte logistique ou la \textit{hinge loss} du SVM).
+    \item Remplacer également la contrainte d'équité $\hat{\mathcal{U}}(f)$ par une approximation convexe.
+\end{enumerate}
+
+Une autre ligne de recherche majeure emploie des \textbf{classifieurs randomisés} : au lieu de chercher un unique classifieur déterministe, l'algorithme trouve une distribution de probabilité $\mu$ optimale sur un ensemble de classifieurs de base (modèle d'ensemble), permettant une résolution exacte par optimisation linéaire.
+
+\section{La Régression Équitable (Fair Regression)}
+
+Jusqu'ici, nous traitions des problèmes de classification ($Y \in \{0, 1\}$). Cependant, la contrainte d'équité s'applique tout aussi bien aux problèmes de régression, où la valeur à prédire est continue : $Y \in \mathbb{R}$.
+
+\subsection{Formulation du Problème}
+Les observations sont $(X, S, Y)$ avec $Y = \eta(X, S) + \varepsilon$ et $\mathbb{E}[\varepsilon | X, S] = 0$.
+La règle de prédiction est une fonction continue $f : \mathbb{R}^d \times \mathcal{S} \to \mathbb{R}$.
+Le risque quadratique usuel est $R(f) = \mathbb{E}[(Y - f(X,S))^2]$.
+
+La contrainte stricte de Parité Démographique (DP exacte) en régression stipule que les fonctions de répartition (CDF) des prédictions doivent être rigoureusement identiques entre les différents groupes sensibles.
+\begin{equation}
+    \sup_{t \in \mathbb{R}} | \mathbb{P}(f(X,S) \le t | S = 1) - \mathbb{P}(f(X,S) \le t | S = -1) | = 0
+\end{equation}
+
+Le problème du \textbf{prédicteur équitable optimal} en régression revient à trouver :
+\begin{equation}
+    f^* \in \argmin_{f} \left\{ R(f) \quad \text{s.c.} \quad f \text{ satisfait DP} \right\}
+\end{equation}
+
+\subsection{Première Approche : La Discrétisation}
+Une manière d'aborder ce problème complexe est la discrétisation. Supposons $|Y| \le 1$ et créons une grille spatiale $\mathcal{G}_L = \left\{ \frac{l}{L}, l = -L, \dots, L \right\}$ pour $L > 0$.
+Le prédicteur discrétisé est contraint : $f_L(X,S) \in \mathcal{G}_L$.
+
+Pour ce prédicteur, la contrainte DP devient un problème discret (similaire à la classification multi-classes) : 
+\begin{equation}
+    \max_{l \in \{-L, \dots, L\}} \sum_{s \in \mathcal{S}} s \cdot \mathbb{P}_{X|S=s} \left(f_L(X, S) = \frac{l}{L}\right) = 0
+\end{equation}
+
+\textbf{Propriété d'approximation :} L'approche $f_L^*$ (minimiseur du risque sur la grille sous DP discret) approxime très bien l'optimum réel continu.
+\begin{equation}
+    R(f^*) \le R(f_L^*) \le R(f^*) + \frac{2 \text{Var}(Y)}{L} + \frac{1}{L^2}
+\end{equation}
+
+\textbf{Prédicteur équitable optimal discrétisé :} 
+Sous des hypothèses de continuité, $f_L^*$ s'écrit formellement avec un vecteur de multiplicateurs de Lagrange $\lambda^* = (\lambda_{-L}^*, \dots, \lambda_L^*)$ caractérisé de manière analogue au cas de la classification binaire.
+La procédure empirique \textit{Data-driven} consiste à estimer $\eta(x,s)$, $\pi_s$ par fréquences empiriques et trouver $\hat{\lambda}$ numériquement de manière de type \textit{plug-in}.
+Si la taille de la grille grandit modérément $L = N^{-1/4}$, et que l'estimation de $\eta$ est consistante, alors le risque du modèle discret converge vers celui de l'optimum continu : $\mathbb{E}[R(\hat{f}_L)] \to R(f^*)$.
+
+\subsection{Approche par transport optimal : Distance de Wasserstein}
+
+\begin{definition}[Distance de Wasserstein-2]
+Soit $\mu, \nu$ deux distributions de probabilité sur $\mathbb{R}$. La distance $\mathcal{W}_2$ est définie par :
+\begin{equation}
+    \mathcal{W}_2^2(\mu, \nu) = \inf_{\gamma \in \Gamma(\mu, \nu)} \int |x - y|^2 d\gamma(\mu, \nu)
+\end{equation}
+\end{definition}
+Dans le cas monodimensionnel, où les variables admettent des densités (et donc des fonctions de répartitions $F$ inversibles), le transport optimal s'exprime très simplement via les \textbf{fonctions quantiles} (les inverses des CDF) :
+\begin{equation}
+    \mathcal{W}_2^2(\mu, \nu) = \mathbb{E} \left[ (X - T(X))^2 \right] = \int_0^1 \left( F_\mu^{-1}(t) - F_\nu^{-1}(t) \right)^2 dt
+\end{equation}
+où $T(x) = F_\nu^{-1}(F_\mu(x))$ est l'application de transport de Monge.
+
+\subsection{Caractérisation du Prédicteur Équitable Optimal}
+L'intervention de la distance de Wasserstein permet de formuler analytiquement la pénalité de "rabotage" qu'applique la contrainte d'équité sur le signal parfait $\eta(X,S)$.
+En notant $\nu_{\eta|s}$ la distribution (la loi) des prédictions pures $\eta(X,S)$ conditionnée au groupe $s$, Chzhen et al. démontrent que :
+\begin{equation}
+    \min_{f \text{ équitable}} \mathbb{E}[(\eta(X,S) - f(X,S))^2] = \min_{\nu} \sum_{s \in \mathcal{S}} \pi_s \mathcal{W}_2^2(\nu_{\eta|s}, \nu)
+\end{equation}
+Le terme de droite est calculé via le barycentre de Wasserstein des distributions des groupes.
+
+Cela donne une forme analytique close très intuitive pour le prédicteur équitable optimal $f^*$ :
+\begin{equation}
+    f^*(x, s) = \pi_s \eta(x, s) + (1 - \pi_s) t^*(x, s)
+\end{equation}
+où $t^*(x, s) = F_{\eta|s'}^{-1} \left( F_{\eta|s}(\eta(x, s)) \right)$ pour l'autre groupe $s' \neq s$. Autrement dit, le score optimal se révèle être un équilibre (une pondération selon la taille des populations) entre le vrai score de l'individu $\eta(x,s)$ et l'équivalent de ce score mappé sur la distribution de l'autre groupe via les percentiles de transport.
+
+\subsection{Procédure de Plug-in finale}
+En pratique, cette caractérisation permet un algorithme post-traitement direct :
+\begin{enumerate}
+    \item À l'aide de données d'apprentissage $\mathcal{D}_n$, estimer la fonction de régression $\hat{\eta}$. (Et introduire une légère randomisation $\bar{\eta}$ pour lisser).
+    \item À l'aide d'un grand ensemble de données non-labellisées $\mathcal{U}_N = \{X_i, S_i\}_{i=1}^N$, estimer  les proportions empiriques $\hat{\pi}_s$.
+    \item Séparer $\mathcal{U}_N$ par groupes cibles : $\mathcal{U}_0$ et $\mathcal{U}_1$. Sur chaque groupe, calculer les fonctions de répartition empiriques $\hat{F}_{\bar{\eta}|s}$ et les quantiles empiriques inverses $\hat{F}_{\bar{\eta}|s}^{-1}$.
+    \item La prédiction finale est délivrée par la formule approchée :
+    \begin{equation}
+        \hat{\hat{f}}(x, s) = \hat{\pi}_s \hat{\eta}(x, s) + (1 - \hat{\pi}_s) \hat{F}_{\bar{\eta}|s'}^{-1} \left( \hat{F}_{\bar{\eta}|s}(\hat{\eta}(x, s)) \right)
+    \end{equation}
+\end{enumerate}
+Les propriétés théoriques garantissent que cet estimateur maintient les mêmes consistances universelles que lors des méthodes de classification.

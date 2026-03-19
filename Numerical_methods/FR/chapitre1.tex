@@ -1,0 +1,333 @@
+\chapter{Introduction aux méthodes numériques pour l'optimisation}
+
+\section{Motivations et exemple introductif}
+
+L'\emph{optimisation} consiste à choisir, parmi un ensemble de décisions possibles,
+celle qui minimise (ou maximise) une quantité appelée \emph{fonction objectif}.
+Dans ce cours, nous nous concentrons principalement sur les problèmes de
+\emph{minimisation}, bien que les problèmes de maximisation puissent être traités
+de manière équivalente en considérant l'opposé de la fonction.
+
+\medskip
+
+Les problèmes d'optimisation rencontrés en pratique peuvent être :
+
+\begin{itemize}
+  \item \textbf{continus}, lorsque les variables prennent des valeurs dans $\R^n$ ;
+  \item \textbf{discrets}, lorsque certaines variables doivent être entières
+        (programmation en nombres entiers) ;
+  \item \textbf{mixtes} (MIP : Mixed Integer Programming), lorsque certaines variables
+        sont continues et d'autres discrètes.
+\end{itemize}
+
+Les problèmes discrets ou mixtes sont en général plus difficiles à résoudre que
+les problèmes continus et ne seront pas étudiés en détail dans ce cours.
+
+\medskip
+
+On rencontre également des problèmes où des paramètres sont aléatoires. Cela conduit à :
+
+\begin{itemize}
+  \item \textbf{l’optimisation stochastique}, où l’on minimise une espérance ;
+  \item les \textbf{contraintes de chance} (chance-constrained), où certaines contraintes doivent
+        être satisfaites avec une probabilité élevée ;
+  \item \textbf{l’optimisation robuste}, où les contraintes doivent être satisfaites pour toutes
+        les réalisations admissibles d’un ensemble d’incertitude.
+\end{itemize}
+
+Ces cadres sont essentiels dans des domaines tels que la finance, la gestion de l’énergie
+ou l’ingénierie des systèmes, mais ils dépassent le périmètre immédiat de ce chapitre.
+
+\begin{exemple}[Problème quadratique avec contraintes linéaires]
+On considère le problème
+\begin{equation}
+  \min_{x \in \R^2} \; f(x)
+  := (x_1 - 1)^2 + 2(x_2 + 3)^2
+  \label{eq:intro-exemple-obj}
+\end{equation}
+sous les contraintes
+\begin{equation}
+  x_1 \geq 2, 
+  \qquad
+  x_1 - x_2 = 4.
+  \label{eq:intro-exemple-constraints}
+\end{equation}
+\end{exemple}
+
+La fonction objectif $f$ mesure la « mauvaise qualité » d’un vecteur $x=(x_1,x_2)$.
+Plus $f(x)$ est petit, plus la solution est satisfaisante. Les contraintes imposent que les
+solutions admissibles vivent sur une droite et dans un demi-plan. Les courbes de niveau
+de $f$ sont des ellipses centrées en $(1,-3)$.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[scale=0.9]
+    % Hatched region for x >= 2 (feasible zone)
+    \fill[pattern=north east lines, pattern color=gray!30] (2,-6) rectangle (5,1);
+    
+    % Axes - thicker for clarity
+    \draw[->, very thick] (-0.5,0) -- (5,0) node[right] {$x$};
+    \draw[->, very thick] (0,-6) -- (0,1) node[above] {$y$};
+
+    % Centre
+    \fill (1,-3) circle (1.5pt) node[below right] {$(1,-3)$};
+
+    % Niveaux (ellipses approximatives)
+    \draw[blue, thick] (1,-3) ellipse (1.0 and 0.7);
+    \draw[blue]        (1,-3) ellipse (2.0 and 1.4);
+    \draw[blue]        (1,-3) ellipse (3.0 and 2.1);
+
+    % Demi-plan x >= 2
+    \draw[gray, thick] (2,-6) -- (2,1) node[above] {$x = 2$};
+    \node[gray] at (4.2,-5.5) {$x \ge 2$};
+
+    % Droite x - y = 4  => y = x - 4
+    \draw[red, thick, domain=-0.5:5] plot (\x, {\x - 4}) node[above right] {$x - y = 4$};
+
+    % Solution admissible (intersection contrainte + niveau bas)
+    \coordinate (xmin) at (2,-2);
+    \fill[red] (xmin) circle (2pt) node[above left] {$x^\star$};
+  \end{tikzpicture}
+  \caption{Illustration du problème quadratique d'introduction.}
+  \label{fig:intro-exemple}
+\end{figure}
+
+\begin{figureexplanation}
+Sur la figure~\ref{fig:intro-exemple}, les \textbf{ellipses bleues} représentent les courbes de niveau de la fonction objectif~$f$ : plus l'ellipse est petite, plus la valeur de~$f$ est faible. Le \textbf{centre} des ellipses, situé en $(1,-3)$, correspond au minimum non contraint de~$f$. La \textbf{zone hachurée} représente la région admissible $x \ge 2$. La \textbf{droite grise verticale} $x = 2$ matérialise la frontière de cette contrainte, et la \textbf{droite rouge} représente la contrainte d'égalité $x - y = 4$. Le point $x^\star$, intersection de la droite rouge avec la frontière de la région admissible, est la \textbf{solution optimale} du problème contraint.
+\end{figureexplanation}
+
+Ce problème illustre trois composantes essentielles :
+\begin{itemize}
+  \item la \textbf{fonction objectif} $f : \R^n \to \R$ ;
+  \item l'\textbf{ensemble des contraintes}, définissant les points admissibles ;
+  \item la \textbf{solution optimale} $x^\star$, minimisant $f$ parmi les points admissibles.
+\end{itemize}
+
+\section{Formulation générale d'un problème d'optimisation}
+
+\begin{definition}[Problème d'optimisation]
+On appelle \emph{problème d’optimisation} la recherche d'un vecteur
+$x \in \R^n$ minimisant une fonction $f : \R^n \to \R$ sous des contraintes
+d’égalité et/ou d’inégalité, c’est-à-dire :
+\begin{equation}
+  \begin{aligned}
+    \min_{x \in \R^n} \quad & f(x) \\
+    \text{sous les contraintes} \quad &
+    c_i(x) \ge 0,\quad i \in I, \\
+    & c_j(x) = 0,\quad j \in E.
+  \end{aligned}
+  \label{eq:general-problem}
+\end{equation}
+\end{definition}
+
+\begin{definition}[Ensemble admissible]
+L'ensemble admissible est
+\[
+\mathcal{X} = \bigl\{x \in \R^n : c_i(x)\ge 0\ \forall i\in I,\; c_j(x)=0\ \forall j\in E\bigr\}.
+\]
+Tout point de $\mathcal{X}$ est dit \emph{admissible}.
+\end{definition}
+
+\begin{definition}[Solution optimale]
+Un point $x^\star \in \mathcal{X}$ est une \emph{solution optimale globale} si
+\[
+f(x^\star) \le f(x), \qquad \forall x \in \mathcal{X}.
+\]
+On parle de \emph{minimum local} si cette propriété ne vaut que dans un voisinage de $x^\star$.
+\end{definition}
+
+\begin{remarque}
+En pratique, il est rare de déterminer $x^\star$ exactement.
+Les méthodes numériques produisent une suite $(x_k)$ dont les valeurs du gradient
+et/ou de la fonction décroissent vers zéro.
+\end{remarque}
+
+\section{Classification des problèmes d'optimisation}
+
+\subsection{Avec ou sans contraintes}
+
+\begin{itemize}
+  \item \textbf{Optimisation sans contraintes} :  
+  \[
+  \min_{x\in\R^n} f(x).
+  \]
+
+  \item \textbf{Optimisation avec contraintes} :  
+  \[
+  x \in \mathcal{X} \subsetneq \R^n.
+  \]
+\end{itemize}
+
+Un cas particulier courant est celui des contraintes de boîte :
+\[
+\ell_i \le x_i \le u_i, \qquad i=1,\dots,n.
+\]
+
+\subsection{Optimisation continue, discrète et stochastique}
+
+\paragraph{Programmation linéaire en nombres entiers.}
+Lorsque certaines variables $x_i$ doivent être entières, le problème devient
+\emph{discret} (NP-difficile en général).
+
+\paragraph{Problèmes mixtes (MIP).}
+Combinaison de variables continues et discrètes.
+
+\paragraph{Optimisation stochastique.}
+Présence de paramètres aléatoires :
+\begin{itemize}
+  \item minimisation d’une espérance ;
+  \item contraintes satisfaites avec probabilité $\ge p$ (chance-constrained) ;
+  \item satisfaction pour tous les scénarios possibles (optimisation robuste).
+\end{itemize}
+
+\subsection{Problèmes linéaires, quadratiques, non linéaires}
+
+\begin{itemize}
+  \item \textbf{Programmation linéaire (PL)} :
+  \[
+  f(x)=c^\top x,\qquad c_i(x)=a_i^\top x - b_i.
+  \]
+
+  \item \textbf{Programmation quadratique (PQ)} :
+  \[
+  f(x)=\tfrac12 x^\top Q x + c^\top x,
+  \]
+  où $Q$ est symétrique.
+
+  \item \textbf{Programmation non linéaire (PNL)} :
+  $f$ et/ou les contraintes sont non linéaires.
+\end{itemize}
+
+\subsection{Convexité, concavité et programmes convexes}
+
+\begin{definition}[Ensemble convexe]
+Un ensemble $\mathcal{C}$ est convexe si  
+\[
+\theta x + (1-\theta)y \in \mathcal{C},\qquad \forall x,y\in\mathcal{C},\;\theta\in[0,1].
+\]
+\end{definition}
+
+\begin{definition}[Fonction convexe]
+Une fonction $f$ est convexe si  
+\[
+f(\theta x + (1-\theta)y)\le \theta f(x)+(1-\theta)f(y).
+\]
+Elle est \emph{strictement convexe} si l’inégalité est stricte pour $x\neq y$.
+Elle est \emph{concave} si $-f$ est convexe.
+\end{definition}
+
+\begin{definition}[Programme convexe]
+Un problème d’optimisation est dit \emph{convexe} lorsque :
+\begin{itemize}
+  \item la fonction objectif $f$ est convexe ;
+  \item les contraintes d’égalité sont linéaires ;
+  \item les contraintes d’inégalité $c_i(x)\ge 0$ sont concaves.
+\end{itemize}
+\end{definition}
+
+Dans ce cadre, tout minimum local est automatiquement un minimum global.
+
+\subsection{Méthodes de pénalisation}
+
+Certaines contraintes peuvent être intégrées à la fonction objectif.  
+Par exemple :
+\[
+\min_{x\in\R^2} (x_1-1)^2+(x_2+3)^2\quad\text{sous}\quad x_1+x_2=5
+\]
+peut être reformulé en problème sans contrainte :
+\[
+\min_{x\in\R^2} (x_1-1)^2+(x_2+3)^2
++ \frac{\eta}{2}\,(x_1+x_2-5)^2, \qquad \eta>0.
+\]
+
+On en reparlera dans le dernier chapitre sur la pénalisation, mais ce deuxième problème n'est équivalent au premier que pour $\eta\to\infty$. Précisément, sa solution est 
+\[
+x_1 = \frac{9\eta +2}{2\eta +2}, \quad x_2 = \frac{\eta - 6}{2\eta + 2}.
+\]
+
+Alternativement, on peut s'intéresser au problème 
+\[
+\min (x_1-1)^2 + (x_2+3)^2 +\eta |x_1+x_2 -5|,
+\] 
+pour lequel on indiquera dans le dernier chapitre que la solution coïncide avec celle du problème contraint initial dès lors que $\eta > 7$.
+
+\section{Principe général des algorithmes d'optimisation}
+
+Les méthodes numériques d’optimisation sont \emph{itératives} : elles construisent une suite
+$(x_k)$ convergeant vers une solution optimale (ou stationnaire). Le schéma général est :
+\[
+x_{k+1}=x_k+\alpha_k p_k,
+\]
+où $p_k$ est une direction de recherche et $\alpha_k>0$ un pas.
+
+\begin{center}
+\fbox{
+\begin{minipage}{0.9\textwidth}
+\textbf{Entrée :} un point initial $x_0$.\\[0.2em]
+\textbf{Pour} $k=0,1,2,\dots$ \textbf{tant que} le critère d'arrêt n'est pas satisfait :
+\begin{enumerate}
+  \item Choisir une direction $p_k$ (par exemple $p_k=-\nabla f(x_k)$).
+  \item Choisir une longueur de pas $\alpha_k>0$ (recherche linéaire, région de confiance, etc.).
+  \item Mettre à jour $x_{k+1}=x_k+\alpha_k p_k$.
+\end{enumerate}
+\textbf{Fin Pour}
+\end{minipage}}
+\end{center}
+
+Pour les méthodes non contraintes, l'algorithme s'appuie sur les informations suivantes :
+
+\begin{itemize}
+  \item uniquement $f(x_k)$ (méthodes ``boîte noire'') ;
+  \item le gradient $\nabla f(x_k)$ (méthodes de gradient) ;
+  \item le Hessien $\nabla^2 f(x_k)$ (méthodes de type Newton) ;
+  \item des approximations du Hessien (méthodes quasi-Newton).
+\end{itemize}
+
+\section{Propriétés souhaitables des méthodes numériques}
+
+Une méthode d’optimisation efficace doit satisfaire plusieurs critères :
+
+\begin{itemize}
+  \item \textbf{Robustesse} : bon comportement pour différents problèmes et points initiaux ;
+  \item \textbf{Efficacité} : coût raisonnable en temps et en mémoire ;
+  \item \textbf{Précision} : faible sensibilité aux erreurs d’arrondi et aux imprécisions de calcul ;
+  \item \textbf{Stabilité numérique} : éviter l’amplification des erreurs ;
+  \item \textbf{Fiabilité} : éviter les stagnations ou comportements chaotiques.
+\end{itemize}
+
+\section{Critères d'arrêt}
+
+Un algorithme d'optimisation s'arrête généralement lorsque l’un des critères suivants est atteint :
+
+\begin{itemize}
+  \item \textbf{norme du gradient petite} :
+        \[
+        \|\nabla f(x_k)\| \le \varepsilon_{\mathrm{grad}};
+        \]
+  \item \textbf{variation faible de la solution} :
+        \[
+        \|x_{k+1}-x_k\|\le \varepsilon_{\mathrm{step}};
+        \]
+  \item \textbf{variation faible de la fonction} :
+        \[
+        |f(x_{k+1})-f(x_k)|\le \varepsilon_{\mathrm{f}};
+        \]
+  \item \textbf{nombre maximal d’itérations atteint}.
+\end{itemize}
+
+\medskip
+
+Ce premier chapitre établit le cadre général de l’optimisation numérique : formulation, classification,
+convexité, typologie large des problèmes, structure des algorithmes et propriétés essentielles.
+Les chapitres suivants seront consacrés à l’étude détaillée des méthodes de résolution,
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{Vocabulaire :} Saurez-vous définir : fonction objectif, ensemble admissible, solution locale vs globale ?
+    \item \textbf{Structure :} Quels sont les ingrédients d'un algorithme de descente (direction + pas) ?
+    \item \textbf{Convexité :} Pourquoi est-elle importante ? (Un min local est global).
+    \item \textbf{Critères d'arrêt :} Citez deux conditions pour arrêter un algorithme.
+    \item \textbf{Hessienne définie positive :} $\nabla^2 f(x^\star)$ est définie positive si $\eta^\top \nabla^2 f(x^\star) \eta > 0$ pour tout vecteur $\eta \neq 0$.
+\end{itemize}
+\end{checkpoint}
+en commençant par l’optimisation sans contrainte.

@@ -1,0 +1,271 @@
+%===========================
+% File : main.tex
+%===========================
+\documentclass[11pt,a4paper,oneside]{book}
+
+%---------------------------
+% Encoding & language
+%---------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{algorithmicx}
+
+%---------------------------
+% Mathematics
+%---------------------------
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+
+% Algorithm2e with professor's style (replaces algorithm/algpseudocode)
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\SetAlgorithmName{Algorithm}{Algorithm}{List of Algorithms}
+\SetKwComment{Comment}{$\triangleright$\ }{}
+\SetKwInput{KwInput}{Input}
+\SetKwInput{KwOutput}{Output}
+
+% Blue keywords - exactly like professor's slides
+\SetKwIF{If}{ElseIf}{Else}{\textcolor{blue}{\textbf{if}}}{\textcolor{blue}{\textbf{then}}}{\textcolor{blue}{\textbf{else if}}}{\textcolor{blue}{\textbf{else}}}{}
+\SetKwFor{For}{\textcolor{blue}{\textbf{for}}}{\textcolor{blue}{\textbf{do}}}{}
+\SetKwFor{While}{\textcolor{blue}{\textbf{while}}}{\textcolor{blue}{\textbf{do}}}{}
+\SetKwRepeat{Repeat}{\textcolor{blue}{\textbf{repeat}}}{\textcolor{blue}{\textbf{until}}}
+\SetKw{Stop}{\textcolor{blue}{\textbf{stop}}}
+\SetKw{And}{\textcolor{blue}{\textbf{and}}}
+\SetKw{Or}{\textcolor{blue}{\textbf{or}}}
+\SetKw{Return}{\textbf{return}}
+
+\usepackage{float}
+\numberwithin{equation}{chapter}
+
+%---------------------------
+% Figures & illustrations
+%---------------------------
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,patterns}
+\graphicspath{{../images/}}
+
+%---------------------------
+% Colored boxes (tcolorbox)
+%---------------------------
+% Magic package for colored blocks
+\usepackage[most]{tcolorbox} 
+
+%---------------------------
+% Layout & style
+%---------------------------
+\usepackage{geometry}
+\geometry{margin=2.5cm, headheight=14pt, footskip=50pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\thepage}
+\fancyfoot[L]{\footnotesize 2025-2026 \textperiodcentered{} Numerical Methods - MMMEF}
+\fancyfoot[R]{\footnotesize Written by Zakari Hachemi}
+
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet,leftmargin=1.5em}
+
+%---------------------------
+% Hyperlinks
+%---------------------------
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=teal,
+    urlcolor=magenta,
+    pdfauthor={Zakari Hachemi},
+    pdftitle={Numerical Methods in Optimization},
+    pdfsubject={Complete Course},
+    pdfcreator={LaTeX},
+    plainpages=false,
+    pageanchor=false
+}
+
+% Fix names for autoref
+\def\theoremeautorefname{Theorem}
+\def\propositionautorefname{Proposition}
+\def\lemmeautorefname{Lemma}
+\def\corollaireautorefname{Corollary}
+\def\definitionautorefname{Definition}
+\def\exempleautorefname{Example}
+\def\exerciceautorefname{Exercise}
+\def\remarqueautorefname{Remark}
+
+%---------------------------
+% Colors for environments
+%---------------------------
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{teal}{RGB}{0,165,145} % Deeper green
+\definecolor{darkred}{RGB}{139,0,0} % Unified dark red
+
+%---------------------------
+% Theorem environments & Colors
+%---------------------------
+
+% 1. Standard definition of environments
+\theoremstyle{plain}
+\newtheorem{theoreme}{Theorem}[chapter]
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemma}
+\newtheorem{corollaire}[theoreme]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Definition}
+\newtheorem{exemple}[theoreme]{Example}
+\newtheorem{exercice}{Exercise}[chapter] % Independent numbering per chapter
+
+\theoremstyle{remark}
+\newtheorem*{correction}{Suggested Correction}
+\newtheorem{remarque}[theoreme]{Remark}
+
+% 2. Applying colors (tcolorbox)
+
+% --- Style for THEOREMS (Bright pastel red) ---
+\tcolorboxenvironment{theoreme}{
+    enhanced,
+    colback=red!20!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style for PROPOSITIONS (Bright pastel orange) ---
+\tcolorboxenvironment{proposition}{
+    enhanced,
+    colback=orange!20!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style for DEFINITIONS (Transparent bright pastel blue) ---
+\tcolorboxenvironment{definition}{
+    enhanced,
+    colback=blue!10!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style for EXAMPLES (Sea green) ---
+\tcolorboxenvironment{exemple}{
+    blanker,
+    breakable,
+    left=5mm,
+    before skip=10pt,
+    after skip=10pt,
+    borderline west={3pt}{0pt}{teal}
+}
+
+% --- Style for LEMMAS (Purple) ---
+\tcolorboxenvironment{lemme}{
+    enhanced,
+    colback=violet!20!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style for FIGURE EXPLANATIONS (Flat gray) ---
+\newtcolorbox{figureexplanation}{
+    enhanced,
+    colback=gray!10!white,
+    frame hidden,
+    boxrule=0pt,
+    sharp corners,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style for EXERCISES (Lighter flat yellow) ---
+\tcolorboxenvironment{exercice}{
+    enhanced,
+    colback=yellow!5!white,
+    frame hidden,
+    boxrule=0pt,
+    arc=2mm,
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+% --- Style for CHECKPOINTS (Flat teal) ---
+\newtcolorbox{checkpoint}{
+    enhanced,
+    colback=teal!10!white,
+    colframe=teal, % Title color if displayed
+    coltitle=white,
+    boxrule=0pt,   % No border
+    arc=2mm,
+    title=\textbf{Checkpoint : Did you understand the essentials ?},
+    left=2mm, right=2mm, top=2mm, bottom=2mm,
+    before skip=10pt, after skip=10pt
+}
+
+%---------------------------
+% Useful Macros
+%---------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\grad}{\nabla}
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+
+%---------------------------
+% Information
+%---------------------------
+\title{\textbf{Numerical Methods in Optimization}\\[0.5em]
+       \large Complete Course in English}
+\author{Zakari HACHEMI}
+\date{Based on Pierre Gruet's course - Numerical Methods - MMMEF \\ 2025-2026}
+
+%===========================
+\begin{document}
+%===========================
+
+\maketitle
+\hypersetup{pageanchor=true}
+\frontmatter
+\tableofcontents
+\mainmatter
+
+%---------------------------
+% Course Body
+%---------------------------
+\include{chapitre1}
+\include{chapitre2}
+\include{chapitre3}
+\include{chapitre4}
+\include{chapitre5}
+\include{chapitre6}
+\include{chapitre7}
+\include{chapitre8}
+\include{chapitre9}
+\include{chapitre10}
+\include{chapitre11}
+\include{chapitre12}
+
+\appendix
+
+%---------------------------
+% Bibliography
+%---------------------------
+\bibliographystyle{plain}
+\bibliography{../references}
+
+\end{document}
+%===========================

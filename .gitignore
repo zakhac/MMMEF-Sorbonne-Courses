@@ -19,6 +19,5 @@
 Thumbs.db
 
 # Numerical Methods
-Numerical_methods/individual_chapters/
-Numerical_methods/generate_chapters.sh
-Numerical_methods/fiches_par_chapitre/
+
+Numerical_methods/Archive/

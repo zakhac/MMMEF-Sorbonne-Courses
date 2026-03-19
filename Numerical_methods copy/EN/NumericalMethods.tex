@@ -1,19 +1,19 @@
 %===========================
-% Fichier : main.tex
+% File : main.tex
 %===========================
 \documentclass[11pt,a4paper,oneside]{book}
 
 %---------------------------
-% Encodage & langue
+% Encoding & language
 %---------------------------
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[french]{babel}
+\usepackage[english]{babel}
 \usepackage{lmodern}
 \usepackage{algorithmicx}
 
 %---------------------------
-% Mathématiques
+% Mathematics
 %---------------------------
 \usepackage{amsmath, amssymb, amsthm, mathtools}
 
@@ -44,16 +44,16 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,calc,positioning,patterns}
-\graphicspath{{images/}}
+\graphicspath{{../images/}}
 
 %---------------------------
-% Boites colorées (tcolorbox)
+% Colored boxes (tcolorbox)
 %---------------------------
-% C'est le package magique pour les blocs de couleur
+% Magic package for colored blocks
 \usepackage[most]{tcolorbox} 
 
 %---------------------------
-% Mise en page & style
+% Layout & style
 %---------------------------
 \usepackage{geometry}
 \geometry{margin=2.5cm, headheight=14pt, footskip=50pt}
@@ -64,13 +64,13 @@
 \fancyhead[L]{\nouppercase{\leftmark}}
 \fancyhead[R]{\thepage}
 \fancyfoot[L]{\footnotesize 2025-2026 \textperiodcentered{} Numerical Methods - MMMEF}
-\fancyfoot[R]{\footnotesize Rédigé par Zakari Hachemi}
+\fancyfoot[R]{\footnotesize Written by Zakari Hachemi}
 
 \usepackage{enumitem}
 \setlist[itemize]{label=\textbullet,leftmargin=1.5em}
 
 %---------------------------
-% Liens hypertexte
+% Hyperlinks
 %---------------------------
 \usepackage{xcolor}
 \usepackage{hyperref}
@@ -80,54 +80,54 @@
     citecolor=teal,
     urlcolor=magenta,
     pdfauthor={Zakari Hachemi},
-    pdftitle={Méthodes numériques en optimisation},
-    pdfsubject={Cours complet},
+    pdftitle={Numerical Methods in Optimization},
+    pdfsubject={Complete Course},
     pdfcreator={LaTeX},
     plainpages=false,
     pageanchor=false
 }
 
-% Correction des noms pour autoref
-\def\theoremeautorefname{Théorème}
+% Fix names for autoref
+\def\theoremeautorefname{Theorem}
 \def\propositionautorefname{Proposition}
-\def\lemmeautorefname{Lemme}
-\def\corollaireautorefname{Corollaire}
-\def\definitionautorefname{Définition}
-\def\exempleautorefname{Exemple}
-\def\exerciceautorefname{Exercice}
-\def\remarqueautorefname{Remarque}
+\def\lemmeautorefname{Lemma}
+\def\corollaireautorefname{Corollary}
+\def\definitionautorefname{Definition}
+\def\exempleautorefname{Example}
+\def\exerciceautorefname{Exercise}
+\def\remarqueautorefname{Remark}
 
 %---------------------------
-% Couleurs pour les environnements
+% Colors for environments
 %---------------------------
 \definecolor{darkblue}{RGB}{0,0,139}
 \definecolor{darkgreen}{RGB}{0,100,0}
-\definecolor{teal}{RGB}{0,165,145} % Vert plus prononcé
-\definecolor{darkred}{RGB}{139,0,0} % Rouge foncé unifié
+\definecolor{teal}{RGB}{0,165,145} % Deeper green
+\definecolor{darkred}{RGB}{139,0,0} % Unified dark red
 
 %---------------------------
-% Environnements théorèmes & Couleurs
+% Theorem environments & Colors
 %---------------------------
 
-% 1. Définition standard des environnements (comme avant)
+% 1. Standard definition of environments
 \theoremstyle{plain}
-\newtheorem{theoreme}{Théorème}[chapter]
+\newtheorem{theoreme}{Theorem}[chapter]
 \newtheorem{proposition}[theoreme]{Proposition}
-\newtheorem{lemme}[theoreme]{Lemme}
-\newtheorem{corollaire}[theoreme]{Corollaire}
+\newtheorem{lemme}[theoreme]{Lemma}
+\newtheorem{corollaire}[theoreme]{Corollary}
 
 \theoremstyle{definition}
-\newtheorem{definition}[theoreme]{Définition}
-\newtheorem{exemple}[theoreme]{Exemple}
-\newtheorem{exercice}{Exercice}[chapter] % Numérotation indépendante par chapitre
+\newtheorem{definition}[theoreme]{Definition}
+\newtheorem{exemple}[theoreme]{Example}
+\newtheorem{exercice}{Exercise}[chapter] % Independent numbering per chapter
 
 \theoremstyle{remark}
-\newtheorem*{correction}{Correction suggérée}
-\newtheorem{remarque}[theoreme]{Remarque}
+\newtheorem*{correction}{Suggested Correction}
+\newtheorem{remarque}[theoreme]{Remark}
 
-% 2. Application des couleurs (tcolorbox)
+% 2. Applying colors (tcolorbox)
 
-% --- Style pour les THÉORÈMES (Rouge pastel vif) ---
+% --- Style for THEOREMS (Bright pastel red) ---
 \tcolorboxenvironment{theoreme}{
     enhanced,
     colback=red!20!white,
@@ -138,7 +138,7 @@
     before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les PROPOSITIONS (Orange pastel vif) ---
+% --- Style for PROPOSITIONS (Bright pastel orange) ---
 \tcolorboxenvironment{proposition}{
     enhanced,
     colback=orange!20!white,
@@ -149,7 +149,7 @@
     before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les DÉFINITIONS (Bleu pastel vif transparent) ---
+% --- Style for DEFINITIONS (Transparent bright pastel blue) ---
 \tcolorboxenvironment{definition}{
     enhanced,
     colback=blue!10!white,
@@ -160,7 +160,7 @@
     before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les EXEMPLES (Vert d'eau) ---
+% --- Style for EXAMPLES (Sea green) ---
 \tcolorboxenvironment{exemple}{
     blanker,
     breakable,
@@ -170,7 +170,7 @@
     borderline west={3pt}{0pt}{teal}
 }
 
-% --- Style pour les LEMMES (Violet) ---
+% --- Style for LEMMAS (Purple) ---
 \tcolorboxenvironment{lemme}{
     enhanced,
     colback=violet!20!white,
@@ -180,7 +180,7 @@
     before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les EXPLICATIONS DE FIGURES (Gris plat) ---
+% --- Style for FIGURE EXPLANATIONS (Flat gray) ---
 \newtcolorbox{figureexplanation}{
     enhanced,
     colback=gray!10!white,
@@ -191,7 +191,7 @@
     before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les EXERCICES (Jaune plat plus léger) ---
+% --- Style for EXERCISES (Lighter flat yellow) ---
 \tcolorboxenvironment{exercice}{
     enhanced,
     colback=yellow!5!white,
@@ -202,21 +202,21 @@
     before skip=10pt, after skip=10pt
 }
 
-% --- Style pour les CHECKPOINTS (Teal plat) ---
+% --- Style for CHECKPOINTS (Flat teal) ---
 \newtcolorbox{checkpoint}{
     enhanced,
     colback=teal!10!white,
-    colframe=teal, % Couleur du titre si affiché
+    colframe=teal, % Title color if displayed
     coltitle=white,
-    boxrule=0pt,   % Pas de contour
+    boxrule=0pt,   % No border
     arc=2mm,
-    title=\textbf{Checkpoint : Avez-vous compris l'essentiel ?},
+    title=\textbf{Checkpoint : Did you understand the essentials ?},
     left=2mm, right=2mm, top=2mm, bottom=2mm,
     before skip=10pt, after skip=10pt
 }
 
 %---------------------------
-% Macros utiles
+% Useful Macros
 %---------------------------
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
@@ -226,12 +226,12 @@
 \newcommand{\argmin}{\mathop{\mathrm{argmin}}}
 
 %---------------------------
-% Informations
+% Information
 %---------------------------
-\title{\textbf{Méthodes numériques en optimisation}\\[0.5em]
-       \large Cours complet en français}
+\title{\textbf{Numerical Methods in Optimization}\\[0.5em]
+       \large Complete Course in English}
 \author{Zakari HACHEMI}
-\date{Basé sur le cours Pierre Gruet - Numerical Methods - MMMEF \\ 2025-2026}
+\date{Based on Pierre Gruet's course - Numerical Methods - MMMEF \\ 2025-2026}
 
 %===========================
 \begin{document}
@@ -244,7 +244,7 @@
 \mainmatter
 
 %---------------------------
-% Corps du cours
+% Course Body
 %---------------------------
 \include{chapitre1}
 \include{chapitre2}
@@ -262,10 +262,10 @@
 \appendix
 
 %---------------------------
-% Bibliographie
+% Bibliography
 %---------------------------
 \bibliographystyle{plain}
-\bibliography{references}
+\bibliography{../references}
 
 \end{document}
 %===========================

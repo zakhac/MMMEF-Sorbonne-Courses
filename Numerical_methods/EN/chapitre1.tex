@@ -1,0 +1,332 @@
+\chapter{Introduction to Numerical Methods for Optimization}
+
+\section{Motivations and introductory example}
+
+\emph{Optimization} consists of choosing, among a set of possible decisions,
+the one that minimizes (or maximizes) a quantity called the \emph{objective function}.
+In this course, we mainly focus on \emph{minimization} problems, although
+maximization problems can be treated equivalently by considering the opposite of the function.
+
+\medskip
+
+Optimization problems encountered in practice can be:
+
+\begin{itemize}
+  \item \textbf{continuous}, when variables take values in $\R^n$;
+  \item \textbf{discrete}, when some variables must be integers
+        (integer programming);
+  \item \textbf{mixed} (MIP: Mixed Integer Programming), when some variables
+        are continuous and others are discrete.
+\end{itemize}
+
+Discrete or mixed problems are generally harder to solve than continuous
+problems and will not be studied in detail in this course.
+
+\medskip
+
+We also encounter problems where parameters are random. This leads to:
+
+\begin{itemize}
+  \item \textbf{stochastic optimization}, where we minimize an expectation;
+  \item \textbf{chance constraints} (chance-constrained), where certain constraints must
+        be satisfied with high probability;
+  \item \textbf{robust optimization}, where constraints must be satisfied for all
+        admissible realizations of an uncertainty set.
+\end{itemize}
+
+These frameworks are essential in fields such as finance, energy management
+or systems engineering, but they fall outside the immediate scope of this chapter.
+
+\begin{exemple}[Quadratic problem with linear constraints]
+We consider the problem
+\begin{equation}
+  \min_{x \in \R^2} \; f(x)
+  := (x_1 - 1)^2 + 2(x_2 + 3)^2
+  \label{eq:intro-exemple-obj}
+\end{equation}
+under the constraints
+\begin{equation}
+  x_1 \geq 2, 
+  \qquad
+  x_1 - x_2 = 4.
+  \label{eq:intro-exemple-constraints}
+\end{equation}
+\end{exemple}
+
+The objective function $f$ measures the ``badness'' of a vector $x=(x_1,x_2)$.
+The smaller $f(x)$ is, the more satisfactory the solution is. The constraints impose that the
+admissible solutions live on a line and in a half-plane. The level curves
+of $f$ are ellipses centered at $(1,-3)$.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[scale=0.9]
+    % Hatched region for x >= 2 (feasible zone)
+    \fill[pattern=north east lines, pattern color=gray!30] (2,-6) rectangle (5,1);
+    
+    % Axes - thicker for clarity
+    \draw[->, very thick] (-0.5,0) -- (5,0) node[right] {$x$};
+    \draw[->, very thick] (0,-6) -- (0,1) node[above] {$y$};
+
+    % Center
+    \fill (1,-3) circle (1.5pt) node[below right] {$(1,-3)$};
+
+    % Levels (approximate ellipses)
+    \draw[blue, thick] (1,-3) ellipse (1.0 and 0.7);
+    \draw[blue]        (1,-3) ellipse (2.0 and 1.4);
+    \draw[blue]        (1,-3) ellipse (3.0 and 2.1);
+
+    % Half-plane x >= 2
+    \draw[gray, thick] (2,-6) -- (2,1) node[above] {$x = 2$};
+    \node[gray] at (4.2,-5.5) {$x \ge 2$};
+
+    % Line x - y = 4  => y = x - 4
+    \draw[red, thick, domain=-0.5:5] plot (\x, {\x - 4}) node[above right] {$x - y = 4$};
+
+    % Feasible solution (intersection constraint + low level)
+    \coordinate (xmin) at (2,-2);
+    \fill[red] (xmin) circle (2pt) node[above left] {$x^\star$};
+  \end{tikzpicture}
+  \caption{Illustration of the introductory quadratic problem.}
+  \label{fig:intro-exemple}
+\end{figure}
+
+\begin{figureexplanation}
+In Figure~\ref{fig:intro-exemple}, the \textbf{blue ellipses} represent the level curves of the objective function~$f$: the smaller the ellipse, the lower the value of~$f$. The \textbf{center} of the ellipses, located at $(1,-3)$, corresponds to the unconstrained minimum of~$f$. The \textbf{hatched area} represents the feasible region $x \ge 2$. The \textbf{vertical gray line} $x = 2$ materializes the boundary of this constraint, and the \textbf{red line} represents the equality constraint $x - y = 4$. The point $x^\star$, intersection of the red line with the boundary of the feasible region, is the \textbf{optimal solution} of the constrained problem.
+\end{figureexplanation}
+
+This problem illustrates three essential components:
+\begin{itemize}
+  \item the \textbf{objective function} $f : \R^n \to \R$;
+  \item the \textbf{set of constraints}, defining the feasible points;
+  \item the \textbf{optimal solution} $x^\star$, minimizing $f$ among the feasible points.
+\end{itemize}
+
+\section{General formulation of an optimization problem}
+
+\begin{definition}[Optimization problem]
+An \emph{optimization problem} is the search for a vector
+$x \in \R^n$ minimizing a function $f : \R^n \to \R$ under equality
+and/or inequality constraints, that is:
+\begin{equation}
+  \begin{aligned}
+    \min_{x \in \R^n} \quad & f(x) \\
+    \text{under the constraints} \quad &
+    c_i(x) \ge 0,\quad i \in I, \\
+    & c_j(x) = 0,\quad j \in E.
+  \end{aligned}
+  \label{eq:general-problem}
+\end{equation}
+\end{definition}
+
+\begin{definition}[Feasible set]
+The feasible set is
+\[
+\mathcal{X} = \bigl\{x \in \R^n : c_i(x)\ge 0\ \forall i\in I,\; c_j(x)=0\ \forall j\in E\bigr\}.
+\]
+Any point in $\mathcal{X}$ is called \emph{feasible} (or admissible).
+\end{definition}
+
+\begin{definition}[Optimal solution]
+A point $x^\star \in \mathcal{X}$ is a \emph{global optimal solution} if
+\[
+f(x^\star) \le f(x), \qquad \forall x \in \mathcal{X}.
+\]
+We speak of a \emph{local minimum} if this property only holds in a neighborhood of $x^\star$.
+\end{definition}
+
+\begin{remarque}
+In practice, it is rare to determine $x^\star$ exactly.
+Numerical methods produce a sequence $(x_k)$ whose gradient values
+and/or function values decrease towards zero.
+\end{remarque}
+
+\section{Classification of optimization problems}
+
+\subsection{Unconstrained or constrained}
+
+\begin{itemize}
+  \item \textbf{Unconstrained optimization}:  
+  \[
+  \min_{x\in\R^n} f(x).
+  \]
+
+  \item \textbf{Constrained optimization}:  
+  \[
+  x \in \mathcal{X} \subsetneq \R^n.
+  \]
+\end{itemize}
+
+A common special case is that of box constraints:
+\[
+\ell_i \le x_i \le u_i, \qquad i=1,\dots,n.
+\]
+
+\subsection{Continuous, discrete and stochastic optimization}
+
+\paragraph{Integer linear programming.}
+When certain variables $x_i$ must be integers, the problem becomes
+\emph{discrete} (NP-hard in general).
+
+\paragraph{Mixed problems (MIP).}
+Combination of continuous and discrete variables.
+
+\paragraph{Stochastic optimization.}
+Presence of random parameters:
+\begin{itemize}
+  \item minimization of an expectation;
+  \item constraints satisfied with probability $\ge p$ (chance-constrained);
+  \item satisfaction for all possible scenarios (robust optimization).
+\end{itemize}
+
+\subsection{Linear, quadratic, nonlinear problems}
+
+\begin{itemize}
+  \item \textbf{Linear Programming (LP)}:
+  \[
+  f(x)=c^\top x,\qquad c_i(x)=a_i^\top x - b_i.
+  \]
+
+  \item \textbf{Quadratic Programming (QP)}:
+  \[
+  f(x)=\tfrac12 x^\top Q x + c^\top x,
+  \]
+  where $Q$ is symmetric.
+
+  \item \textbf{Nonlinear Programming (NLP)}:
+  $f$ and/or the constraints are nonlinear.
+\end{itemize}
+
+\subsection{Convexity, concavity and convex programs}
+
+\begin{definition}[Convex set]
+A set $\mathcal{C}$ is convex if  
+\[
+\theta x + (1-\theta)y \in \mathcal{C},\qquad \forall x,y\in\mathcal{C},\;\theta\in[0,1].
+\]
+\end{definition}
+
+\begin{definition}[Convex function]
+A function $f$ is convex if  
+\[
+f(\theta x + (1-\theta)y)\le \theta f(x)+(1-\theta)f(y).
+\]
+It is \emph{strictly convex} if the inequality is strict for $x\neq y$.
+It is \emph{concave} if $-f$ is convex.
+\end{definition}
+
+\begin{definition}[Convex program]
+An optimization problem is called \emph{convex} when:
+\begin{itemize}
+  \item the objective function $f$ is convex;
+  \item the equality constraints are linear;
+  \item the inequality constraints $c_i(x)\ge 0$ are concave.
+\end{itemize}
+\end{definition}
+
+In this framework, any local minimum is automatically a global minimum.
+
+\subsection{Penalty methods}
+
+Certain constraints can be integrated into the objective function.  
+For example:
+\[
+\min_{x\in\R^2} (x_1-1)^2+(x_2+3)^2\quad\text{subject to}\quad x_1+x_2=5
+\]
+can be reformulated as an unconstrained problem:
+\[
+\min_{x\in\R^2} (x_1-1)^2+(x_2+3)^2
++ \frac{\eta}{2}\,(x_1+x_2-5)^2, \qquad \eta>0.
+\]
+
+We will discuss this again in the last chapter on penalization, but this second problem is only equivalent to the first for $\eta\to\infty$. Precisely, its solution is 
+\[
+x_1 = \frac{9\eta +2}{2\eta +2}, \quad x_2 = \frac{\eta - 6}{2\eta + 2}.
+\]
+
+Alternatively, we can consider the problem 
+\[
+\min (x_1-1)^2 + (x_2+3)^2 +\eta |x_1+x_2 -5|,
+\] 
+for which we will indicate in the last chapter that the solution coincides with that of the initial constrained problem as soon as $\eta > 7$.
+
+\section{General principle of optimization algorithms}
+
+Numerical optimization methods are \emph{iterative}: they build a sequence
+$(x_k)$ converging towards an optimal (or stationary) solution. The general scheme is:
+\[
+x_{k+1}=x_k+\alpha_k p_k,
+\]
+where $p_k$ is a search direction and $\alpha_k>0$ is a step length.
+
+\begin{center}
+\fbox{
+\begin{minipage}{0.9\textwidth}
+\textbf{Input:} an initial point $x_0$.\\[0.2em]
+\textbf{For} $k=0,1,2,\dots$ \textbf{while} the stopping criterion is not satisfied:
+\begin{enumerate}
+  \item Choose a direction $p_k$ (for example $p_k=-\nabla f(x_k)$).
+  \item Choose a step length $\alpha_k>0$ (line search, trust region, etc.).
+  \item Update $x_{k+1}=x_k+\alpha_k p_k$.
+\end{enumerate}
+\textbf{End For}
+\end{minipage}}
+\end{center}
+
+For unconstrained methods, the algorithm relies on the following information:
+
+\begin{itemize}
+  \item only $f(x_k)$ (``black box'' methods);
+  \item the gradient $\nabla f(x_k)$ (gradient methods);
+  \item the Hessian $\nabla^2 f(x_k)$ (Newton-type methods);
+  \item approximations of the Hessian (quasi-Newton methods).
+\end{itemize}
+
+\section{Desirable properties of numerical methods}
+
+An efficient optimization method must satisfy several criteria:
+
+\begin{itemize}
+  \item \textbf{Robustness}: good behavior for different problems and starting points;
+  \item \textbf{Efficiency}: reasonable cost in time and memory;
+  \item \textbf{Accuracy}: low sensitivity to rounding errors and calculation inaccuracies;
+  \item \textbf{Numerical stability}: avoiding the amplification of errors;
+  \item \textbf{Reliability}: avoiding stagnations or chaotic behaviors.
+\end{itemize}
+
+\section{Stopping criteria}
+
+An optimization algorithm generally stops when one of the following criteria is reached:
+
+\begin{itemize}
+  \item \textbf{small gradient norm}:
+        \[
+        \|\nabla f(x_k)\| \le \varepsilon_{\mathrm{grad}};
+        \]
+  \item \textbf{small variation in the solution}:
+        \[
+        \|x_{k+1}-x_k\|\le \varepsilon_{\mathrm{step}};
+        \]
+  \item \textbf{small variation in the function}:
+        \[
+        |f(x_{k+1})-f(x_k)|\le \varepsilon_{\mathrm{f}};
+        \]
+  \item \textbf{maximum number of iterations reached}.
+\end{itemize}
+
+\medskip
+
+This first chapter establishes the general framework of numerical optimization: formulation, classification,
+convexity, broad typology of problems, algorithm structure, and essential properties.
+The following chapters will be devoted to the detailed study of solving methods,
+\bigskip
+\begin{checkpoint}
+\begin{itemize}
+    \item \textbf{Vocabulary:} Can you define: objective function, feasible set, local vs global solution?
+    \item \textbf{Structure:} What are the ingredients of a descent algorithm (direction + step)?
+    \item \textbf{Convexity:} Why is it important? (A local min is global).
+    \item \textbf{Stopping criteria:} Cite two conditions to stop an algorithm.
+    \item \textbf{Positive definite Hessian:} $\nabla^2 f(x^\star)$ is positive definite if $\eta^\top \nabla^2 f(x^\star) \eta > 0$ for all vectors $\eta \neq 0$.
+\end{itemize}
+\end{checkpoint}
+beginning with unconstrained optimization.
