@@ -6,7 +6,9 @@
 \textit{Enseigné par Julien Turc}
 
 %--------------------------------------------------
-\section{Genèse : L'arbitrage sur obligations convertibles}
+\section{Stratégies d\'Arbitrage et Pratique du Marché}
+
+\subsection{Genèse : L'arbitrage sur obligations convertibles}
 %--------------------------------------------------
 
 À l'origine de ce champ, un praticien remarque que les \textbf{obligations convertibles} (obligations d'entreprise échangeables en actions) étaient cotées sur le marché de la dette, sans que leur composante optionnelle (le droit de conversion en actions) ne soit correctement valorisée.
@@ -26,10 +28,10 @@ En utilisant le \textbf{modèle binomial de Rubinstein}, il identifie une sous-v
 Avec le temps, cette stratégie est devenue \textit{overcrowded} : trop de capitaux chassant les mêmes opportunités, le \textit{edge} a disparu. Les praticiens se sont alors tournés vers d'autres vecteurs d'arbitrage, notamment les \textbf{dérivés de crédit}.
 
 %--------------------------------------------------
-\section{La stratégie CDS-Actions}
+\subsection{La stratégie CDS-Actions}
 %--------------------------------------------------
 
-\subsection{Principe}
+\subsubsection{Principe}
 
 Lorsque le marché des CDS s'est développé, une nouvelle stratégie d'arbitrage a émergé, consistant à combiner :
 
@@ -46,7 +48,7 @@ L'intuition est double :
 
 Le résultat net est un profil de gain \textbf{convexe} : la position gagne dans les deux cas extrêmes, et ne perd modérément qu'en cas de stagnation.
 
-\subsection{Le rôle du Chapter 11 américain}
+\subsubsection{Le rôle du Chapter 11 américain}
 
 \begin{remarque}
 Aux États-Unis, une faillite d'entreprise se traduit par un dépôt en \textbf{Chapter 11} (restructuration judiciaire), qui n'entraîne \textbf{pas} nécessairement la disparition de l'action. L'entreprise continue souvent à coter pendant sa restructuration.
@@ -55,10 +57,10 @@ Conséquence pour la stratégie : même après déclenchement du CDS, l'action p
 \end{remarque}
 
 %--------------------------------------------------
-\section{La Convexité : le Graal de l'arbitriste}
+\subsection{La Convexité : le Graal de l'arbitriste}
 %--------------------------------------------------
 
-\subsection{Formalisation}
+\subsubsection{Formalisation}
 
 On note $S_0$ le prix initial de l'action. On construit une position :
 \begin{itemize}
@@ -79,7 +81,7 @@ Si l'on suppose que le spread de crédit $s$ est une fonction décroissante du p
 
 La position globale a un profil \textbf{concave par le bas} : l'exposition aux pertes est bornée, tandis que les gains potentiels sont non linéaires. C'est ce que l'on appelle \textbf{capturer la convexité}.
 
-\subsection{Représentation graphique de la convexité}
+\subsubsection{Représentation graphique de la convexité}
 
 La figure~\ref{fig:convexite} représente le mark-to-market de la position combinée en fonction du prix de l'action $S$, centré sur $S_0$.
 
@@ -167,7 +169,7 @@ La figure~\ref{fig:convexite} représente le mark-to-market de la position combi
     \item \textbf{Break-evens} : deux niveaux de prix de l'action où le portage annule exactement le gain de convexité.
 \end{itemize}
 
-\subsection{Cas limite : la fraude Enron}
+\subsubsection{Cas limite : la fraude Enron}
 
 \begin{exemple}[Enron (2001)]
 En cas de fraude massive, l'action disparaît brutalement ($S_T \to 0$) et le CDS est déclenché. Le CDS paie alors $(1-R) \times N$.
@@ -182,10 +184,10 @@ Tant que $\delta < \frac{(1-R) \cdot N}{S_0}$, la stratégie est gagnante. En pr
 \end{exemple}
 
 %--------------------------------------------------
-\section{Portage et Roll-down : le coût du temps}
+\subsection{Portage et Roll-down : le coût du temps}
 %--------------------------------------------------
 
-\subsection{Le portage (\textit{Carry})}
+\subsubsection{Le portage (\textit{Carry})}
 
 Toute position en CDS a un \textbf{coût de portage} : la prime $s$ versée prorata temporis à chaque période. Si le défaut survient au bout de $t$ années, le coût total de portage est :
 \[
@@ -193,7 +195,7 @@ Toute position en CDS a un \textbf{coût de portage} : la prime $s$ versée pror
 \]
 Exemple : un CDS à $s = 45$ bps porté 6 mois coûte $45 \times 0.5 = 22.5$ bps de nominal. Ce n'est pas négligeable.
 
-\subsection{Le Roll-down}
+\subsubsection{Le Roll-down}
 
 \begin{definition}[Roll-down]
 Le \textbf{Roll-down} est le gain (ou la perte) en mark-to-market résultant du simple vieillissement d'un contrat le long d'une courbe de crédit inchangée. Il traduit le fait qu'à conditions de marché identiques, un contrat initialement de maturité $T$ devient de maturité $T - \Delta t$ après $\Delta t$ années.
@@ -276,7 +278,7 @@ Si la courbe de spread est montante et concave (ce qui est le cas typique), le s
     \label{fig:rolldown}
 \end{figure}
 
-\subsection{La DV01 : unité de risque en crédit}
+\subsubsection{La DV01 : unité de risque en crédit}
 
 \begin{definition}[DV01 — Dollar Value of a 01]
 La \textbf{DV01} mesure la variation de la valeur mark-to-market d'un contrat de crédit pour un déplacement de \textbf{1 point de base} (0.01\%) du spread. Pour un CDS de maturité $T$ et de nominal $N$ :
@@ -294,16 +296,16 @@ Ce calcul nécessite d'injecter les probabilités de défaut ($\lambda$) et de s
 \end{remarque}
 
 %--------------------------------------------------
-\section{Les limites de l'IA face à la \textit{Small Data}}
+\subsection{Les limites de l'IA face à la \textit{Small Data}}
 %--------------------------------------------------
 
-\subsection{Le problème de la non-stationnarité}
+\subsubsection{Le problème de la non-stationnarité}
 
 En finance, les données ne sont pas \textbf{stationnaires} : les relations entre variables (spreads, prix d'actions, taux) changent de régime au cours du temps (crises, changements réglementaires, cycles de taux). Contrairement aux lois de la physique, les lois de la finance \textit{varient}.
 
 Cela pose un problème fondamental pour les modèles d'apprentissage automatique : un modèle calibré sur les données historiques d'un régime peut être totalement inadapté au régime suivant.
 
-\subsection{Le mythe du Big Data en crédit}
+\subsubsection{Le mythe du Big Data en crédit}
 
 \begin{remarque}
 Un ordre de grandeur à retenir : un dataset multi-entreprises en crédit compte typiquement \textbf{20 ans de données quotidiennes} sur \textbf{150 entreprises}.
@@ -331,10 +333,12 @@ Réseaux de neurones profonds & $\times$ & Trop de paramètres pour le volume de
 \end{center}
 
 %--------------------------------------------------
-\section{Le Modèle de Merton Revisité : la Dette comme Option}
+\section{L\'Approche Structurelle : Du Modèle de Merton à ses Extensions}
+
+\subsection{Le Modèle de Merton Revisité : la Dette comme Option}
 %--------------------------------------------------
 
-\subsection{Structure de bilan et équilibre de marché}
+\subsubsection{Structure de bilan et équilibre de marché}
 
 Le point de départ du modèle de Merton est une identité comptable fondamentale :
 
@@ -350,7 +354,7 @@ Puisque les actions cotent sur un marché, $E_t$ est observable. Merton fait alo
 dV_t = \mu V_t \, dt + \sigma_A V_t \, dW_t
 \]
 
-\subsection{Représentation optionnelle}
+\subsubsection{Représentation optionnelle}
 
 On suppose que l'entreprise a émis une unique obligation zéro-coupon de nominal $K$, arrivant à maturité $T$.
 
@@ -453,7 +457,7 @@ La dette risquée est donc un \textbf{zéro-coupon sans risque minoré d'un Put 
     \label{fig:merton_bilan}
 \end{figure}
 
-\subsection{Déduction de la volatilité des actifs}
+\subsubsection{Déduction de la volatilité des actifs}
 
 La volatilité des actifs $\sigma_A$ n'est pas directement observable. On la déduit via la relation entre l'équité et les actifs. Par Itô, la volatilité de l'équité $\sigma_E$ (observable via les options sur actions) est liée à $\sigma_A$ par :
 
@@ -484,7 +488,7 @@ Il existe une famille de couples $(V_t, \sigma_A)$ qui laissent les observables 
 
 Concrètement, si l'on essaie d'ajuster à la fois le niveau et la volatilité des actifs pour coller à la fois aux actions et aux options sur actions, on obtient une multitude de solutions équivalentes pour les actions mais pas pour le crédit — rendant la calibration très sensible aux données initiales.
 
-\subsection{Lien avec le spread de crédit et la convexité}
+\subsubsection{Lien avec le spread de crédit et la convexité}
 
 Dans ce cadre, \textbf{acheter de la protection CDS} revient à acheter un Put sur les actifs de l'entreprise. Le spread de crédit est structurellement fonction du prix de l'action (via $V_t = E_t + D_t$). Ce lien mécanique :
 \begin{itemize}
@@ -493,16 +497,18 @@ Dans ce cadre, \textbf{acheter de la protection CDS} revient à acheter un Put s
 \end{itemize}
 
 %--------------------------------------------------
-\section{La Courbe de Crédit et le Trade « Steepener »}
+\section{Dynamique et Modélisation de la Courbe de Crédit}
+
+\subsection{La Courbe de Crédit et le Trade « Steepener »}
 %--------------------------------------------------
 
-\subsection{Problème d'extension : de la maturité unique à la courbe}
+\subsubsection{Problème d'extension : de la maturité unique à la courbe}
 
 Le modèle de Merton standard pricing une seule maturité. En pratique, le marché du CDS génère une \textbf{courbe de spread} $s(T)$ pour $T \in \{1, 3, 5, 7, 10\}$ ans.
 
 L'extension naïve — pricer un CDS $T$-ans avec une dette arrivant à maturité $T$ — crée des incohérences : les \textbf{taux forward de crédit peuvent devenir négatifs} pour certaines formes de courbe.
 
-\subsection{La découverte du steepener (2003-2004)}
+\subsubsection{La découverte du steepener (2003-2004)}
 
 \begin{exemple}[Le trade Steepener]
 Vers 2003, le marché CDS se développe principalement sur la maturité \textbf{5 ans}. Les courbes de crédit sont alors pratiquement \textbf{plates} : $s_{5Y} \approx s_{10Y}$.
@@ -532,7 +538,7 @@ En agrégeant ces positions auprès de nombreuses banques, l'arbitriste a exerc�
 Une fois la courbe pentue, le Steepener devient un trade de \textbf{convexité négative} (carry positif mais convexité courte), inverse du profil CDS-Actions.
 \end{remarque}
 
-\subsection{Construction DV01-neutre et P\&L du Steepener}
+\subsubsection{Construction DV01-neutre et P\&L du Steepener}
 
 \subsubsection*{Hypothèse de déplacement parallèle}
 
@@ -724,12 +730,12 @@ Zone intermédiaire & Carry + roll-down actifs & P\&L $\geq 0$ avec break-evens 
 \end{figure}
 
 %--------------------------------------------------
-\section{Modélisation de la Courbe de Crédit : Deux Philosophies}
+\subsection{Modélisation de la Courbe de Crédit : Deux Philosophies}
 %--------------------------------------------------
 
 La nécessité de modéliser une courbe entière (et non plus une maturité unique) a engendré un débat intellectuel analogue à celui des modèles de taux d'intérêt.
 
-\subsection{Le point de vue « à l'ancienne » : le taux court (Vasicek)}
+\subsubsection{Le point de vue « à l'ancienne » : le taux court (Vasicek)}
 
 \begin{definition}[Modèle de Vasicek (1977)]
 On modélise directement le \textbf{taux court} $r_t$ (ou l'intensité de défaut $\lambda_t$) par un processus à retour à la moyenne :
@@ -748,7 +754,7 @@ L'avantage de cette approche est \textbf{interprétatif} : chaque paramètre a u
 
 La courbe $T \mapsto s(T)$ est entièrement déterminée par ces trois paramètres. C'est la même logique qui s'applique à Vasicek, Ho-Lee, Hull-White dans les taux.
 
-\subsection{Le point de vue moderne : l'objet courbe (HJM)}
+\subsubsection{Le point de vue moderne : l'objet courbe (HJM)}
 
 \begin{definition}[Cadre Heath-Jarrow-Morton (1992)]
 Au lieu de modéliser un taux court, on modélise directement la \textbf{courbe entière} en faisant diffuser les taux forward instantanés $f(t, T)$ :
@@ -783,14 +789,14 @@ Le débat HJM vs. Vasicek se retrouve dans tous les marchés de taux et de créd
 \end{remarque}
 
 %--------------------------------------------------
-\section{Vers un Modèle Cohérent : le Seuil de Défaut (Barrière)}
+\subsection{Vers un Modèle Cohérent : le Seuil de Défaut (Barrière)}
 %--------------------------------------------------
 
-\subsection{Problème des forwards négatifs dans Merton naïf}
+\subsubsection{Problème des forwards négatifs dans Merton naïf}
 
 Dans l'extension naïve du modèle de Merton à plusieurs maturités, on price un CDS de maturité $T$ en supposant que l'entreprise rembourse une dette arrivant exactement à la date $T$. Cette hypothèse conduit à des \textbf{probabilités de survie non monotones} : si la courbe de crédit n'est pas exactement cohérente avec ce schéma, les probabilités de défaut conditionnelles (forwards) peuvent devenir \textbf{négatives}.
 
-\subsection{Le modèle à barrière : première formulation cohérente}
+\subsubsection{Le modèle à barrière : première formulation cohérente}
 
 La solution est de remplacer la date de maturité unique par un \textbf{seuil de diffusion continu} : l'entreprise fait défaut \textit{dès que} la valeur de ses actifs $A_t$ passe en dessous d'un seuil $D$ (la barrière).
 
@@ -848,7 +854,7 @@ Cette formulation fait appel aux \textbf{formules de symétrie} du mouvement bro
     \label{fig:barrier}
 \end{figure}
 
-\subsection{Avantage et limite du modèle à barrière}
+\subsubsection{Avantage et limite du modèle à barrière}
 
 \textbf{Avantage :} cohérence des probabilités de survie (monotones décroissantes), formules analytiques via la réflexion brownienne.
 
@@ -862,10 +868,10 @@ Le spread de crédit et sa dérivée sont \textbf{tous deux nuls} à court terme
 \end{tcolorbox}
 
 %--------------------------------------------------
-\section{Formes de la Courbe de Crédit : Pathologies et Solutions}
+\subsection{Formes de la Courbe de Crédit : Pathologies et Solutions}
 %--------------------------------------------------
 
-\subsection{Courbe en « chapeau de Napoléon » (dette constante)}
+\subsubsection{Courbe en « chapeau de Napoléon » (dette constante)}
 
 Si le seuil $D$ est \textbf{constant} et qu'on laisse la diffusion de $A_t$ agir sur le long terme, l'enveloppe parabolique des trajectoires devient de plus en plus large. La probabilité de survie à long terme \textit{diminue}, ce qui génère une courbe de spread en cloche (\og chapeau de Napoléon \fg) — non réaliste.
 
@@ -891,7 +897,7 @@ Si le seuil $D$ est \textbf{constant} et qu'on laisse la diffusion de $A_t$ agir
 
 \textbf{Solution :} supposer que la barrière croît exponentiellement : $D(t) = D_0 e^{\mu t}$ (la dette est refinancée à un taux $\mu$). Cela supprime la descente à long terme et donne une courbe \textbf{monotone croissante} — plus réaliste.
 
-\subsection{Ajout d'un saut : résoudre le spread nul à court terme}
+\subsubsection{Ajout d'un saut : résoudre le spread nul à court terme}
 
 Pour corriger le spread nul à l'origine, on ajoute un \textbf{processus de Poisson} d'intensité $\lambda_0$ à la diffusion :
 
@@ -939,7 +945,7 @@ où $\mathrm{LR} = (1-R)$ est le taux de perte (\textit{Loss Rate}) et $\lambda$
     \label{fig:spread_curve}
 \end{figure}
 
-\subsection{CreditGrades et processus de Lévy}
+\subsubsection{CreditGrades et processus de Lévy}
 
 \begin{exemple}[CreditGrades (JP Morgan / Goldman Sachs, ~2002)]
 Quants de banques d'investissement londoniennes ont proposé de rendre le seuil de dette $D$ \textbf{stochastique} : $D \sim \mathrm{LogNormal}$. Cette convolution introduit une incertitude sur la barrière et génère un spread non nul à l'origine.
@@ -954,10 +960,12 @@ Limitation pratique : dès qu'on sort du cas Variance Gamma, les distributions t
 \end{exemple}
 
 %--------------------------------------------------
-\section{Le Modèle d'Intensité de Duffie : une Alternative Pragmatique}
+\section{Les Modèles à Forme Réduite (Intensité de Défaut)}
+
+\subsection{Le Modèle d'Intensité de Duffie : une Alternative Pragmatique}
 %--------------------------------------------------
 
-\subsection{L'idée fondamentale : paramétrer l'intensité directement}
+\subsubsection{L'idée fondamentale : paramétrer l'intensité directement}
 
 Au lieu de modéliser la valeur des actifs $A_t$ (entité abstraite et non observable), on modélise directement \textbf{l'intensité de défaut} $\lambda_t$ comme une fonction du prix de l'action $S_t$ :
 
@@ -982,10 +990,10 @@ Pour les entreprises \textbf{investment grade} (levier faible, loin du seuil), l
 \end{remarque}
 
 %--------------------------------------------------
-\section{Applications : Trades LBO et Structures de Courbe}
+\subsection{Applications : Trades LBO et Structures de Courbe}
 %--------------------------------------------------
 
-\subsection{Le trade LBO (\textit{Leveraged Buy-Out})}
+\subsubsection{Le trade LBO (\textit{Leveraged Buy-Out})}
 
 Un LBO est le rachat d'une entreprise par un fonds d'investissement qui finance l'acquisition principalement par dette, augmentant brutalement le levier de l'entreprise.
 
@@ -998,7 +1006,7 @@ Une entreprise investment grade (faible levier, CDS bon marché) est identifiée
 Résultat : gain simultané sur les deux jambes. La stratégie reproduit un profil convexe similaire à la figure~\ref{fig:convexite}.
 \end{exemple}
 
-\subsection{Inversion de courbe en cas de défaut imminent}
+\subsubsection{Inversion de courbe en cas de défaut imminent}
 
 La courbe de spread $T \mapsto s(T)$ présente une structure caractéristique en fonction du niveau absolu de spread :
 
@@ -1025,17 +1033,17 @@ La courbe de spread $T \mapsto s(T)$ présente une structure caractéristique en
 Quand $s_{5Y}$ est très élevé (probabilité de défaut élevée à court terme), la courbe \textbf{s'inverse} : $s_{5Y} > s_{10Y}$. La pente $s_{10Y} - s_{5Y}$ passe négative. Ce signal est la borne supérieure naturelle du trade Steepener.
 
 %--------------------------------------------------
-\section{Pricing par EDP dans le Modèle d'Intensité (Processus de Cox)}
+\subsection{Pricing par EDP dans le Modèle d'Intensité (Processus de Cox)}
 %--------------------------------------------------
 
-\subsection{Cadre général}
+\subsubsection{Cadre général}
 
 Dans un \textbf{processus de Cox} (processus de Poisson à intensité stochastique $\lambda_t$), le prix de l'action $S_t$ et l'indicateur de défaut $\mathbf{1}_{\tau \leq t}$ sont couplés. On définit les probabilités de survie conditionnelles :
 \[
 P(t, T) = \mathbb{E}\!\left[\exp\!\left(-\int_t^T \lambda_s \, ds\right) \Bigg| \mathcal{F}_t\right] \quad \text{(courbe de crédit)}
 \]
 
-\subsection{Pricing du CDS : décomposition en deux branches}
+\subsubsection{Pricing du CDS : décomposition en deux branches}
 
 Le spread de marché $M$ d'un CDS satisfait l'équation de juste valeur :
 \[
@@ -1049,7 +1057,7 @@ M \times \underbrace{\mathrm{DV01}}_{\text{branche premium}} = \underbrace{(1-R)
 où $P(0, t)$ est la probabilité de survie actualisée.
 \end{definition}
 
-\subsection{Pricing des options : EDP de Black-Scholes généralisée}
+\subsubsection{Pricing des options : EDP de Black-Scholes généralisée}
 
 Dans ce cadre, le prix $V(t, S)$ d'une option sur action satisfait une EDP intégrant le risque de défaut :
 
